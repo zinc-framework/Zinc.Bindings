@@ -3821,7 +3821,7 @@ namespace Zinc.Internal.Sokol
             }
         }
 
-        public bool _bitfield2;
+        public int _bitfield2;
 
         [NativeTypeName("bool : 1")]
         public bool IsVisible
@@ -3829,13 +3829,13 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)(_bitfield2 & 0x1);
+                return ((_bitfield2 >> 9) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield2 = (bool)((_bitfield2 & ~0x1) | (value & 0x1));
+                _bitfield2 = (_bitfield2 & ~(0x1 << 9)) | (((value ? 1 : 0) & 0x1) << 9);
             }
         }
 
@@ -3845,13 +3845,13 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)((_bitfield2 >> 1) & 0x1);
+                return ((_bitfield2 >> 10) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield2 = (bool)((_bitfield2 & ~(0x1 << 1)) | ((value & 0x1) << 1));
+                _bitfield2 = (_bitfield2 & ~(0x1 << 10)) | (((value ? 1 : 0) & 0x1) << 10);
             }
         }
 
@@ -3861,13 +3861,13 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)((_bitfield2 >> 2) & 0x1);
+                return ((_bitfield2 >> 11) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield2 = (bool)((_bitfield2 & ~(0x1 << 2)) | ((value & 0x1) << 2));
+                _bitfield2 = (_bitfield2 & ~(0x1 << 11)) | (((value ? 1 : 0) & 0x1) << 11);
             }
         }
 
@@ -3877,13 +3877,13 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)((_bitfield2 >> 3) & 0x1);
+                return ((_bitfield2 >> 12) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield2 = (bool)((_bitfield2 & ~(0x1 << 3)) | ((value & 0x1) << 3));
+                _bitfield2 = (_bitfield2 & ~(0x1 << 12)) | (((value ? 1 : 0) & 0x1) << 12);
             }
         }
 
@@ -3893,13 +3893,13 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)((_bitfield2 >> 4) & 0x1);
+                return ((_bitfield2 >> 13) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield2 = (bool)((_bitfield2 & ~(0x1 << 4)) | ((value & 0x1) << 4));
+                _bitfield2 = (_bitfield2 & ~(0x1 << 13)) | (((value ? 1 : 0) & 0x1) << 13);
             }
         }
 
@@ -3909,13 +3909,13 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)((_bitfield2 >> 5) & 0x1);
+                return ((_bitfield2 >> 14) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield2 = (bool)((_bitfield2 & ~(0x1 << 5)) | ((value & 0x1) << 5));
+                _bitfield2 = (_bitfield2 & ~(0x1 << 14)) | (((value ? 1 : 0) & 0x1) << 14);
             }
         }
 
@@ -3925,13 +3925,13 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)((_bitfield2 >> 6) & 0x1);
+                return ((_bitfield2 >> 15) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield2 = (bool)((_bitfield2 & ~(0x1 << 6)) | ((value & 0x1) << 6));
+                _bitfield2 = (_bitfield2 & ~(0x1 << 15)) | (((value ? 1 : 0) & 0x1) << 15);
             }
         }
 
@@ -3941,17 +3941,15 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)((_bitfield2 >> 7) & 0x1);
+                return ((_bitfield2 >> 16) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield2 = (bool)((_bitfield2 & ~(0x1 << 7)) | ((value & 0x1) << 7));
+                _bitfield2 = (_bitfield2 & ~(0x1 << 16)) | (((value ? 1 : 0) & 0x1) << 16);
             }
         }
-
-        public bool _bitfield3;
 
         [NativeTypeName("bool : 1")]
         public bool WantMouseMove
@@ -3959,13 +3957,13 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)(_bitfield3 & 0x1);
+                return ((_bitfield2 >> 17) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield3 = (bool)((_bitfield3 & ~0x1) | (value & 0x1));
+                _bitfield2 = (_bitfield2 & ~(0x1 << 17)) | (((value ? 1 : 0) & 0x1) << 17);
             }
         }
 
@@ -3975,13 +3973,13 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)((_bitfield3 >> 1) & 0x1);
+                return ((_bitfield2 >> 18) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield3 = (bool)((_bitfield3 & ~(0x1 << 1)) | ((value & 0x1) << 1));
+                _bitfield2 = (_bitfield2 & ~(0x1 << 18)) | (((value ? 1 : 0) & 0x1) << 18);
             }
         }
 
@@ -3991,13 +3989,13 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)((_bitfield3 >> 2) & 0x1);
+                return ((_bitfield2 >> 19) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield3 = (bool)((_bitfield3 & ~(0x1 << 2)) | ((value & 0x1) << 2));
+                _bitfield2 = (_bitfield2 & ~(0x1 << 19)) | (((value ? 1 : 0) & 0x1) << 19);
             }
         }
 
@@ -5188,7 +5186,7 @@ namespace Zinc.Internal.Sokol
         public ImGuiLogType LogType;
 
         [NativeTypeName("ImFileHandle")]
-        public _iobuf* LogFile;
+        public void* LogFile;
 
         public ImGuiTextBuffer LogBuffer;
 
@@ -5715,7 +5713,7 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("bool")]
         public byte MemoryCompacted;
 
-        public bool _bitfield2;
+        public bool _bitfield3;
 
         [NativeTypeName("bool : 1")]
         public bool DockIsActive
@@ -5723,13 +5721,13 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)(_bitfield2 & 0x1);
+                return ((_bitfield3 ? 1 : 0) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield2 = (bool)((_bitfield2 & ~0x1) | (value & 0x1));
+                _bitfield3 = (((_bitfield3 ? 1 : 0) & ~0x1) | ((value ? 1 : 0) & 0x1)) != 0;
             }
         }
 
@@ -5739,13 +5737,13 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)((_bitfield2 >> 1) & 0x1);
+                return (((_bitfield3 ? 1 : 0) >> 1) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield2 = (bool)((_bitfield2 & ~(0x1 << 1)) | ((value & 0x1) << 1));
+                _bitfield3 = (((_bitfield3 ? 1 : 0) & ~(0x1 << 1)) | (((value ? 1 : 0) & 0x1) << 1)) != 0;
             }
         }
 
@@ -5755,13 +5753,13 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)((_bitfield2 >> 2) & 0x1);
+                return (((_bitfield3 ? 1 : 0) >> 2) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield2 = (bool)((_bitfield2 & ~(0x1 << 2)) | ((value & 0x1) << 2));
+                _bitfield3 = (((_bitfield3 ? 1 : 0) & ~(0x1 << 2)) | (((value ? 1 : 0) & 0x1) << 2)) != 0;
             }
         }
 
@@ -5771,13 +5769,13 @@ namespace Zinc.Internal.Sokol
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (bool)((_bitfield2 >> 3) & 0x1);
+                return (((_bitfield3 ? 1 : 0) >> 3) & 0x1) != 0;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield2 = (bool)((_bitfield2 & ~(0x1 << 3)) | ((value & 0x1) << 3));
+                _bitfield3 = (((_bitfield3 ? 1 : 0) & ~(0x1 << 3)) | (((value ? 1 : 0) & 0x1) << 3)) != 0;
             }
         }
 
@@ -7124,37 +7122,37 @@ namespace Zinc.Internal.Sokol
         public static extern void igTextUnformatted([NativeTypeName("const char *")] sbyte* text, [NativeTypeName("const char *")] sbyte* text_end);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igText([NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern void igText([NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igTextV([NativeTypeName("const char *")] sbyte* fmt, [NativeTypeName("va_list")] sbyte* args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igTextColored([NativeTypeName("const ImVec4")] ImVec4 col, [NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern void igTextColored([NativeTypeName("const ImVec4")] ImVec4 col, [NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igTextColoredV([NativeTypeName("const ImVec4")] ImVec4 col, [NativeTypeName("const char *")] sbyte* fmt, [NativeTypeName("va_list")] sbyte* args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igTextDisabled([NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern void igTextDisabled([NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igTextDisabledV([NativeTypeName("const char *")] sbyte* fmt, [NativeTypeName("va_list")] sbyte* args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igTextWrapped([NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern void igTextWrapped([NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igTextWrappedV([NativeTypeName("const char *")] sbyte* fmt, [NativeTypeName("va_list")] sbyte* args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igLabelText([NativeTypeName("const char *")] sbyte* label, [NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern void igLabelText([NativeTypeName("const char *")] sbyte* label, [NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igLabelTextV([NativeTypeName("const char *")] sbyte* label, [NativeTypeName("const char *")] sbyte* fmt, [NativeTypeName("va_list")] sbyte* args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igBulletText([NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern void igBulletText([NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igBulletTextV([NativeTypeName("const char *")] sbyte* fmt, [NativeTypeName("va_list")] sbyte* args);
@@ -7419,11 +7417,11 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte igTreeNode_StrStr([NativeTypeName("const char *")] sbyte* str_id, [NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern byte igTreeNode_StrStr([NativeTypeName("const char *")] sbyte* str_id, [NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte igTreeNode_Ptr([NativeTypeName("const void *")] void* ptr_id, [NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern byte igTreeNode_Ptr([NativeTypeName("const void *")] void* ptr_id, [NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -7439,11 +7437,11 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte igTreeNodeEx_StrStr([NativeTypeName("const char *")] sbyte* str_id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern byte igTreeNodeEx_StrStr([NativeTypeName("const char *")] sbyte* str_id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte igTreeNodeEx_Ptr([NativeTypeName("const void *")] void* ptr_id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern byte igTreeNodeEx_Ptr([NativeTypeName("const void *")] void* ptr_id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -7560,7 +7558,7 @@ namespace Zinc.Internal.Sokol
         public static extern void igEndTooltip();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igSetTooltip([NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern void igSetTooltip([NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igSetTooltipV([NativeTypeName("const char *")] sbyte* fmt, [NativeTypeName("va_list")] sbyte* args);
@@ -7570,7 +7568,7 @@ namespace Zinc.Internal.Sokol
         public static extern byte igBeginItemTooltip();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igSetItemTooltip([NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern void igSetItemTooltip([NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igSetItemTooltipV([NativeTypeName("const char *")] sbyte* fmt, [NativeTypeName("va_list")] sbyte* args);
@@ -8950,13 +8948,13 @@ namespace Zinc.Internal.Sokol
         public static extern byte igImCharIsBlankW([NativeTypeName("unsigned int")] uint c);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern int igImFormatString([NativeTypeName("char *")] sbyte* buf, [NativeTypeName("size_t")] nuint buf_size, [NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern int igImFormatString([NativeTypeName("char *")] sbyte* buf, [NativeTypeName("size_t")] nuint buf_size, [NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern int igImFormatStringV([NativeTypeName("char *")] sbyte* buf, [NativeTypeName("size_t")] nuint buf_size, [NativeTypeName("const char *")] sbyte* fmt, [NativeTypeName("va_list")] sbyte* args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igImFormatStringToTempBuffer([NativeTypeName("const char **")] sbyte** out_buf, [NativeTypeName("const char **")] sbyte** out_buf_end, [NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern void igImFormatStringToTempBuffer([NativeTypeName("const char **")] sbyte** out_buf, [NativeTypeName("const char **")] sbyte** out_buf_end, [NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igImFormatStringToTempBufferV([NativeTypeName("const char **")] sbyte** out_buf, [NativeTypeName("const char **")] sbyte** out_buf_end, [NativeTypeName("const char *")] sbyte* fmt, [NativeTypeName("va_list")] sbyte* args);
@@ -9011,23 +9009,23 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImFileHandle")]
-        public static extern _iobuf* igImFileOpen([NativeTypeName("const char *")] sbyte* filename, [NativeTypeName("const char *")] sbyte* mode);
+        public static extern void* igImFileOpen([NativeTypeName("const char *")] sbyte* filename, [NativeTypeName("const char *")] sbyte* mode);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte igImFileClose([NativeTypeName("ImFileHandle")] _iobuf* file);
+        public static extern byte igImFileClose([NativeTypeName("ImFileHandle")] void* file);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImU64")]
-        public static extern ulong igImFileGetSize([NativeTypeName("ImFileHandle")] _iobuf* file);
+        public static extern ulong igImFileGetSize([NativeTypeName("ImFileHandle")] void* file);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImU64")]
-        public static extern ulong igImFileRead(void* data, [NativeTypeName("ImU64")] ulong size, [NativeTypeName("ImU64")] ulong count, [NativeTypeName("ImFileHandle")] _iobuf* file);
+        public static extern ulong igImFileRead(void* data, [NativeTypeName("ImU64")] ulong size, [NativeTypeName("ImU64")] ulong count, [NativeTypeName("ImFileHandle")] void* file);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImU64")]
-        public static extern ulong igImFileWrite([NativeTypeName("const void *")] void* data, [NativeTypeName("ImU64")] ulong size, [NativeTypeName("ImU64")] ulong count, [NativeTypeName("ImFileHandle")] _iobuf* file);
+        public static extern ulong igImFileWrite([NativeTypeName("const void *")] void* data, [NativeTypeName("ImU64")] ulong size, [NativeTypeName("ImU64")] ulong count, [NativeTypeName("ImFileHandle")] void* file);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void* igImFileLoadToMemory([NativeTypeName("const char *")] sbyte* filename, [NativeTypeName("const char *")] sbyte* mode, [NativeTypeName("size_t *")] nuint* out_file_size, int padding_bytes);
@@ -11020,7 +11018,7 @@ namespace Zinc.Internal.Sokol
         public static extern void igGcAwakeTransientWindowBuffers(ImGuiWindow* window);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igDebugLog([NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern void igDebugLog([NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igDebugLogV([NativeTypeName("const char *")] sbyte* fmt, [NativeTypeName("va_list")] sbyte* args);
@@ -11153,10 +11151,10 @@ namespace Zinc.Internal.Sokol
         public static extern void igImFontAtlasBuildMultiplyRectAlpha8([NativeTypeName("const unsigned char[256]")] byte* table, [NativeTypeName("unsigned char *")] byte* pixels, int x, int y, int w, int h, int stride);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igLogText([NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern void igLogText([NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImGuiTextBuffer_appendf([NativeTypeName("struct ImGuiTextBuffer *")] ImGuiTextBuffer* buffer, [NativeTypeName("const char *")] sbyte* fmt, __arglist);
+        public static extern void ImGuiTextBuffer_appendf([NativeTypeName("struct ImGuiTextBuffer *")] ImGuiTextBuffer* buffer, [NativeTypeName("const char *")] sbyte* fmt, params string[] args);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern float igGET_FLT_MAX();
