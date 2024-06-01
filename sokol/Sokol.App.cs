@@ -757,10 +757,5 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_android_get_native_activity", ExactSpelling = true)]
         [return: NativeTypeName("const void *")]
         public static extern void* android_get_native_activity();
-
-        public static void run([NativeTypeName("const sapp_desc &")] sapp_desc* desc)
-        {
-            run(desc);
-        }
     }
 }

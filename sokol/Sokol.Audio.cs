@@ -122,10 +122,5 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "saudio_push", ExactSpelling = true)]
         public static extern int push([NativeTypeName("const float *")] float* frames, int num_frames);
-
-        public static void setup([NativeTypeName("const saudio_desc &")] saudio_desc* desc)
-        {
-            setup(desc);
-        }
     }
 }

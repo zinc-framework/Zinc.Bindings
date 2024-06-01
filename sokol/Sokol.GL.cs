@@ -356,25 +356,5 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sgl_end", ExactSpelling = true)]
         public static extern void end();
-
-        public static void setup([NativeTypeName("const sgl_desc_t &")] sgl_desc_t* desc)
-        {
-            setup(desc);
-        }
-
-        public static sgl_context make_context([NativeTypeName("const sgl_context_desc_t &")] sgl_context_desc_t* desc)
-        {
-            return make_context(desc);
-        }
-
-        public static sgl_pipeline make_pipeline([NativeTypeName("const sg_pipeline_desc &")] sg_pipeline_desc* desc)
-        {
-            return make_pipeline(desc);
-        }
-
-        public static sgl_pipeline context_make_pipeline(sgl_context ctx, [NativeTypeName("const sg_pipeline_desc &")] sg_pipeline_desc* desc)
-        {
-            return context_make_pipeline(ctx, desc);
-        }
     }
 }

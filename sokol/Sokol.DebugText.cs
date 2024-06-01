@@ -223,15 +223,5 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sdtx_vprintf", ExactSpelling = true)]
         public static extern int vprintf([NativeTypeName("const char *")] sbyte* fmt, [NativeTypeName("va_list")] sbyte* args);
-
-        public static void setup([NativeTypeName("const sdtx_desc_t &")] sdtx_desc_t* desc)
-        {
-            setup(desc);
-        }
-
-        public static sdtx_context make_context([NativeTypeName("const sdtx_context_desc_t &")] sdtx_context_desc_t* desc)
-        {
-            return make_context(desc);
-        }
     }
 }

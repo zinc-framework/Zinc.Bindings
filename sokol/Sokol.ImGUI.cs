@@ -11238,20 +11238,5 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "simgui_shutdown", ExactSpelling = true)]
         public static extern void shutdown();
-
-        public static void setup([NativeTypeName("const simgui_desc_t &")] simgui_desc_t* desc)
-        {
-            setup(desc);
-        }
-
-        public static simgui_image_t make_image([NativeTypeName("const simgui_image_desc_t &")] simgui_image_desc_t* desc)
-        {
-            return make_image(desc);
-        }
-
-        public static void new_frame([NativeTypeName("const simgui_frame_desc_t &")] simgui_frame_desc_t* desc)
-        {
-            new_frame(desc);
-        }
     }
 }

@@ -1332,30 +1332,5 @@ namespace Zinc.Internal.Sokol
             b = 0.196078431f,
             a = 1.0f,
         };
-
-        public static sg_color sg_make_color([NativeTypeName("uint8_t")] byte r, [NativeTypeName("uint8_t")] byte g, [NativeTypeName("uint8_t")] byte b, [NativeTypeName("uint8_t")] byte a)
-        {
-            return sg_make_color_4b(r, g, b, a);
-        }
-
-        public static sg_color sg_make_color([NativeTypeName("uint32_t")] uint rgba)
-        {
-            return sg_make_color_1i(rgba);
-        }
-
-        public static sg_color lerp([NativeTypeName("const sg_color &")] sg_color* color_a, [NativeTypeName("const sg_color &")] sg_color* color_b, float amount)
-        {
-            return lerp(color_a, color_b, amount);
-        }
-
-        public static sg_color lerp_precise([NativeTypeName("const sg_color &")] sg_color* color_a, [NativeTypeName("const sg_color &")] sg_color* color_b, float amount)
-        {
-            return lerp_precise(color_a, color_b, amount);
-        }
-
-        public static sg_color multiply([NativeTypeName("const sg_color &")] sg_color* color, float scale)
-        {
-            return multiply(color, scale);
-        }
     }
 }
