@@ -162,6 +162,9 @@ namespace Zinc.Internal.Sokol
         public static extern int fonsResetAtlas([NativeTypeName("FONScontext*")] void* stash, int width, int height);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern int fonsAddFontMem([NativeTypeName("FONScontext*")] void* stash, [NativeTypeName("const char *")] sbyte* name, [NativeTypeName("unsigned char *")] byte* data, int dataSize, int freeData);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern int fonsGetFontByName([NativeTypeName("FONScontext*")] void* s, [NativeTypeName("const char *")] sbyte* name);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
