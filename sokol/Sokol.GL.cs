@@ -33,15 +33,28 @@ namespace Zinc.Internal.Sokol
         public uint id;
     }
 
-    public enum sgl_error_t
+    public partial struct sgl_error_t
     {
-        SGL_NO_ERROR = 0,
-        SGL_ERROR_VERTICES_FULL,
-        SGL_ERROR_UNIFORMS_FULL,
-        SGL_ERROR_COMMANDS_FULL,
-        SGL_ERROR_STACK_OVERFLOW,
-        SGL_ERROR_STACK_UNDERFLOW,
-        SGL_ERROR_NO_CONTEXT,
+        [NativeTypeName("bool")]
+        public byte any;
+
+        [NativeTypeName("bool")]
+        public byte vertices_full;
+
+        [NativeTypeName("bool")]
+        public byte uniforms_full;
+
+        [NativeTypeName("bool")]
+        public byte commands_full;
+
+        [NativeTypeName("bool")]
+        public byte stack_overflow;
+
+        [NativeTypeName("bool")]
+        public byte stack_underflow;
+
+        [NativeTypeName("bool")]
+        public byte no_context;
     }
 
     public partial struct sgl_context_desc_t
@@ -131,6 +144,12 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sgl_default_context", ExactSpelling = true)]
         public static extern sgl_context default_context();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sgl_num_vertices", ExactSpelling = true)]
+        public static extern int num_vertices();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sgl_num_commands", ExactSpelling = true)]
+        public static extern int num_commands();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sgl_draw", ExactSpelling = true)]
         public static extern void draw();

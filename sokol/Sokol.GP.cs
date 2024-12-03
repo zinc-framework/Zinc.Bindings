@@ -141,6 +141,15 @@ namespace Zinc.Internal.Sokol
         public byte a;
     }
 
+    public partial struct sgp_vertex
+    {
+        public sgp_vec2 position;
+
+        public sgp_vec2 texcoord;
+
+        public sgp_color_ub4 color;
+    }
+
     public partial struct sgp_uniform
     {
         [NativeTypeName("uint32_t")]
@@ -233,7 +242,7 @@ namespace Zinc.Internal.Sokol
 
     public partial struct sgp_pipeline_desc
     {
-        public sg_shader_desc shader;
+        public sg_shader shader;
 
         public sg_primitive_type primitive_type;
 
@@ -366,6 +375,9 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sgp_clear", ExactSpelling = true)]
         public static extern void clear();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sgp_draw", ExactSpelling = true)]
+        public static extern void draw(sg_primitive_type primitive_type, [NativeTypeName("const sgp_vertex *")] sgp_vertex* vertices, [NativeTypeName("uint32_t")] uint count);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sgp_draw_points", ExactSpelling = true)]
         public static extern void draw_points([NativeTypeName("const sgp_point *")] sgp_vec2* points, [NativeTypeName("uint32_t")] uint count);
