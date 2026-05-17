@@ -3,7 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace Zinc.Internal.Sokol
 {
-    public enum sgp_error
+    [NativeTypeName("unsigned int")]
+    public enum sgp_error : uint
     {
         SGP_NO_ERROR = 0,
         SGP_ERROR_SOKOL_INVALID,
@@ -23,20 +24,31 @@ namespace Zinc.Internal.Sokol
         SGP_ERROR_MAKE_COMMON_PIPELINE_FAILED,
     }
 
-    public enum sgp_blend_mode
+    [NativeTypeName("unsigned int")]
+    public enum sgp_blend_mode : uint
     {
         SGP_BLENDMODE_NONE = 0,
         SGP_BLENDMODE_BLEND,
+        SGP_BLENDMODE_BLEND_PREMULTIPLIED,
         SGP_BLENDMODE_ADD,
+        SGP_BLENDMODE_ADD_PREMULTIPLIED,
         SGP_BLENDMODE_MOD,
         SGP_BLENDMODE_MUL,
         _SGP_BLENDMODE_NUM,
     }
 
-    public enum sgp_vs_attr_location
+    [NativeTypeName("unsigned int")]
+    public enum sgp_vs_attr_location : uint
     {
         SGP_VS_ATTR_COORD = 0,
         SGP_VS_ATTR_COLOR = 1,
+    }
+
+    [NativeTypeName("unsigned int")]
+    public enum sgp_uniform_slot : uint
+    {
+        SGP_UNIFORM_SLOT_VERTEX = 0,
+        SGP_UNIFORM_SLOT_FRAGMENT = 1,
     }
 
     public partial struct sgp_isize
@@ -150,19 +162,39 @@ namespace Zinc.Internal.Sokol
         public sgp_color_ub4 color;
     }
 
-    public partial struct sgp_uniform
+    [StructLayout(LayoutKind.Explicit)]
+    public partial struct sgp_uniform_data
     {
-        [NativeTypeName("uint32_t")]
-        public uint size;
+        [FieldOffset(0)]
+        [NativeTypeName("float[8]")]
+        public _floats_e__FixedBuffer floats;
 
-        [NativeTypeName("float[4]")]
-        public _content_e__FixedBuffer content;
+        [FieldOffset(0)]
+        [NativeTypeName("uint8_t[32]")]
+        public _bytes_e__FixedBuffer bytes;
 
-        [InlineArray(4)]
-        public partial struct _content_e__FixedBuffer
+        [InlineArray(8)]
+        public partial struct _floats_e__FixedBuffer
         {
             public float e0;
         }
+
+        [InlineArray(32)]
+        public partial struct _bytes_e__FixedBuffer
+        {
+            public byte e0;
+        }
+    }
+
+    public partial struct sgp_uniform
+    {
+        [NativeTypeName("uint16_t")]
+        public ushort vs_size;
+
+        [NativeTypeName("uint16_t")]
+        public ushort fs_size;
+
+        public sgp_uniform_data data;
     }
 
     public partial struct sgp_textures_uniform
@@ -326,7 +358,7 @@ namespace Zinc.Internal.Sokol
         public static extern void reset_pipeline();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sgp_set_uniform", ExactSpelling = true)]
-        public static extern void set_uniform([NativeTypeName("const void *")] void* data, [NativeTypeName("uint32_t")] uint size);
+        public static extern void set_uniform([NativeTypeName("const void *")] void* vs_data, [NativeTypeName("uint32_t")] uint vs_size, [NativeTypeName("const void *")] void* fs_data, [NativeTypeName("uint32_t")] uint fs_size);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sgp_reset_uniform", ExactSpelling = true)]
         public static extern void reset_uniform();

@@ -2,13 +2,15 @@ using System.Runtime.InteropServices;
 
 namespace Zinc.Internal.Sokol
 {
-    public enum FONSflags
+    [NativeTypeName("unsigned int")]
+    public enum FONSflags : uint
     {
         FONS_ZERO_TOPLEFT = 1,
         FONS_ZERO_BOTTOMLEFT = 2,
     }
 
-    public enum FONSalign
+    [NativeTypeName("unsigned int")]
+    public enum FONSalign : uint
     {
         FONS_ALIGN_LEFT = 1 << 0,
         FONS_ALIGN_CENTER = 1 << 1,
@@ -19,7 +21,8 @@ namespace Zinc.Internal.Sokol
         FONS_ALIGN_BASELINE = 1 << 6,
     }
 
-    public enum FONSerrorCode
+    [NativeTypeName("unsigned int")]
+    public enum FONSerrorCode : uint
     {
         FONS_ATLAS_FULL = 1,
         FONS_SCRATCH_FULL = 2,

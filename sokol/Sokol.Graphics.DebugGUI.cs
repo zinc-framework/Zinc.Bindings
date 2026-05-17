@@ -33,8 +33,6 @@ namespace Zinc.Internal.Sokol
         public sgimgui_str_t label;
 
         public sg_image_desc desc;
-
-        public simgui_image_t simgui_img;
     }
 
     public partial struct sgimgui_sampler_t
@@ -209,7 +207,8 @@ namespace Zinc.Internal.Sokol
         public sgimgui_attachments_t* slots;
     }
 
-    public enum sgimgui_cmd_t
+    [NativeTypeName("unsigned int")]
+    public enum sgimgui_cmd_t : uint
     {
         SGIMGUI_CMD_INVALID,
         SGIMGUI_CMD_RESET_STATE_CACHE,
@@ -235,6 +234,7 @@ namespace Zinc.Internal.Sokol
         SGIMGUI_CMD_APPLY_BINDINGS,
         SGIMGUI_CMD_APPLY_UNIFORMS,
         SGIMGUI_CMD_DRAW,
+        SGIMGUI_CMD_DISPATCH,
         SGIMGUI_CMD_END_PASS,
         SGIMGUI_CMD_COMMIT,
         SGIMGUI_CMD_ALLOC_BUFFER,
@@ -417,6 +417,15 @@ namespace Zinc.Internal.Sokol
         public int num_elements;
 
         public int num_instances;
+    }
+
+    public partial struct sgimgui_args_dispatch_t
+    {
+        public int num_groups_x;
+
+        public int num_groups_y;
+
+        public int num_groups_z;
     }
 
     public partial struct sgimgui_args_alloc_buffer_t
@@ -642,6 +651,9 @@ namespace Zinc.Internal.Sokol
 
         [FieldOffset(0)]
         public sgimgui_args_draw_t draw;
+
+        [FieldOffset(0)]
+        public sgimgui_args_dispatch_t dispatch;
 
         [FieldOffset(0)]
         public sgimgui_args_alloc_buffer_t alloc_buffer;

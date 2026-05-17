@@ -3,7 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace Zinc.Internal.Sokol
 {
-    public enum sapp_event_type
+    [NativeTypeName("unsigned int")]
+    public enum sapp_event_type : uint
     {
         SAPP_EVENTTYPE_INVALID,
         SAPP_EVENTTYPE_KEY_DOWN,
@@ -33,7 +34,8 @@ namespace Zinc.Internal.Sokol
         _SAPP_EVENTTYPE_FORCE_U32 = 0x7FFFFFFF,
     }
 
-    public enum sapp_keycode
+    [NativeTypeName("unsigned int")]
+    public enum sapp_keycode : uint
     {
         SAPP_KEYCODE_INVALID = 0,
         SAPP_KEYCODE_SPACE = 32,
@@ -158,7 +160,8 @@ namespace Zinc.Internal.Sokol
         SAPP_KEYCODE_MENU = 348,
     }
 
-    public enum sapp_android_tooltype
+    [NativeTypeName("unsigned int")]
+    public enum sapp_android_tooltype : uint
     {
         SAPP_ANDROIDTOOLTYPE_UNKNOWN = 0,
         SAPP_ANDROIDTOOLTYPE_FINGER = 1,
@@ -181,7 +184,8 @@ namespace Zinc.Internal.Sokol
         public byte changed;
     }
 
-    public enum sapp_mousebutton
+    [NativeTypeName("unsigned int")]
+    public enum sapp_mousebutton : uint
     {
         SAPP_MOUSEBUTTON_LEFT = 0x0,
         SAPP_MOUSEBUTTON_RIGHT = 0x1,
@@ -285,7 +289,8 @@ namespace Zinc.Internal.Sokol
         public void* user_data;
     }
 
-    public enum sapp_log_item
+    [NativeTypeName("unsigned int")]
+    public enum sapp_log_item : uint
     {
         SAPP_LOGITEM_OK,
         SAPP_LOGITEM_MALLOC_FAILED,
@@ -491,6 +496,9 @@ namespace Zinc.Internal.Sokol
         public byte html5_ask_leave_site;
 
         [NativeTypeName("bool")]
+        public byte html5_update_document_title;
+
+        [NativeTypeName("bool")]
         public byte html5_bubble_mouse_events;
 
         [NativeTypeName("bool")]
@@ -515,7 +523,8 @@ namespace Zinc.Internal.Sokol
         public byte ios_keyboard_resizes_canvas;
     }
 
-    public enum sapp_html5_fetch_error
+    [NativeTypeName("unsigned int")]
+    public enum sapp_html5_fetch_error : uint
     {
         SAPP_HTML5_FETCH_ERROR_NO_ERROR,
         SAPP_HTML5_FETCH_ERROR_BUFFER_TOO_SMALL,
@@ -550,7 +559,8 @@ namespace Zinc.Internal.Sokol
         public void* user_data;
     }
 
-    public enum sapp_mouse_cursor
+    [NativeTypeName("unsigned int")]
+    public enum sapp_mouse_cursor : uint
     {
         SAPP_MOUSECURSOR_DEFAULT = 0,
         SAPP_MOUSECURSOR_ARROW,
@@ -568,18 +578,18 @@ namespace Zinc.Internal.Sokol
 
     public static unsafe partial class App
     {
-        public const int SAPP_MAX_TOUCHPOINTS = 8;
-        public const int SAPP_MAX_MOUSEBUTTONS = 3;
-        public const int SAPP_MAX_KEYCODES = 512;
-        public const int SAPP_MAX_ICONIMAGES = 8;
+        public const uint SAPP_MAX_TOUCHPOINTS = 8;
+        public const uint SAPP_MAX_MOUSEBUTTONS = 3;
+        public const uint SAPP_MAX_KEYCODES = 512;
+        public const uint SAPP_MAX_ICONIMAGES = 8;
 
-        public const int SAPP_MODIFIER_SHIFT = 0x1;
-        public const int SAPP_MODIFIER_CTRL = 0x2;
-        public const int SAPP_MODIFIER_ALT = 0x4;
-        public const int SAPP_MODIFIER_SUPER = 0x8;
-        public const int SAPP_MODIFIER_LMB = 0x100;
-        public const int SAPP_MODIFIER_RMB = 0x200;
-        public const int SAPP_MODIFIER_MMB = 0x400;
+        public const uint SAPP_MODIFIER_SHIFT = 0x1;
+        public const uint SAPP_MODIFIER_CTRL = 0x2;
+        public const uint SAPP_MODIFIER_ALT = 0x4;
+        public const uint SAPP_MODIFIER_SUPER = 0x8;
+        public const uint SAPP_MODIFIER_LMB = 0x100;
+        public const uint SAPP_MODIFIER_RMB = 0x200;
+        public const uint SAPP_MODIFIER_MMB = 0x400;
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern sapp_desc sokol_main(int argc, [NativeTypeName("char *[]")] sbyte** argv);
@@ -793,6 +803,18 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_gl_get_minor_version", ExactSpelling = true)]
         public static extern int gl_get_minor_version();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_gl_is_gles", ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        public static extern byte gl_is_gles();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_x11_get_window", ExactSpelling = true)]
+        [return: NativeTypeName("const void *")]
+        public static extern void* x11_get_window();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_x11_get_display", ExactSpelling = true)]
+        [return: NativeTypeName("const void *")]
+        public static extern void* x11_get_display();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_android_get_native_activity", ExactSpelling = true)]
         [return: NativeTypeName("const void *")]

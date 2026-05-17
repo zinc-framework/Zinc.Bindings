@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -11,12 +10,6 @@ namespace Zinc.Internal.Box2D
         public int minor;
 
         public int revision;
-    }
-
-    public partial struct b2Timer
-    {
-        [NativeTypeName("int64_t")]
-        public long start;
     }
 
     public partial struct b2Vec2
@@ -61,6 +54,13 @@ namespace Zinc.Internal.Box2D
         public b2Vec2 upperBound;
     }
 
+    public partial struct b2Plane
+    {
+        public b2Vec2 normal;
+
+        public float offset;
+    }
+
     public partial struct b2RayCastInput
     {
         public b2Vec2 origin;
@@ -70,25 +70,32 @@ namespace Zinc.Internal.Box2D
         public float maxFraction;
     }
 
-    public partial struct b2ShapeCastInput
+    public partial struct b2ShapeProxy
     {
         [NativeTypeName("b2Vec2[8]")]
         public _points_e__FixedBuffer points;
 
-        [NativeTypeName("int32_t")]
         public int count;
 
         public float radius;
-
-        public b2Vec2 translation;
-
-        public float maxFraction;
 
         [InlineArray(8)]
         public partial struct _points_e__FixedBuffer
         {
             public b2Vec2 e0;
         }
+    }
+
+    public partial struct b2ShapeCastInput
+    {
+        public b2ShapeProxy proxy;
+
+        public b2Vec2 translation;
+
+        public float maxFraction;
+
+        [NativeTypeName("bool")]
+        public byte canEncroach;
     }
 
     public partial struct b2CastOutput
@@ -99,7 +106,6 @@ namespace Zinc.Internal.Box2D
 
         public float fraction;
 
-        [NativeTypeName("int32_t")]
         public int iterations;
 
         [NativeTypeName("bool")]
@@ -143,7 +149,6 @@ namespace Zinc.Internal.Box2D
 
         public float radius;
 
-        [NativeTypeName("int32_t")]
         public int count;
 
         [InlineArray(8)]
@@ -174,7 +179,6 @@ namespace Zinc.Internal.Box2D
 
         public b2Vec2 ghost2;
 
-        [NativeTypeName("int32_t")]
         public int chainId;
     }
 
@@ -183,7 +187,6 @@ namespace Zinc.Internal.Box2D
         [NativeTypeName("b2Vec2[8]")]
         public _points_e__FixedBuffer points;
 
-        [NativeTypeName("int32_t")]
         public int count;
 
         [InlineArray(8)]
@@ -206,24 +209,7 @@ namespace Zinc.Internal.Box2D
         public float distanceSquared;
     }
 
-    public partial struct b2DistanceProxy
-    {
-        [NativeTypeName("b2Vec2[8]")]
-        public _points_e__FixedBuffer points;
-
-        [NativeTypeName("int32_t")]
-        public int count;
-
-        public float radius;
-
-        [InlineArray(8)]
-        public partial struct _points_e__FixedBuffer
-        {
-            public b2Vec2 e0;
-        }
-    }
-
-    public partial struct b2DistanceCache
+    public partial struct b2SimplexCache
     {
         [NativeTypeName("uint16_t")]
         public ushort count;
@@ -249,9 +235,9 @@ namespace Zinc.Internal.Box2D
 
     public partial struct b2DistanceInput
     {
-        public b2DistanceProxy proxyA;
+        public b2ShapeProxy proxyA;
 
-        public b2DistanceProxy proxyB;
+        public b2ShapeProxy proxyB;
 
         public b2Transform transformA;
 
@@ -267,12 +253,12 @@ namespace Zinc.Internal.Box2D
 
         public b2Vec2 pointB;
 
+        public b2Vec2 normal;
+
         public float distance;
 
-        [NativeTypeName("int32_t")]
         public int iterations;
 
-        [NativeTypeName("int32_t")]
         public int simplexCount;
     }
 
@@ -286,10 +272,8 @@ namespace Zinc.Internal.Box2D
 
         public float a;
 
-        [NativeTypeName("int32_t")]
         public int indexA;
 
-        [NativeTypeName("int32_t")]
         public int indexB;
     }
 
@@ -301,15 +285,14 @@ namespace Zinc.Internal.Box2D
 
         public b2SimplexVertex v3;
 
-        [NativeTypeName("int32_t")]
         public int count;
     }
 
     public partial struct b2ShapeCastPairInput
     {
-        public b2DistanceProxy proxyA;
+        public b2ShapeProxy proxyA;
 
-        public b2DistanceProxy proxyB;
+        public b2ShapeProxy proxyB;
 
         public b2Transform transformA;
 
@@ -318,6 +301,9 @@ namespace Zinc.Internal.Box2D
         public b2Vec2 translationB;
 
         public float maxFraction;
+
+        [NativeTypeName("bool")]
+        public byte canEncroach;
     }
 
     public partial struct b2Sweep
@@ -335,18 +321,19 @@ namespace Zinc.Internal.Box2D
 
     public partial struct b2TOIInput
     {
-        public b2DistanceProxy proxyA;
+        public b2ShapeProxy proxyA;
 
-        public b2DistanceProxy proxyB;
+        public b2ShapeProxy proxyB;
 
         public b2Sweep sweepA;
 
         public b2Sweep sweepB;
 
-        public float tMax;
+        public float maxFraction;
     }
 
-    public enum b2TOIState
+    [NativeTypeName("unsigned int")]
+    public enum b2TOIState : uint
     {
         b2_toiStateUnknown,
         b2_toiStateFailed,
@@ -359,7 +346,7 @@ namespace Zinc.Internal.Box2D
     {
         public b2TOIState state;
 
-        public float t;
+        public float fraction;
     }
 
     public partial struct b2ManifoldPoint
@@ -376,7 +363,7 @@ namespace Zinc.Internal.Box2D
 
         public float tangentImpulse;
 
-        public float maxNormalImpulse;
+        public float totalNormalImpulse;
 
         public float normalVelocity;
 
@@ -389,12 +376,13 @@ namespace Zinc.Internal.Box2D
 
     public partial struct b2Manifold
     {
+        public b2Vec2 normal;
+
+        public float rollingImpulse;
+
         [NativeTypeName("b2ManifoldPoint[2]")]
         public _points_e__FixedBuffer points;
 
-        public b2Vec2 normal;
-
-        [NativeTypeName("int32_t")]
         public int pointCount;
 
         [InlineArray(2)]
@@ -404,133 +392,70 @@ namespace Zinc.Internal.Box2D
         }
     }
 
-    public partial struct b2TreeNode
-    {
-        public b2AABB aabb;
-
-        [NativeTypeName("uint64_t")]
-        public ulong categoryBits;
-
-        [NativeTypeName("__AnonymousRecord_collision_L631_C2")]
-        public _Anonymous1_e__Union Anonymous1;
-
-        [NativeTypeName("int32_t")]
-        public int child1;
-
-        [NativeTypeName("__AnonymousRecord_collision_L643_C2")]
-        public _Anonymous2_e__Union Anonymous2;
-
-        [NativeTypeName("uint16_t")]
-        public ushort height;
-
-        [NativeTypeName("uint16_t")]
-        public ushort flags;
-
-        [UnscopedRef]
-        public ref int parent
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return ref Anonymous1.parent;
-            }
-        }
-
-        [UnscopedRef]
-        public ref int next
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return ref Anonymous1.next;
-            }
-        }
-
-        [UnscopedRef]
-        public ref int child2
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return ref Anonymous2.child2;
-            }
-        }
-
-        [UnscopedRef]
-        public ref int userData
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return ref Anonymous2.userData;
-            }
-        }
-
-        [StructLayout(LayoutKind.Explicit)]
-        public partial struct _Anonymous1_e__Union
-        {
-            [FieldOffset(0)]
-            [NativeTypeName("int32_t")]
-            public int parent;
-
-            [FieldOffset(0)]
-            [NativeTypeName("int32_t")]
-            public int next;
-        }
-
-        [StructLayout(LayoutKind.Explicit)]
-        public partial struct _Anonymous2_e__Union
-        {
-            [FieldOffset(0)]
-            [NativeTypeName("int32_t")]
-            public int child2;
-
-            [FieldOffset(0)]
-            [NativeTypeName("int32_t")]
-            public int userData;
-        }
-    }
-
     public unsafe partial struct b2DynamicTree
     {
+        [NativeTypeName("struct b2TreeNode *")]
         public b2TreeNode* nodes;
 
-        [NativeTypeName("int32_t")]
         public int root;
 
-        [NativeTypeName("int32_t")]
         public int nodeCount;
 
-        [NativeTypeName("int32_t")]
         public int nodeCapacity;
 
-        [NativeTypeName("int32_t")]
         public int freeList;
 
-        [NativeTypeName("int32_t")]
         public int proxyCount;
 
-        [NativeTypeName("int32_t *")]
         public int* leafIndices;
 
         public b2AABB* leafBoxes;
 
         public b2Vec2* leafCenters;
 
-        [NativeTypeName("int32_t *")]
         public int* binIndices;
 
-        [NativeTypeName("int32_t")]
         public int rebuildCapacity;
+
+        public partial struct b2TreeNode
+        {
+        }
     }
 
     public partial struct b2TreeStats
     {
-        [NativeTypeName("int32_t")]
         public int nodeVisits;
 
-        [NativeTypeName("int32_t")]
         public int leafVisits;
+    }
+
+    public partial struct b2PlaneResult
+    {
+        public b2Plane plane;
+
+        public b2Vec2 point;
+
+        [NativeTypeName("bool")]
+        public byte hit;
+    }
+
+    public partial struct b2CollisionPlane
+    {
+        public b2Plane plane;
+
+        public float pushLimit;
+
+        public float push;
+
+        [NativeTypeName("bool")]
+        public byte clipVelocity;
+    }
+
+    public partial struct b2PlaneSolverResult
+    {
+        public b2Vec2 translation;
+
+        public int iterationCount;
     }
 
     public partial struct b2WorldId
@@ -539,7 +464,7 @@ namespace Zinc.Internal.Box2D
         public ushort index1;
 
         [NativeTypeName("uint16_t")]
-        public ushort revision;
+        public ushort generation;
     }
 
     public partial struct b2BodyId
@@ -551,7 +476,7 @@ namespace Zinc.Internal.Box2D
         public ushort world0;
 
         [NativeTypeName("uint16_t")]
-        public ushort revision;
+        public ushort generation;
     }
 
     public partial struct b2ShapeId
@@ -563,7 +488,7 @@ namespace Zinc.Internal.Box2D
         public ushort world0;
 
         [NativeTypeName("uint16_t")]
-        public ushort revision;
+        public ushort generation;
     }
 
     public partial struct b2ChainId
@@ -575,7 +500,7 @@ namespace Zinc.Internal.Box2D
         public ushort world0;
 
         [NativeTypeName("uint16_t")]
-        public ushort revision;
+        public ushort generation;
     }
 
     public partial struct b2JointId
@@ -587,7 +512,7 @@ namespace Zinc.Internal.Box2D
         public ushort world0;
 
         [NativeTypeName("uint16_t")]
-        public ushort revision;
+        public ushort generation;
     }
 
     public partial struct b2RayResult
@@ -608,22 +533,11 @@ namespace Zinc.Internal.Box2D
         public byte hit;
     }
 
-    public enum b2MixingRule
-    {
-        b2_mixAverage,
-        b2_mixGeometricMean,
-        b2_mixMultiply,
-        b2_mixMinimum,
-        b2_mixMaximum,
-    }
-
     public unsafe partial struct b2WorldDef
     {
         public b2Vec2 gravity;
 
         public float restitutionThreshold;
-
-        public float contactPushoutVelocity;
 
         public float hitEventThreshold;
 
@@ -631,15 +545,15 @@ namespace Zinc.Internal.Box2D
 
         public float contactDampingRatio;
 
-        public float jointHertz;
+        public float maxContactPushSpeed;
 
-        public float jointDampingRatio;
+        public float maximumLinearSpeed;
 
-        public float maximumLinearVelocity;
+        [NativeTypeName("b2FrictionCallback *")]
+        public delegate* unmanaged[Cdecl]<float, int, float, int, float> frictionCallback;
 
-        public b2MixingRule frictionMixingRule;
-
-        public b2MixingRule restitutionMixingRule;
+        [NativeTypeName("b2RestitutionCallback *")]
+        public delegate* unmanaged[Cdecl]<float, int, float, int, float> restitutionCallback;
 
         [NativeTypeName("bool")]
         public byte enableSleep;
@@ -647,7 +561,6 @@ namespace Zinc.Internal.Box2D
         [NativeTypeName("bool")]
         public byte enableContinuous;
 
-        [NativeTypeName("int32_t")]
         public int workerCount;
 
         [NativeTypeName("b2EnqueueTaskCallback *")]
@@ -660,11 +573,11 @@ namespace Zinc.Internal.Box2D
 
         public void* userData;
 
-        [NativeTypeName("int32_t")]
         public int internalValue;
     }
 
-    public enum b2BodyType
+    [NativeTypeName("unsigned int")]
+    public enum b2BodyType : uint
     {
         b2_staticBody = 0,
         b2_kinematicBody = 1,
@@ -692,6 +605,9 @@ namespace Zinc.Internal.Box2D
 
         public float sleepThreshold;
 
+        [NativeTypeName("const char *")]
+        public sbyte* name;
+
         public void* userData;
 
         [NativeTypeName("bool")]
@@ -712,7 +628,6 @@ namespace Zinc.Internal.Box2D
         [NativeTypeName("bool")]
         public byte allowFastRotation;
 
-        [NativeTypeName("int32_t")]
         public int internalValue;
     }
 
@@ -724,7 +639,6 @@ namespace Zinc.Internal.Box2D
         [NativeTypeName("uint64_t")]
         public ulong maskBits;
 
-        [NativeTypeName("int32_t")]
         public int groupIndex;
     }
 
@@ -737,7 +651,8 @@ namespace Zinc.Internal.Box2D
         public ulong maskBits;
     }
 
-    public enum b2ShapeType
+    [NativeTypeName("unsigned int")]
+    public enum b2ShapeType : uint
     {
         b2_circleShape,
         b2_capsuleShape,
@@ -747,20 +662,31 @@ namespace Zinc.Internal.Box2D
         b2_shapeTypeCount,
     }
 
-    public unsafe partial struct b2ShapeDef
+    public partial struct b2SurfaceMaterial
     {
-        public void* userData;
-
         public float friction;
 
         public float restitution;
 
-        public float density;
+        public float rollingResistance;
 
-        public b2Filter filter;
+        public float tangentSpeed;
+
+        public int userMaterialId;
 
         [NativeTypeName("uint32_t")]
         public uint customColor;
+    }
+
+    public unsafe partial struct b2ShapeDef
+    {
+        public void* userData;
+
+        public b2SurfaceMaterial material;
+
+        public float density;
+
+        public b2Filter filter;
 
         [NativeTypeName("bool")]
         public byte isSensor;
@@ -783,7 +709,6 @@ namespace Zinc.Internal.Box2D
         [NativeTypeName("bool")]
         public byte updateBodyMass;
 
-        [NativeTypeName("int32_t")]
         public int internalValue;
     }
 
@@ -794,22 +719,21 @@ namespace Zinc.Internal.Box2D
         [NativeTypeName("const b2Vec2 *")]
         public b2Vec2* points;
 
-        [NativeTypeName("int32_t")]
         public int count;
 
-        public float friction;
+        [NativeTypeName("const b2SurfaceMaterial *")]
+        public b2SurfaceMaterial* materials;
 
-        public float restitution;
+        public int materialCount;
 
         public b2Filter filter;
-
-        [NativeTypeName("uint32_t")]
-        public uint customColor;
 
         [NativeTypeName("bool")]
         public byte isLoop;
 
-        [NativeTypeName("int32_t")]
+        [NativeTypeName("bool")]
+        public byte enableSensorEvents;
+
         public int internalValue;
     }
 
@@ -823,13 +747,11 @@ namespace Zinc.Internal.Box2D
 
         public float solve;
 
-        public float buildIslands;
+        public float mergeIslands;
+
+        public float prepareStages;
 
         public float solveConstraints;
-
-        public float prepareTasks;
-
-        public float solverTasks;
 
         public float prepareConstraints;
 
@@ -837,62 +759,54 @@ namespace Zinc.Internal.Box2D
 
         public float warmStart;
 
-        public float solveVelocities;
+        public float solveImpulses;
 
         public float integratePositions;
 
-        public float relaxVelocities;
+        public float relaxImpulses;
 
         public float applyRestitution;
 
         public float storeImpulses;
 
-        public float finalizeBodies;
-
         public float splitIslands;
 
-        public float sleepIslands;
+        public float transforms;
 
         public float hitEvents;
 
-        public float broadphase;
+        public float refit;
 
-        public float continuous;
+        public float bullets;
+
+        public float sleepIslands;
+
+        public float sensors;
     }
 
     public partial struct b2Counters
     {
-        [NativeTypeName("int32_t")]
         public int bodyCount;
 
-        [NativeTypeName("int32_t")]
         public int shapeCount;
 
-        [NativeTypeName("int32_t")]
         public int contactCount;
 
-        [NativeTypeName("int32_t")]
         public int jointCount;
 
-        [NativeTypeName("int32_t")]
         public int islandCount;
 
-        [NativeTypeName("int32_t")]
         public int stackUsed;
 
-        [NativeTypeName("int32_t")]
         public int staticTreeHeight;
 
-        [NativeTypeName("int32_t")]
         public int treeHeight;
 
-        [NativeTypeName("int32_t")]
         public int byteCount;
 
-        [NativeTypeName("int32_t")]
         public int taskCount;
 
-        [NativeTypeName("int32_t[12]")]
+        [NativeTypeName("int[12]")]
         public _colorCounts_e__FixedBuffer colorCounts;
 
         [InlineArray(12)]
@@ -902,12 +816,13 @@ namespace Zinc.Internal.Box2D
         }
     }
 
-    public enum b2JointType
+    [NativeTypeName("unsigned int")]
+    public enum b2JointType : uint
     {
         b2_distanceJoint,
+        b2_filterJoint,
         b2_motorJoint,
         b2_mouseJoint,
-        b2_nullJoint,
         b2_prismaticJoint,
         b2_revoluteJoint,
         b2_weldJoint,
@@ -952,7 +867,6 @@ namespace Zinc.Internal.Box2D
 
         public void* userData;
 
-        [NativeTypeName("int32_t")]
         public int internalValue;
     }
 
@@ -977,7 +891,6 @@ namespace Zinc.Internal.Box2D
 
         public void* userData;
 
-        [NativeTypeName("int32_t")]
         public int internalValue;
     }
 
@@ -1000,11 +913,10 @@ namespace Zinc.Internal.Box2D
 
         public void* userData;
 
-        [NativeTypeName("int32_t")]
         public int internalValue;
     }
 
-    public unsafe partial struct b2NullJointDef
+    public unsafe partial struct b2FilterJointDef
     {
         public b2BodyId bodyIdA;
 
@@ -1012,7 +924,6 @@ namespace Zinc.Internal.Box2D
 
         public void* userData;
 
-        [NativeTypeName("int32_t")]
         public int internalValue;
     }
 
@@ -1029,6 +940,8 @@ namespace Zinc.Internal.Box2D
         public b2Vec2 localAxisA;
 
         public float referenceAngle;
+
+        public float targetTranslation;
 
         [NativeTypeName("bool")]
         public byte enableSpring;
@@ -1056,7 +969,6 @@ namespace Zinc.Internal.Box2D
 
         public void* userData;
 
-        [NativeTypeName("int32_t")]
         public int internalValue;
     }
 
@@ -1071,6 +983,8 @@ namespace Zinc.Internal.Box2D
         public b2Vec2 localAnchorB;
 
         public float referenceAngle;
+
+        public float targetAngle;
 
         [NativeTypeName("bool")]
         public byte enableSpring;
@@ -1100,7 +1014,6 @@ namespace Zinc.Internal.Box2D
 
         public void* userData;
 
-        [NativeTypeName("int32_t")]
         public int internalValue;
     }
 
@@ -1129,7 +1042,6 @@ namespace Zinc.Internal.Box2D
 
         public void* userData;
 
-        [NativeTypeName("int32_t")]
         public int internalValue;
     }
 
@@ -1171,7 +1083,6 @@ namespace Zinc.Internal.Box2D
 
         public void* userData;
 
-        [NativeTypeName("int32_t")]
         public int internalValue;
     }
 
@@ -1209,10 +1120,8 @@ namespace Zinc.Internal.Box2D
 
         public b2SensorEndTouchEvent* endEvents;
 
-        [NativeTypeName("int32_t")]
         public int beginCount;
 
-        [NativeTypeName("int32_t")]
         public int endCount;
     }
 
@@ -1253,13 +1162,10 @@ namespace Zinc.Internal.Box2D
 
         public b2ContactHitEvent* hitEvents;
 
-        [NativeTypeName("int32_t")]
         public int beginCount;
 
-        [NativeTypeName("int32_t")]
         public int endCount;
 
-        [NativeTypeName("int32_t")]
         public int hitCount;
     }
 
@@ -1279,7 +1185,6 @@ namespace Zinc.Internal.Box2D
     {
         public b2BodyMoveEvent* moveEvents;
 
-        [NativeTypeName("int32_t")]
         public int moveCount;
     }
 
@@ -1292,192 +1197,184 @@ namespace Zinc.Internal.Box2D
         public b2Manifold manifold;
     }
 
-    public enum b2HexColor
+    [NativeTypeName("unsigned int")]
+    public enum b2HexColor : uint
     {
-        b2_colorAliceBlue = 0xf0f8ff,
-        b2_colorAntiqueWhite = 0xfaebd7,
-        b2_colorAquamarine = 0x7fffd4,
-        b2_colorAzure = 0xf0ffff,
-        b2_colorBeige = 0xf5f5dc,
-        b2_colorBisque = 0xffe4c4,
+        b2_colorAliceBlue = 0xF0F8FF,
+        b2_colorAntiqueWhite = 0xFAEBD7,
+        b2_colorAqua = 0x00FFFF,
+        b2_colorAquamarine = 0x7FFFD4,
+        b2_colorAzure = 0xF0FFFF,
+        b2_colorBeige = 0xF5F5DC,
+        b2_colorBisque = 0xFFE4C4,
         b2_colorBlack = 0x000000,
-        b2_colorBlanchedAlmond = 0xffebcd,
-        b2_colorBlue = 0x0000ff,
-        b2_colorBlueViolet = 0x8a2be2,
-        b2_colorBrown = 0xa52a2a,
-        b2_colorBurlywood = 0xdeb887,
-        b2_colorCadetBlue = 0x5f9ea0,
-        b2_colorChartreuse = 0x7fff00,
-        b2_colorChocolate = 0xd2691e,
-        b2_colorCoral = 0xff7f50,
-        b2_colorCornflowerBlue = 0x6495ed,
-        b2_colorCornsilk = 0xfff8dc,
-        b2_colorCrimson = 0xdc143c,
-        b2_colorCyan = 0x00ffff,
-        b2_colorDarkBlue = 0x00008b,
-        b2_colorDarkCyan = 0x008b8b,
-        b2_colorDarkGoldenrod = 0xb8860b,
-        b2_colorDarkGray = 0xa9a9a9,
+        b2_colorBlanchedAlmond = 0xFFEBCD,
+        b2_colorBlue = 0x0000FF,
+        b2_colorBlueViolet = 0x8A2BE2,
+        b2_colorBrown = 0xA52A2A,
+        b2_colorBurlywood = 0xDEB887,
+        b2_colorCadetBlue = 0x5F9EA0,
+        b2_colorChartreuse = 0x7FFF00,
+        b2_colorChocolate = 0xD2691E,
+        b2_colorCoral = 0xFF7F50,
+        b2_colorCornflowerBlue = 0x6495ED,
+        b2_colorCornsilk = 0xFFF8DC,
+        b2_colorCrimson = 0xDC143C,
+        b2_colorCyan = 0x00FFFF,
+        b2_colorDarkBlue = 0x00008B,
+        b2_colorDarkCyan = 0x008B8B,
+        b2_colorDarkGoldenRod = 0xB8860B,
+        b2_colorDarkGray = 0xA9A9A9,
         b2_colorDarkGreen = 0x006400,
-        b2_colorDarkKhaki = 0xbdb76b,
-        b2_colorDarkMagenta = 0x8b008b,
-        b2_colorDarkOliveGreen = 0x556b2f,
-        b2_colorDarkOrange = 0xff8c00,
-        b2_colorDarkOrchid = 0x9932cc,
-        b2_colorDarkRed = 0x8b0000,
-        b2_colorDarkSalmon = 0xe9967a,
-        b2_colorDarkSeaGreen = 0x8fbc8f,
-        b2_colorDarkSlateBlue = 0x483d8b,
-        b2_colorDarkSlateGray = 0x2f4f4f,
-        b2_colorDarkTurquoise = 0x00ced1,
-        b2_colorDarkViolet = 0x9400d3,
-        b2_colorDeepPink = 0xff1493,
-        b2_colorDeepSkyBlue = 0x00bfff,
+        b2_colorDarkKhaki = 0xBDB76B,
+        b2_colorDarkMagenta = 0x8B008B,
+        b2_colorDarkOliveGreen = 0x556B2F,
+        b2_colorDarkOrange = 0xFF8C00,
+        b2_colorDarkOrchid = 0x9932CC,
+        b2_colorDarkRed = 0x8B0000,
+        b2_colorDarkSalmon = 0xE9967A,
+        b2_colorDarkSeaGreen = 0x8FBC8F,
+        b2_colorDarkSlateBlue = 0x483D8B,
+        b2_colorDarkSlateGray = 0x2F4F4F,
+        b2_colorDarkTurquoise = 0x00CED1,
+        b2_colorDarkViolet = 0x9400D3,
+        b2_colorDeepPink = 0xFF1493,
+        b2_colorDeepSkyBlue = 0x00BFFF,
         b2_colorDimGray = 0x696969,
-        b2_colorDodgerBlue = 0x1e90ff,
-        b2_colorFirebrick = 0xb22222,
-        b2_colorFloralWhite = 0xfffaf0,
-        b2_colorForestGreen = 0x228b22,
-        b2_colorGainsboro = 0xdcdcdc,
-        b2_colorGhostWhite = 0xf8f8ff,
-        b2_colorGold = 0xffd700,
-        b2_colorGoldenrod = 0xdaa520,
-        b2_colorGray = 0xbebebe,
-        b2_colorGray1 = 0x1a1a1a,
-        b2_colorGray2 = 0x333333,
-        b2_colorGray3 = 0x4d4d4d,
-        b2_colorGray4 = 0x666666,
-        b2_colorGray5 = 0x7f7f7f,
-        b2_colorGray6 = 0x999999,
-        b2_colorGray7 = 0xb3b3b3,
-        b2_colorGray8 = 0xcccccc,
-        b2_colorGray9 = 0xe5e5e5,
-        b2_colorGreen = 0x00ff00,
-        b2_colorGreenYellow = 0xadff2f,
-        b2_colorHoneydew = 0xf0fff0,
-        b2_colorHotPink = 0xff69b4,
-        b2_colorIndianRed = 0xcd5c5c,
-        b2_colorIndigo = 0x4b0082,
-        b2_colorIvory = 0xfffff0,
-        b2_colorKhaki = 0xf0e68c,
-        b2_colorLavender = 0xe6e6fa,
-        b2_colorLavenderBlush = 0xfff0f5,
-        b2_colorLawnGreen = 0x7cfc00,
-        b2_colorLemonChiffon = 0xfffacd,
-        b2_colorLightBlue = 0xadd8e6,
-        b2_colorLightCoral = 0xf08080,
-        b2_colorLightCyan = 0xe0ffff,
-        b2_colorLightGoldenrod = 0xeedd82,
-        b2_colorLightGoldenrodYellow = 0xfafad2,
-        b2_colorLightGray = 0xd3d3d3,
-        b2_colorLightGreen = 0x90ee90,
-        b2_colorLightPink = 0xffb6c1,
-        b2_colorLightSalmon = 0xffa07a,
-        b2_colorLightSeaGreen = 0x20b2aa,
-        b2_colorLightSkyBlue = 0x87cefa,
-        b2_colorLightSlateBlue = 0x8470ff,
+        b2_colorDodgerBlue = 0x1E90FF,
+        b2_colorFireBrick = 0xB22222,
+        b2_colorFloralWhite = 0xFFFAF0,
+        b2_colorForestGreen = 0x228B22,
+        b2_colorFuchsia = 0xFF00FF,
+        b2_colorGainsboro = 0xDCDCDC,
+        b2_colorGhostWhite = 0xF8F8FF,
+        b2_colorGold = 0xFFD700,
+        b2_colorGoldenRod = 0xDAA520,
+        b2_colorGray = 0x808080,
+        b2_colorGreen = 0x008000,
+        b2_colorGreenYellow = 0xADFF2F,
+        b2_colorHoneyDew = 0xF0FFF0,
+        b2_colorHotPink = 0xFF69B4,
+        b2_colorIndianRed = 0xCD5C5C,
+        b2_colorIndigo = 0x4B0082,
+        b2_colorIvory = 0xFFFFF0,
+        b2_colorKhaki = 0xF0E68C,
+        b2_colorLavender = 0xE6E6FA,
+        b2_colorLavenderBlush = 0xFFF0F5,
+        b2_colorLawnGreen = 0x7CFC00,
+        b2_colorLemonChiffon = 0xFFFACD,
+        b2_colorLightBlue = 0xADD8E6,
+        b2_colorLightCoral = 0xF08080,
+        b2_colorLightCyan = 0xE0FFFF,
+        b2_colorLightGoldenRodYellow = 0xFAFAD2,
+        b2_colorLightGray = 0xD3D3D3,
+        b2_colorLightGreen = 0x90EE90,
+        b2_colorLightPink = 0xFFB6C1,
+        b2_colorLightSalmon = 0xFFA07A,
+        b2_colorLightSeaGreen = 0x20B2AA,
+        b2_colorLightSkyBlue = 0x87CEFA,
         b2_colorLightSlateGray = 0x778899,
-        b2_colorLightSteelBlue = 0xb0c4de,
-        b2_colorLightYellow = 0xffffe0,
-        b2_colorLimeGreen = 0x32cd32,
-        b2_colorLinen = 0xfaf0e6,
-        b2_colorMagenta = 0xff00ff,
-        b2_colorMaroon = 0xb03060,
-        b2_colorMediumAquamarine = 0x66cdaa,
-        b2_colorMediumBlue = 0x0000cd,
-        b2_colorMediumOrchid = 0xba55d3,
-        b2_colorMediumPurple = 0x9370db,
-        b2_colorMediumSeaGreen = 0x3cb371,
-        b2_colorMediumSlateBlue = 0x7b68ee,
-        b2_colorMediumSpringGreen = 0x00fa9a,
-        b2_colorMediumTurquoise = 0x48d1cc,
-        b2_colorMediumVioletRed = 0xc71585,
+        b2_colorLightSteelBlue = 0xB0C4DE,
+        b2_colorLightYellow = 0xFFFFE0,
+        b2_colorLime = 0x00FF00,
+        b2_colorLimeGreen = 0x32CD32,
+        b2_colorLinen = 0xFAF0E6,
+        b2_colorMagenta = 0xFF00FF,
+        b2_colorMaroon = 0x800000,
+        b2_colorMediumAquaMarine = 0x66CDAA,
+        b2_colorMediumBlue = 0x0000CD,
+        b2_colorMediumOrchid = 0xBA55D3,
+        b2_colorMediumPurple = 0x9370DB,
+        b2_colorMediumSeaGreen = 0x3CB371,
+        b2_colorMediumSlateBlue = 0x7B68EE,
+        b2_colorMediumSpringGreen = 0x00FA9A,
+        b2_colorMediumTurquoise = 0x48D1CC,
+        b2_colorMediumVioletRed = 0xC71585,
         b2_colorMidnightBlue = 0x191970,
-        b2_colorMintCream = 0xf5fffa,
-        b2_colorMistyRose = 0xffe4e1,
-        b2_colorMoccasin = 0xffe4b5,
-        b2_colorNavajoWhite = 0xffdead,
-        b2_colorNavyBlue = 0x000080,
-        b2_colorOldLace = 0xfdf5e6,
+        b2_colorMintCream = 0xF5FFFA,
+        b2_colorMistyRose = 0xFFE4E1,
+        b2_colorMoccasin = 0xFFE4B5,
+        b2_colorNavajoWhite = 0xFFDEAD,
+        b2_colorNavy = 0x000080,
+        b2_colorOldLace = 0xFDF5E6,
         b2_colorOlive = 0x808000,
-        b2_colorOliveDrab = 0x6b8e23,
-        b2_colorOrange = 0xffa500,
-        b2_colorOrangeRed = 0xff4500,
-        b2_colorOrchid = 0xda70d6,
-        b2_colorPaleGoldenrod = 0xeee8aa,
-        b2_colorPaleGreen = 0x98fb98,
-        b2_colorPaleTurquoise = 0xafeeee,
-        b2_colorPaleVioletRed = 0xdb7093,
-        b2_colorPapayaWhip = 0xffefd5,
-        b2_colorPeachPuff = 0xffdab9,
-        b2_colorPeru = 0xcd853f,
-        b2_colorPink = 0xffc0cb,
-        b2_colorPlum = 0xdda0dd,
-        b2_colorPowderBlue = 0xb0e0e6,
-        b2_colorPurple = 0xa020f0,
+        b2_colorOliveDrab = 0x6B8E23,
+        b2_colorOrange = 0xFFA500,
+        b2_colorOrangeRed = 0xFF4500,
+        b2_colorOrchid = 0xDA70D6,
+        b2_colorPaleGoldenRod = 0xEEE8AA,
+        b2_colorPaleGreen = 0x98FB98,
+        b2_colorPaleTurquoise = 0xAFEEEE,
+        b2_colorPaleVioletRed = 0xDB7093,
+        b2_colorPapayaWhip = 0xFFEFD5,
+        b2_colorPeachPuff = 0xFFDAB9,
+        b2_colorPeru = 0xCD853F,
+        b2_colorPink = 0xFFC0CB,
+        b2_colorPlum = 0xDDA0DD,
+        b2_colorPowderBlue = 0xB0E0E6,
+        b2_colorPurple = 0x800080,
         b2_colorRebeccaPurple = 0x663399,
-        b2_colorRed = 0xff0000,
-        b2_colorRosyBrown = 0xbc8f8f,
-        b2_colorRoyalBlue = 0x4169e1,
-        b2_colorSaddleBrown = 0x8b4513,
-        b2_colorSalmon = 0xfa8072,
-        b2_colorSandyBrown = 0xf4a460,
-        b2_colorSeaGreen = 0x2e8b57,
-        b2_colorSeashell = 0xfff5ee,
-        b2_colorSienna = 0xa0522d,
-        b2_colorSilver = 0xc0c0c0,
-        b2_colorSkyBlue = 0x87ceeb,
-        b2_colorSlateBlue = 0x6a5acd,
+        b2_colorRed = 0xFF0000,
+        b2_colorRosyBrown = 0xBC8F8F,
+        b2_colorRoyalBlue = 0x4169E1,
+        b2_colorSaddleBrown = 0x8B4513,
+        b2_colorSalmon = 0xFA8072,
+        b2_colorSandyBrown = 0xF4A460,
+        b2_colorSeaGreen = 0x2E8B57,
+        b2_colorSeaShell = 0xFFF5EE,
+        b2_colorSienna = 0xA0522D,
+        b2_colorSilver = 0xC0C0C0,
+        b2_colorSkyBlue = 0x87CEEB,
+        b2_colorSlateBlue = 0x6A5ACD,
         b2_colorSlateGray = 0x708090,
-        b2_colorSnow = 0xfffafa,
-        b2_colorSpringGreen = 0x00ff7f,
-        b2_colorSteelBlue = 0x4682b4,
-        b2_colorTan = 0xd2b48c,
+        b2_colorSnow = 0xFFFAFA,
+        b2_colorSpringGreen = 0x00FF7F,
+        b2_colorSteelBlue = 0x4682B4,
+        b2_colorTan = 0xD2B48C,
         b2_colorTeal = 0x008080,
-        b2_colorThistle = 0xd8bfd8,
-        b2_colorTomato = 0xff6347,
-        b2_colorTurquoise = 0x40e0d0,
-        b2_colorViolet = 0xee82ee,
-        b2_colorVioletRed = 0xd02090,
-        b2_colorWheat = 0xf5deb3,
-        b2_colorWhite = 0xffffff,
-        b2_colorWhiteSmoke = 0xf5f5f5,
-        b2_colorYellow = 0xffff00,
-        b2_colorYellowGreen = 0x9acd32,
-        b2_colorBox2DRed = 0xdc3132,
-        b2_colorBox2DBlue = 0x30aebf,
-        b2_colorBox2DGreen = 0x8cc924,
-        b2_colorBox2DYellow = 0xffee8c,
+        b2_colorThistle = 0xD8BFD8,
+        b2_colorTomato = 0xFF6347,
+        b2_colorTurquoise = 0x40E0D0,
+        b2_colorViolet = 0xEE82EE,
+        b2_colorWheat = 0xF5DEB3,
+        b2_colorWhite = 0xFFFFFF,
+        b2_colorWhiteSmoke = 0xF5F5F5,
+        b2_colorYellow = 0xFFFF00,
+        b2_colorYellowGreen = 0x9ACD32,
+        b2_colorBox2DRed = 0xDC3132,
+        b2_colorBox2DBlue = 0x30AEBF,
+        b2_colorBox2DGreen = 0x8CC924,
+        b2_colorBox2DYellow = 0xFFEE8C,
     }
 
     public unsafe partial struct b2DebugDraw
     {
         [NativeTypeName("void (*)(const b2Vec2 *, int, b2HexColor, void *)")]
-        public delegate* unmanaged[Cdecl]<b2Vec2*, int, b2HexColor, void*, void> DrawPolygon;
+        public delegate* unmanaged[Cdecl]<b2Vec2*, int, b2HexColor, void*, void> DrawPolygonFcn;
 
         [NativeTypeName("void (*)(b2Transform, const b2Vec2 *, int, float, b2HexColor, void *)")]
-        public delegate* unmanaged[Cdecl]<b2Transform, b2Vec2*, int, float, b2HexColor, void*, void> DrawSolidPolygon;
+        public delegate* unmanaged[Cdecl]<b2Transform, b2Vec2*, int, float, b2HexColor, void*, void> DrawSolidPolygonFcn;
 
         [NativeTypeName("void (*)(b2Vec2, float, b2HexColor, void *)")]
-        public delegate* unmanaged[Cdecl]<b2Vec2, float, b2HexColor, void*, void> DrawCircle;
+        public delegate* unmanaged[Cdecl]<b2Vec2, float, b2HexColor, void*, void> DrawCircleFcn;
 
         [NativeTypeName("void (*)(b2Transform, float, b2HexColor, void *)")]
-        public delegate* unmanaged[Cdecl]<b2Transform, float, b2HexColor, void*, void> DrawSolidCircle;
+        public delegate* unmanaged[Cdecl]<b2Transform, float, b2HexColor, void*, void> DrawSolidCircleFcn;
 
         [NativeTypeName("void (*)(b2Vec2, b2Vec2, float, b2HexColor, void *)")]
-        public delegate* unmanaged[Cdecl]<b2Vec2, b2Vec2, float, b2HexColor, void*, void> DrawSolidCapsule;
+        public delegate* unmanaged[Cdecl]<b2Vec2, b2Vec2, float, b2HexColor, void*, void> DrawSolidCapsuleFcn;
 
         [NativeTypeName("void (*)(b2Vec2, b2Vec2, b2HexColor, void *)")]
-        public delegate* unmanaged[Cdecl]<b2Vec2, b2Vec2, b2HexColor, void*, void> DrawSegment;
+        public delegate* unmanaged[Cdecl]<b2Vec2, b2Vec2, b2HexColor, void*, void> DrawSegmentFcn;
 
         [NativeTypeName("void (*)(b2Transform, void *)")]
-        public delegate* unmanaged[Cdecl]<b2Transform, void*, void> DrawTransform;
+        public delegate* unmanaged[Cdecl]<b2Transform, void*, void> DrawTransformFcn;
 
         [NativeTypeName("void (*)(b2Vec2, float, b2HexColor, void *)")]
-        public delegate* unmanaged[Cdecl]<b2Vec2, float, b2HexColor, void*, void> DrawPoint;
+        public delegate* unmanaged[Cdecl]<b2Vec2, float, b2HexColor, void*, void> DrawPointFcn;
 
-        [NativeTypeName("void (*)(b2Vec2, const char *, void *)")]
-        public delegate* unmanaged[Cdecl]<b2Vec2, sbyte*, void*, void> DrawString;
+        [NativeTypeName("void (*)(b2Vec2, const char *, b2HexColor, void *)")]
+        public delegate* unmanaged[Cdecl]<b2Vec2, sbyte*, b2HexColor, void*, void> DrawStringFcn;
 
         public b2AABB drawingBounds;
 
@@ -1494,10 +1391,13 @@ namespace Zinc.Internal.Box2D
         public byte drawJointExtras;
 
         [NativeTypeName("bool")]
-        public byte drawAABBs;
+        public byte drawBounds;
 
         [NativeTypeName("bool")]
         public byte drawMass;
+
+        [NativeTypeName("bool")]
+        public byte drawBodyNames;
 
         [NativeTypeName("bool")]
         public byte drawContacts;
@@ -1512,7 +1412,13 @@ namespace Zinc.Internal.Box2D
         public byte drawContactImpulses;
 
         [NativeTypeName("bool")]
+        public byte drawContactFeatures;
+
+        [NativeTypeName("bool")]
         public byte drawFrictionImpulses;
+
+        [NativeTypeName("bool")]
+        public byte drawIslands;
 
         public void* context;
     }
@@ -1532,20 +1438,17 @@ namespace Zinc.Internal.Box2D
         public static extern b2Version b2GetVersion();
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2Timer b2CreateTimer();
+        public static extern int b2InternalAssertFcn([NativeTypeName("const char *")] sbyte* condition, [NativeTypeName("const char *")] sbyte* fileName, int lineNumber);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("int64_t")]
-        public static extern long b2GetTicks(b2Timer* timer);
+        [return: NativeTypeName("uint64_t")]
+        public static extern ulong b2GetTicks();
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern float b2GetMilliseconds([NativeTypeName("const b2Timer *")] b2Timer* timer);
+        public static extern float b2GetMilliseconds([NativeTypeName("uint64_t")] ulong ticks);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern float b2GetMillisecondsAndReset(b2Timer* timer);
-
-        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void b2SleepMilliseconds(int milliseconds);
+        public static extern float b2GetMillisecondsAndReset([NativeTypeName("uint64_t *")] ulong* ticks);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void b2Yield();
@@ -1599,29 +1502,36 @@ namespace Zinc.Internal.Box2D
         };
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        public static extern byte b2IsValidFloat(float a);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        public static extern byte b2IsValidVec2(b2Vec2 v);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        public static extern byte b2IsValidRotation(b2Rot q);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        public static extern byte b2IsValidAABB(b2AABB aabb);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        public static extern byte b2IsValidPlane(b2Plane a);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern float b2Atan2(float y, float x);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2CosSin b2ComputeCosSin(float angle);
+        public static extern b2CosSin b2ComputeCosSin(float radians);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2Rot b2ComputeRotationBetweenUnitVectors(b2Vec2 v1, b2Vec2 v2);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("bool")]
-        public static extern byte b2IsValid(float a);
-
-        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("bool")]
-        public static extern byte b2Vec2_IsValid(b2Vec2 v);
-
-        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("bool")]
-        public static extern byte b2Rot_IsValid(b2Rot q);
-
-        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("bool")]
-        public static extern byte b2AABB_IsValid(b2AABB aabb);
+        public static extern void __builtin_trap();
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void b2SetLengthUnitsPerMeter(float lengthUnits);
@@ -1643,19 +1553,19 @@ namespace Zinc.Internal.Box2D
         public static extern b2Polygon b2MakeOffsetRoundedPolygon([NativeTypeName("const b2Hull *")] b2Hull* hull, b2Vec2 position, b2Rot rotation, float radius);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2Polygon b2MakeSquare(float h);
+        public static extern b2Polygon b2MakeSquare(float halfWidth);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2Polygon b2MakeBox(float hx, float hy);
+        public static extern b2Polygon b2MakeBox(float halfWidth, float halfHeight);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2Polygon b2MakeRoundedBox(float hx, float hy, float radius);
+        public static extern b2Polygon b2MakeRoundedBox(float halfWidth, float halfHeight, float radius);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2Polygon b2MakeOffsetBox(float hx, float hy, b2Vec2 center, b2Rot rotation);
+        public static extern b2Polygon b2MakeOffsetBox(float halfWidth, float halfHeight, b2Vec2 center, b2Rot rotation);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2Polygon b2MakeOffsetRoundedBox(float hx, float hy, b2Vec2 center, b2Rot rotation, float radius);
+        public static extern b2Polygon b2MakeOffsetRoundedBox(float halfWidth, float halfHeight, b2Vec2 center, b2Rot rotation, float radius);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2Polygon b2TransformPolygon(b2Transform transform, [NativeTypeName("const b2Polygon *")] b2Polygon* polygon);
@@ -1718,7 +1628,7 @@ namespace Zinc.Internal.Box2D
         public static extern b2CastOutput b2ShapeCastPolygon([NativeTypeName("const b2ShapeCastInput *")] b2ShapeCastInput* input, [NativeTypeName("const b2Polygon *")] b2Polygon* shape);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2Hull b2ComputeHull([NativeTypeName("const b2Vec2 *")] b2Vec2* points, [NativeTypeName("int32_t")] int count);
+        public static extern b2Hull b2ComputeHull([NativeTypeName("const b2Vec2 *")] b2Vec2* points, int count);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -1727,19 +1637,22 @@ namespace Zinc.Internal.Box2D
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2SegmentDistanceResult b2SegmentDistance(b2Vec2 p1, b2Vec2 q1, b2Vec2 p2, b2Vec2 q2);
 
-        [NativeTypeName("const b2DistanceCache")]
-        public static readonly b2DistanceCache b2_emptyDistanceCache = new b2DistanceCache
+        [NativeTypeName("const b2SimplexCache")]
+        public static readonly b2SimplexCache b2_emptySimplexCache = new b2SimplexCache
         {
         };
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2DistanceOutput b2ShapeDistance(b2DistanceCache* cache, [NativeTypeName("const b2DistanceInput *")] b2DistanceInput* input, b2Simplex* simplexes, int simplexCapacity);
+        public static extern b2DistanceOutput b2ShapeDistance([NativeTypeName("const b2DistanceInput *")] b2DistanceInput* input, b2SimplexCache* cache, b2Simplex* simplexes, int simplexCapacity);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2CastOutput b2ShapeCast([NativeTypeName("const b2ShapeCastPairInput *")] b2ShapeCastPairInput* input);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2DistanceProxy b2MakeProxy([NativeTypeName("const b2Vec2 *")] b2Vec2* vertices, [NativeTypeName("int32_t")] int count, float radius);
+        public static extern b2ShapeProxy b2MakeProxy([NativeTypeName("const b2Vec2 *")] b2Vec2* points, int count, float radius);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern b2ShapeProxy b2MakeOffsetProxy([NativeTypeName("const b2Vec2 *")] b2Vec2* points, int count, float radius, b2Vec2 position, b2Rot rotation);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2Transform b2GetSweepTransform([NativeTypeName("const b2Sweep *")] b2Sweep* sweep, float time);
@@ -1778,10 +1691,10 @@ namespace Zinc.Internal.Box2D
         public static extern b2Manifold b2CollideChainSegmentAndCircle([NativeTypeName("const b2ChainSegment *")] b2ChainSegment* segmentA, b2Transform xfA, [NativeTypeName("const b2Circle *")] b2Circle* circleB, b2Transform xfB);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2Manifold b2CollideChainSegmentAndCapsule([NativeTypeName("const b2ChainSegment *")] b2ChainSegment* segmentA, b2Transform xfA, [NativeTypeName("const b2Capsule *")] b2Capsule* capsuleB, b2Transform xfB, b2DistanceCache* cache);
+        public static extern b2Manifold b2CollideChainSegmentAndCapsule([NativeTypeName("const b2ChainSegment *")] b2ChainSegment* segmentA, b2Transform xfA, [NativeTypeName("const b2Capsule *")] b2Capsule* capsuleB, b2Transform xfB, b2SimplexCache* cache);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2Manifold b2CollideChainSegmentAndPolygon([NativeTypeName("const b2ChainSegment *")] b2ChainSegment* segmentA, b2Transform xfA, [NativeTypeName("const b2Polygon *")] b2Polygon* polygonB, b2Transform xfB, b2DistanceCache* cache);
+        public static extern b2Manifold b2CollideChainSegmentAndPolygon([NativeTypeName("const b2ChainSegment *")] b2ChainSegment* segmentA, b2Transform xfA, [NativeTypeName("const b2Polygon *")] b2Polygon* polygonB, b2Transform xfB, b2SimplexCache* cache);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2DynamicTree b2DynamicTree_Create();
@@ -1790,41 +1703,41 @@ namespace Zinc.Internal.Box2D
         public static extern void b2DynamicTree_Destroy(b2DynamicTree* tree);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("int32_t")]
-        public static extern int b2DynamicTree_CreateProxy(b2DynamicTree* tree, b2AABB aabb, [NativeTypeName("uint64_t")] ulong categoryBits, [NativeTypeName("int32_t")] int userData);
+        public static extern int b2DynamicTree_CreateProxy(b2DynamicTree* tree, b2AABB aabb, [NativeTypeName("uint64_t")] ulong categoryBits, [NativeTypeName("uint64_t")] ulong userData);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void b2DynamicTree_DestroyProxy(b2DynamicTree* tree, [NativeTypeName("int32_t")] int proxyId);
+        public static extern void b2DynamicTree_DestroyProxy(b2DynamicTree* tree, int proxyId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void b2DynamicTree_MoveProxy(b2DynamicTree* tree, [NativeTypeName("int32_t")] int proxyId, b2AABB aabb);
+        public static extern void b2DynamicTree_MoveProxy(b2DynamicTree* tree, int proxyId, b2AABB aabb);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void b2DynamicTree_EnlargeProxy(b2DynamicTree* tree, [NativeTypeName("int32_t")] int proxyId, b2AABB aabb);
+        public static extern void b2DynamicTree_EnlargeProxy(b2DynamicTree* tree, int proxyId, b2AABB aabb);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2TreeStats b2DynamicTree_Query([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree, b2AABB aabb, [NativeTypeName("uint64_t")] ulong maskBits, [NativeTypeName("b2TreeQueryCallbackFcn *")] delegate* unmanaged[Cdecl]<int, int, void*, byte> callback, void* context);
+        public static extern void b2DynamicTree_SetCategoryBits(b2DynamicTree* tree, int proxyId, [NativeTypeName("uint64_t")] ulong categoryBits);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2TreeStats b2DynamicTree_RayCast([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree, [NativeTypeName("const b2RayCastInput *")] b2RayCastInput* input, [NativeTypeName("uint64_t")] ulong maskBits, [NativeTypeName("b2TreeRayCastCallbackFcn *")] delegate* unmanaged[Cdecl]<b2RayCastInput*, int, int, void*, float> callback, void* context);
+        [return: NativeTypeName("uint64_t")]
+        public static extern ulong b2DynamicTree_GetCategoryBits(b2DynamicTree* tree, int proxyId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2TreeStats b2DynamicTree_ShapeCast([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree, [NativeTypeName("const b2ShapeCastInput *")] b2ShapeCastInput* input, [NativeTypeName("uint64_t")] ulong maskBits, [NativeTypeName("b2TreeShapeCastCallbackFcn *")] delegate* unmanaged[Cdecl]<b2ShapeCastInput*, int, int, void*, float> callback, void* context);
+        public static extern b2TreeStats b2DynamicTree_Query([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree, b2AABB aabb, [NativeTypeName("uint64_t")] ulong maskBits, [NativeTypeName("b2TreeQueryCallbackFcn *")] delegate* unmanaged[Cdecl]<int, ulong, void*, byte> callback, void* context);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void b2DynamicTree_Validate([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree);
+        public static extern b2TreeStats b2DynamicTree_RayCast([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree, [NativeTypeName("const b2RayCastInput *")] b2RayCastInput* input, [NativeTypeName("uint64_t")] ulong maskBits, [NativeTypeName("b2TreeRayCastCallbackFcn *")] delegate* unmanaged[Cdecl]<b2RayCastInput*, int, ulong, void*, float> callback, void* context);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern b2TreeStats b2DynamicTree_ShapeCast([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree, [NativeTypeName("const b2ShapeCastInput *")] b2ShapeCastInput* input, [NativeTypeName("uint64_t")] ulong maskBits, [NativeTypeName("b2TreeShapeCastCallbackFcn *")] delegate* unmanaged[Cdecl]<b2ShapeCastInput*, int, ulong, void*, float> callback, void* context);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern int b2DynamicTree_GetHeight([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern int b2DynamicTree_GetMaxBalance([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree);
-
-        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern float b2DynamicTree_GetAreaRatio([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void b2DynamicTree_RebuildBottomUp(b2DynamicTree* tree);
+        public static extern b2AABB b2DynamicTree_GetRootBounds([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern int b2DynamicTree_GetProxyCount([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree);
@@ -1833,10 +1746,26 @@ namespace Zinc.Internal.Box2D
         public static extern int b2DynamicTree_Rebuild(b2DynamicTree* tree, [NativeTypeName("bool")] byte fullBuild);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void b2DynamicTree_ShiftOrigin(b2DynamicTree* tree, b2Vec2 newOrigin);
+        public static extern int b2DynamicTree_GetByteCount([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern int b2DynamicTree_GetByteCount([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree);
+        [return: NativeTypeName("uint64_t")]
+        public static extern ulong b2DynamicTree_GetUserData([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree, int proxyId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern b2AABB b2DynamicTree_GetAABB([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree, int proxyId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2DynamicTree_Validate([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2DynamicTree_ValidateNoEnlarged([NativeTypeName("const b2DynamicTree *")] b2DynamicTree* tree);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern b2PlaneSolverResult b2SolvePlanes(b2Vec2 targetDelta, b2CollisionPlane* planes, int count);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern b2Vec2 b2ClipVector(b2Vec2 vector, [NativeTypeName("const b2CollisionPlane *")] b2CollisionPlane* planes, int count);
 
         [NativeTypeName("const b2WorldId")]
         public static readonly b2WorldId b2_nullWorldId = new b2WorldId
@@ -1876,6 +1805,9 @@ namespace Zinc.Internal.Box2D
         public static extern b2QueryFilter b2DefaultQueryFilter();
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern b2SurfaceMaterial b2DefaultSurfaceMaterial();
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2ShapeDef b2DefaultShapeDef();
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
@@ -1891,7 +1823,7 @@ namespace Zinc.Internal.Box2D
         public static extern b2MouseJointDef b2DefaultMouseJointDef();
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2NullJointDef b2DefaultNullJointDef();
+        public static extern b2FilterJointDef b2DefaultFilterJointDef();
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2PrismaticJointDef b2DefaultPrismaticJointDef();
@@ -1940,16 +1872,7 @@ namespace Zinc.Internal.Box2D
         public static extern b2TreeStats b2World_OverlapAABB(b2WorldId worldId, b2AABB aabb, b2QueryFilter filter, [NativeTypeName("b2OverlapResultFcn *")] delegate* unmanaged[Cdecl]<b2ShapeId, void*, byte> fcn, void* context);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2TreeStats b2World_OverlapPoint(b2WorldId worldId, b2Vec2 point, b2Transform transform, b2QueryFilter filter, [NativeTypeName("b2OverlapResultFcn *")] delegate* unmanaged[Cdecl]<b2ShapeId, void*, byte> fcn, void* context);
-
-        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2TreeStats b2World_OverlapCircle(b2WorldId worldId, [NativeTypeName("const b2Circle *")] b2Circle* circle, b2Transform transform, b2QueryFilter filter, [NativeTypeName("b2OverlapResultFcn *")] delegate* unmanaged[Cdecl]<b2ShapeId, void*, byte> fcn, void* context);
-
-        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2TreeStats b2World_OverlapCapsule(b2WorldId worldId, [NativeTypeName("const b2Capsule *")] b2Capsule* capsule, b2Transform transform, b2QueryFilter filter, [NativeTypeName("b2OverlapResultFcn *")] delegate* unmanaged[Cdecl]<b2ShapeId, void*, byte> fcn, void* context);
-
-        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2TreeStats b2World_OverlapPolygon(b2WorldId worldId, [NativeTypeName("const b2Polygon *")] b2Polygon* polygon, b2Transform transform, b2QueryFilter filter, [NativeTypeName("b2OverlapResultFcn *")] delegate* unmanaged[Cdecl]<b2ShapeId, void*, byte> fcn, void* context);
+        public static extern b2TreeStats b2World_OverlapShape(b2WorldId worldId, [NativeTypeName("const b2ShapeProxy *")] b2ShapeProxy* proxy, b2QueryFilter filter, [NativeTypeName("b2OverlapResultFcn *")] delegate* unmanaged[Cdecl]<b2ShapeId, void*, byte> fcn, void* context);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2TreeStats b2World_CastRay(b2WorldId worldId, b2Vec2 origin, b2Vec2 translation, b2QueryFilter filter, [NativeTypeName("b2CastResultFcn *")] delegate* unmanaged[Cdecl]<b2ShapeId, b2Vec2, b2Vec2, float, void*, float> fcn, void* context);
@@ -1958,13 +1881,13 @@ namespace Zinc.Internal.Box2D
         public static extern b2RayResult b2World_CastRayClosest(b2WorldId worldId, b2Vec2 origin, b2Vec2 translation, b2QueryFilter filter);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2TreeStats b2World_CastCircle(b2WorldId worldId, [NativeTypeName("const b2Circle *")] b2Circle* circle, b2Transform originTransform, b2Vec2 translation, b2QueryFilter filter, [NativeTypeName("b2CastResultFcn *")] delegate* unmanaged[Cdecl]<b2ShapeId, b2Vec2, b2Vec2, float, void*, float> fcn, void* context);
+        public static extern b2TreeStats b2World_CastShape(b2WorldId worldId, [NativeTypeName("const b2ShapeProxy *")] b2ShapeProxy* proxy, b2Vec2 translation, b2QueryFilter filter, [NativeTypeName("b2CastResultFcn *")] delegate* unmanaged[Cdecl]<b2ShapeId, b2Vec2, b2Vec2, float, void*, float> fcn, void* context);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2TreeStats b2World_CastCapsule(b2WorldId worldId, [NativeTypeName("const b2Capsule *")] b2Capsule* capsule, b2Transform originTransform, b2Vec2 translation, b2QueryFilter filter, [NativeTypeName("b2CastResultFcn *")] delegate* unmanaged[Cdecl]<b2ShapeId, b2Vec2, b2Vec2, float, void*, float> fcn, void* context);
+        public static extern float b2World_CastMover(b2WorldId worldId, [NativeTypeName("const b2Capsule *")] b2Capsule* mover, b2Vec2 translation, b2QueryFilter filter);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2TreeStats b2World_CastPolygon(b2WorldId worldId, [NativeTypeName("const b2Polygon *")] b2Polygon* polygon, b2Transform originTransform, b2Vec2 translation, b2QueryFilter filter, [NativeTypeName("b2CastResultFcn *")] delegate* unmanaged[Cdecl]<b2ShapeId, b2Vec2, b2Vec2, float, void*, float> fcn, void* context);
+        public static extern void b2World_CollideMover(b2WorldId worldId, [NativeTypeName("const b2Capsule *")] b2Capsule* mover, b2QueryFilter filter, [NativeTypeName("b2PlaneResultFcn *")] delegate* unmanaged[Cdecl]<b2ShapeId, b2PlaneResult*, void*, byte> fcn, void* context);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void b2World_EnableSleeping(b2WorldId worldId, [NativeTypeName("bool")] byte flag);
@@ -2008,16 +1931,13 @@ namespace Zinc.Internal.Box2D
         public static extern void b2World_Explode(b2WorldId worldId, [NativeTypeName("const b2ExplosionDef *")] b2ExplosionDef* explosionDef);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void b2World_SetContactTuning(b2WorldId worldId, float hertz, float dampingRatio, float pushVelocity);
+        public static extern void b2World_SetContactTuning(b2WorldId worldId, float hertz, float dampingRatio, float pushSpeed);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void b2World_SetJointTuning(b2WorldId worldId, float hertz, float dampingRatio);
+        public static extern void b2World_SetMaximumLinearSpeed(b2WorldId worldId, float maximumLinearSpeed);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void b2World_SetMaximumLinearVelocity(b2WorldId worldId, float maximumLinearVelocity);
-
-        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern float b2World_GetMaximumLinearVelocity(b2WorldId worldId);
+        public static extern float b2World_GetMaximumLinearSpeed(b2WorldId worldId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void b2World_EnableWarmStarting(b2WorldId worldId, [NativeTypeName("bool")] byte flag);
@@ -2025,6 +1945,9 @@ namespace Zinc.Internal.Box2D
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
         public static extern byte b2World_IsWarmStartingEnabled(b2WorldId worldId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern int b2World_GetAwakeBodyCount(b2WorldId worldId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2Profile b2World_GetProfile(b2WorldId worldId);
@@ -2039,10 +1962,19 @@ namespace Zinc.Internal.Box2D
         public static extern void* b2World_GetUserData(b2WorldId worldId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2World_SetFrictionCallback(b2WorldId worldId, [NativeTypeName("b2FrictionCallback *")] delegate* unmanaged[Cdecl]<float, int, float, int, float> callback);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2World_SetRestitutionCallback(b2WorldId worldId, [NativeTypeName("b2RestitutionCallback *")] delegate* unmanaged[Cdecl]<float, int, float, int, float> callback);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void b2World_DumpMemoryStats(b2WorldId worldId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void b2World_RebuildStaticTree(b2WorldId worldId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2World_EnableSpeculative(b2WorldId worldId, [NativeTypeName("bool")] byte flag);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2BodyId b2CreateBody(b2WorldId worldId, [NativeTypeName("const b2BodyDef *")] b2BodyDef* def);
@@ -2059,6 +1991,13 @@ namespace Zinc.Internal.Box2D
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void b2Body_SetType(b2BodyId bodyId, b2BodyType type);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2Body_SetName(b2BodyId bodyId, [NativeTypeName("const char *")] sbyte* name);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("const char *")]
+        public static extern sbyte* b2Body_GetName(b2BodyId bodyId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void b2Body_SetUserData(b2BodyId bodyId, void* userData);
@@ -2101,6 +2040,15 @@ namespace Zinc.Internal.Box2D
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void b2Body_SetAngularVelocity(b2BodyId bodyId, float angularVelocity);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2Body_SetTargetTransform(b2BodyId bodyId, b2Transform target, float timeStep);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern b2Vec2 b2Body_GetLocalPointVelocity(b2BodyId bodyId, b2Vec2 localPoint);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern b2Vec2 b2Body_GetWorldPointVelocity(b2BodyId bodyId, b2Vec2 worldPoint);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void b2Body_ApplyForce(b2BodyId bodyId, b2Vec2 force, b2Vec2 point, [NativeTypeName("bool")] byte wake);
@@ -2204,7 +2152,10 @@ namespace Zinc.Internal.Box2D
         public static extern byte b2Body_IsBullet(b2BodyId bodyId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void b2Body_EnableHitEvents(b2BodyId bodyId, [NativeTypeName("bool")] byte enableHitEvents);
+        public static extern void b2Body_EnableContactEvents(b2BodyId bodyId, [NativeTypeName("bool")] byte flag);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2Body_EnableHitEvents(b2BodyId bodyId, [NativeTypeName("bool")] byte flag);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2WorldId b2Body_GetWorld(b2BodyId bodyId);
@@ -2287,6 +2238,18 @@ namespace Zinc.Internal.Box2D
         public static extern float b2Shape_GetRestitution(b2ShapeId shapeId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2Shape_SetMaterial(b2ShapeId shapeId, int material);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern int b2Shape_GetMaterial(b2ShapeId shapeId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2Shape_SetSurfaceMaterial(b2ShapeId shapeId, b2SurfaceMaterial surfaceMaterial);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern b2SurfaceMaterial b2Shape_GetSurfaceMaterial(b2ShapeId shapeId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2Filter b2Shape_GetFilter(b2ShapeId shapeId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
@@ -2364,7 +2327,16 @@ namespace Zinc.Internal.Box2D
         public static extern int b2Shape_GetContactData(b2ShapeId shapeId, b2ContactData* contactData, int capacity);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern int b2Shape_GetSensorCapacity(b2ShapeId shapeId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern int b2Shape_GetSensorOverlaps(b2ShapeId shapeId, b2ShapeId* overlaps, int capacity);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2AABB b2Shape_GetAABB(b2ShapeId shapeId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern b2MassData b2Shape_GetMassData(b2ShapeId shapeId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2Vec2 b2Shape_GetClosestPoint(b2ShapeId shapeId, b2Vec2 target);
@@ -2388,7 +2360,19 @@ namespace Zinc.Internal.Box2D
         public static extern void b2Chain_SetFriction(b2ChainId chainId, float friction);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern float b2Chain_GetFriction(b2ChainId chainId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void b2Chain_SetRestitution(b2ChainId chainId, float restitution);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern float b2Chain_GetRestitution(b2ChainId chainId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2Chain_SetMaterial(b2ChainId chainId, int material);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern int b2Chain_GetMaterial(b2ChainId chainId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -2414,10 +2398,28 @@ namespace Zinc.Internal.Box2D
         public static extern b2WorldId b2Joint_GetWorld(b2JointId jointId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2Joint_SetLocalAnchorA(b2JointId jointId, b2Vec2 localAnchor);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2Vec2 b2Joint_GetLocalAnchorA(b2JointId jointId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2Joint_SetLocalAnchorB(b2JointId jointId, b2Vec2 localAnchor);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2Vec2 b2Joint_GetLocalAnchorB(b2JointId jointId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern float b2Joint_GetReferenceAngle(b2JointId jointId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2Joint_SetReferenceAngle(b2JointId jointId, float angleInRadians);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2Joint_SetLocalAxisA(b2JointId jointId, b2Vec2 localAxis);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern b2Vec2 b2Joint_GetLocalAxisA(b2JointId jointId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void b2Joint_SetCollideConnected(b2JointId jointId, [NativeTypeName("bool")] byte shouldCollide);
@@ -2440,6 +2442,18 @@ namespace Zinc.Internal.Box2D
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern float b2Joint_GetConstraintTorque(b2JointId jointId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern float b2Joint_GetLinearSeparation(b2JointId jointId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern float b2Joint_GetAngularSeparation(b2JointId jointId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2Joint_GetConstraintTuning(b2JointId jointId, float* hertz, float* dampingRatio);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2Joint_SetConstraintTuning(b2JointId jointId, float hertz, float dampingRatio);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2JointId b2CreateDistanceJoint(b2WorldId worldId, [NativeTypeName("const b2DistanceJointDef *")] b2DistanceJointDef* def);
@@ -2571,7 +2585,7 @@ namespace Zinc.Internal.Box2D
         public static extern float b2MouseJoint_GetMaxForce(b2JointId jointId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern b2JointId b2CreateNullJoint(b2WorldId worldId, [NativeTypeName("const b2NullJointDef *")] b2NullJointDef* def);
+        public static extern b2JointId b2CreateFilterJoint(b2WorldId worldId, [NativeTypeName("const b2FilterJointDef *")] b2FilterJointDef* def);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2JointId b2CreatePrismaticJoint(b2WorldId worldId, [NativeTypeName("const b2PrismaticJointDef *")] b2PrismaticJointDef* def);
@@ -2594,6 +2608,12 @@ namespace Zinc.Internal.Box2D
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern float b2PrismaticJoint_GetSpringDampingRatio(b2JointId jointId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2PrismaticJoint_SetTargetTranslation(b2JointId jointId, float translation);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern float b2PrismaticJoint_GetTargetTranslation(b2JointId jointId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void b2PrismaticJoint_EnableLimit(b2JointId jointId, [NativeTypeName("bool")] byte enableLimit);
@@ -2662,6 +2682,12 @@ namespace Zinc.Internal.Box2D
         public static extern float b2RevoluteJoint_GetSpringDampingRatio(b2JointId jointId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void b2RevoluteJoint_SetTargetAngle(b2JointId jointId, float angle);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern float b2RevoluteJoint_GetTargetAngle(b2JointId jointId);
+
+        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern float b2RevoluteJoint_GetAngle(b2JointId jointId);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
@@ -2704,12 +2730,6 @@ namespace Zinc.Internal.Box2D
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern b2JointId b2CreateWeldJoint(b2WorldId worldId, [NativeTypeName("const b2WeldJointDef *")] b2WeldJointDef* def);
-
-        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern float b2WeldJoint_GetReferenceAngle(b2JointId jointId);
-
-        [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void b2WeldJoint_SetReferenceAngle(b2JointId jointId, float angleInRadians);
 
         [DllImport("box2d", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void b2WeldJoint_SetLinearHertz(b2JointId jointId, float hertz);
