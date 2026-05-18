@@ -195,7 +195,7 @@ namespace Zinc.Internal.Sokol
         public static extern void disable_texture();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sgl_texture", ExactSpelling = true)]
-        public static extern void texture(sg_image img, sg_sampler smp);
+        public static extern void texture(sg_view tex_view, sg_sampler smp);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sgl_layer", ExactSpelling = true)]
         public static extern void layer(int layer_id);

@@ -33,7 +33,7 @@ namespace Zinc.Internal.Sokol
         public uint id;
     }
 
-    public partial struct sg_attachments
+    public partial struct sg_view
     {
         [NativeTypeName("uint32_t")]
         public uint id;
@@ -69,6 +69,7 @@ namespace Zinc.Internal.Sokol
         SG_BACKEND_METAL_MACOS,
         SG_BACKEND_METAL_SIMULATOR,
         SG_BACKEND_WGPU,
+        SG_BACKEND_VULKAN,
         SG_BACKEND_DUMMY,
     }
 
@@ -170,6 +171,12 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("bool")]
         public byte compressed;
 
+        [NativeTypeName("bool")]
+        public byte read;
+
+        [NativeTypeName("bool")]
+        public byte write;
+
         public int bytes_per_pixel;
     }
 
@@ -191,7 +198,22 @@ namespace Zinc.Internal.Sokol
         public byte compute;
 
         [NativeTypeName("bool")]
-        public byte msaa_image_bindings;
+        public byte msaa_texture_bindings;
+
+        [NativeTypeName("bool")]
+        public byte separate_buffer_types;
+
+        [NativeTypeName("bool")]
+        public byte draw_base_vertex;
+
+        [NativeTypeName("bool")]
+        public byte draw_base_instance;
+
+        [NativeTypeName("bool")]
+        public byte dual_source_blending;
+
+        [NativeTypeName("bool")]
+        public byte gl_texture_views;
     }
 
     public partial struct sg_limits
@@ -208,9 +230,21 @@ namespace Zinc.Internal.Sokol
 
         public int max_vertex_attrs;
 
+        public int max_color_attachments;
+
+        public int max_texture_bindings_per_stage;
+
+        public int max_storage_buffer_bindings_per_stage;
+
+        public int max_storage_image_bindings_per_stage;
+
         public int gl_max_vertex_uniform_components;
 
         public int gl_max_combined_texture_image_units;
+
+        public int d3d11_max_unordered_access_views;
+
+        public int vk_min_uniform_buffer_offset_alignment;
     }
 
     [NativeTypeName("unsigned int")]
@@ -222,28 +256,6 @@ namespace Zinc.Internal.Sokol
         SG_RESOURCESTATE_FAILED,
         SG_RESOURCESTATE_INVALID,
         _SG_RESOURCESTATE_FORCE_U32 = 0x7FFFFFFF,
-    }
-
-    [NativeTypeName("unsigned int")]
-    public enum sg_usage : uint
-    {
-        _SG_USAGE_DEFAULT,
-        SG_USAGE_IMMUTABLE,
-        SG_USAGE_DYNAMIC,
-        SG_USAGE_STREAM,
-        _SG_USAGE_NUM,
-        _SG_USAGE_FORCE_U32 = 0x7FFFFFFF,
-    }
-
-    [NativeTypeName("unsigned int")]
-    public enum sg_buffer_type : uint
-    {
-        _SG_BUFFERTYPE_DEFAULT,
-        SG_BUFFERTYPE_VERTEXBUFFER,
-        SG_BUFFERTYPE_INDEXBUFFER,
-        SG_BUFFERTYPE_STORAGEBUFFER,
-        _SG_BUFFERTYPE_NUM,
-        _SG_BUFFERTYPE_FORCE_U32 = 0x7FFFFFFF,
     }
 
     [NativeTypeName("unsigned int")]
@@ -291,19 +303,6 @@ namespace Zinc.Internal.Sokol
         SG_SAMPLERTYPE_COMPARISON,
         _SG_SAMPLERTYPE_NUM,
         _SG_SAMPLERTYPE_FORCE_U32,
-    }
-
-    [NativeTypeName("unsigned int")]
-    public enum sg_cube_face : uint
-    {
-        SG_CUBEFACE_POS_X,
-        SG_CUBEFACE_NEG_X,
-        SG_CUBEFACE_POS_Y,
-        SG_CUBEFACE_NEG_Y,
-        SG_CUBEFACE_POS_Z,
-        SG_CUBEFACE_NEG_Z,
-        SG_CUBEFACE_NUM,
-        _SG_CUBEFACE_FORCE_U32 = 0x7FFFFFFF,
     }
 
     [NativeTypeName("unsigned int")]
@@ -496,6 +495,10 @@ namespace Zinc.Internal.Sokol
         SG_BLENDFACTOR_ONE_MINUS_BLEND_COLOR,
         SG_BLENDFACTOR_BLEND_ALPHA,
         SG_BLENDFACTOR_ONE_MINUS_BLEND_ALPHA,
+        SG_BLENDFACTOR_SRC1_COLOR,
+        SG_BLENDFACTOR_ONE_MINUS_SRC1_COLOR,
+        SG_BLENDFACTOR_SRC1_ALPHA,
+        SG_BLENDFACTOR_ONE_MINUS_SRC1_ALPHA,
         _SG_BLENDFACTOR_NUM,
         _SG_BLENDFACTOR_FORCE_U32 = 0x7FFFFFFF,
     }
@@ -585,14 +588,14 @@ namespace Zinc.Internal.Sokol
 
     public partial struct sg_pass_action
     {
-        [NativeTypeName("sg_color_attachment_action[4]")]
+        [NativeTypeName("sg_color_attachment_action[8]")]
         public _colors_e__FixedBuffer colors;
 
         public sg_depth_attachment_action depth;
 
         public sg_stencil_attachment_action stencil;
 
-        [InlineArray(4)]
+        [InlineArray(8)]
         public partial struct _colors_e__FixedBuffer
         {
             public sg_color_attachment_action e0;
@@ -635,6 +638,33 @@ namespace Zinc.Internal.Sokol
         public void* depth_stencil_view;
     }
 
+    public unsafe partial struct sg_vulkan_swapchain
+    {
+        [NativeTypeName("const void *")]
+        public void* render_image;
+
+        [NativeTypeName("const void *")]
+        public void* render_view;
+
+        [NativeTypeName("const void *")]
+        public void* resolve_image;
+
+        [NativeTypeName("const void *")]
+        public void* resolve_view;
+
+        [NativeTypeName("const void *")]
+        public void* depth_stencil_image;
+
+        [NativeTypeName("const void *")]
+        public void* depth_stencil_view;
+
+        [NativeTypeName("const void *")]
+        public void* render_finished_semaphore;
+
+        [NativeTypeName("const void *")]
+        public void* present_complete_semaphore;
+    }
+
     public partial struct sg_gl_swapchain
     {
         [NativeTypeName("uint32_t")]
@@ -659,7 +689,32 @@ namespace Zinc.Internal.Sokol
 
         public sg_wgpu_swapchain wgpu;
 
+        public sg_vulkan_swapchain vulkan;
+
         public sg_gl_swapchain gl;
+    }
+
+    public partial struct sg_attachments
+    {
+        [NativeTypeName("sg_view[8]")]
+        public _colors_e__FixedBuffer colors;
+
+        [NativeTypeName("sg_view[8]")]
+        public _resolves_e__FixedBuffer resolves;
+
+        public sg_view depth_stencil;
+
+        [InlineArray(8)]
+        public partial struct _colors_e__FixedBuffer
+        {
+            public sg_view e0;
+        }
+
+        [InlineArray(8)]
+        public partial struct _resolves_e__FixedBuffer
+        {
+            public sg_view e0;
+        }
     }
 
     public unsafe partial struct sg_pass
@@ -698,14 +753,11 @@ namespace Zinc.Internal.Sokol
 
         public int index_buffer_offset;
 
-        [NativeTypeName("sg_image[16]")]
-        public _images_e__FixedBuffer images;
+        [NativeTypeName("sg_view[32]")]
+        public _views_e__FixedBuffer views;
 
-        [NativeTypeName("sg_sampler[16]")]
+        [NativeTypeName("sg_sampler[12]")]
         public _samplers_e__FixedBuffer samplers;
-
-        [NativeTypeName("sg_buffer[8]")]
-        public _storage_buffers_e__FixedBuffer storage_buffers;
 
         [NativeTypeName("uint32_t")]
         public uint _end_canary;
@@ -722,23 +774,38 @@ namespace Zinc.Internal.Sokol
             public int e0;
         }
 
-        [InlineArray(16)]
-        public partial struct _images_e__FixedBuffer
+        [InlineArray(32)]
+        public partial struct _views_e__FixedBuffer
         {
-            public sg_image e0;
+            public sg_view e0;
         }
 
-        [InlineArray(16)]
+        [InlineArray(12)]
         public partial struct _samplers_e__FixedBuffer
         {
             public sg_sampler e0;
         }
+    }
 
-        [InlineArray(8)]
-        public partial struct _storage_buffers_e__FixedBuffer
-        {
-            public sg_buffer e0;
-        }
+    public partial struct sg_buffer_usage
+    {
+        [NativeTypeName("bool")]
+        public byte vertex_buffer;
+
+        [NativeTypeName("bool")]
+        public byte index_buffer;
+
+        [NativeTypeName("bool")]
+        public byte storage_buffer;
+
+        [NativeTypeName("bool")]
+        public byte immutable;
+
+        [NativeTypeName("bool")]
+        public byte dynamic_update;
+
+        [NativeTypeName("bool")]
+        public byte stream_update;
     }
 
     public unsafe partial struct sg_buffer_desc
@@ -749,9 +816,7 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("size_t")]
         public nuint size;
 
-        public sg_buffer_type type;
-
-        public sg_usage usage;
+        public sg_buffer_usage usage;
 
         public sg_range data;
 
@@ -798,15 +863,52 @@ namespace Zinc.Internal.Sokol
         }
     }
 
+    public partial struct sg_image_usage
+    {
+        [NativeTypeName("bool")]
+        public byte storage_image;
+
+        [NativeTypeName("bool")]
+        public byte color_attachment;
+
+        [NativeTypeName("bool")]
+        public byte resolve_attachment;
+
+        [NativeTypeName("bool")]
+        public byte depth_stencil_attachment;
+
+        [NativeTypeName("bool")]
+        public byte immutable;
+
+        [NativeTypeName("bool")]
+        public byte dynamic_update;
+
+        [NativeTypeName("bool")]
+        public byte stream_update;
+    }
+
+    [NativeTypeName("unsigned int")]
+    public enum sg_view_type : uint
+    {
+        SG_VIEWTYPE_INVALID,
+        SG_VIEWTYPE_STORAGEBUFFER,
+        SG_VIEWTYPE_STORAGEIMAGE,
+        SG_VIEWTYPE_TEXTURE,
+        SG_VIEWTYPE_COLORATTACHMENT,
+        SG_VIEWTYPE_RESOLVEATTACHMENT,
+        SG_VIEWTYPE_DEPTHSTENCILATTACHMENT,
+        _SG_VIEWTYPE_FORCE_U32 = 0x7FFFFFFF,
+    }
+
     public partial struct sg_image_data
     {
-        [NativeTypeName("sg_range[6][16]")]
-        public _subimage_e__FixedBuffer subimage;
+        [NativeTypeName("sg_range[16]")]
+        public _mip_levels_e__FixedBuffer mip_levels;
 
-        [InlineArray(6 * 16)]
-        public partial struct _subimage_e__FixedBuffer
+        [InlineArray(16)]
+        public partial struct _mip_levels_e__FixedBuffer
         {
-            public sg_range e0_0;
+            public sg_range e0;
         }
     }
 
@@ -817,8 +919,7 @@ namespace Zinc.Internal.Sokol
 
         public sg_image_type type;
 
-        [NativeTypeName("bool")]
-        public byte render_target;
+        public sg_image_usage usage;
 
         public int width;
 
@@ -827,8 +928,6 @@ namespace Zinc.Internal.Sokol
         public int num_slices;
 
         public int num_mipmaps;
-
-        public sg_usage usage;
 
         public sg_pixel_format pixel_format;
 
@@ -852,13 +951,7 @@ namespace Zinc.Internal.Sokol
         public void* d3d11_texture;
 
         [NativeTypeName("const void *")]
-        public void* d3d11_shader_resource_view;
-
-        [NativeTypeName("const void *")]
         public void* wgpu_texture;
-
-        [NativeTypeName("const void *")]
-        public void* wgpu_texture_view;
 
         [NativeTypeName("uint32_t")]
         public uint _end_canary;
@@ -957,6 +1050,9 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("const char *")]
         public sbyte* d3d11_target;
+
+        [NativeTypeName("const char *")]
+        public sbyte* d3d11_filepath;
     }
 
     [NativeTypeName("unsigned int")]
@@ -1010,6 +1106,9 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("uint8_t")]
         public byte wgsl_group0_binding_n;
 
+        [NativeTypeName("uint8_t")]
+        public byte spirv_set0_binding_n;
+
         public sg_uniform_layout layout;
 
         [NativeTypeName("sg_glsl_shader_uniform[16]")]
@@ -1022,7 +1121,7 @@ namespace Zinc.Internal.Sokol
         }
     }
 
-    public partial struct sg_shader_image
+    public partial struct sg_shader_texture_view
     {
         public sg_shader_stage stage;
 
@@ -1041,25 +1140,12 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("uint8_t")]
         public byte wgsl_group1_binding_n;
+
+        [NativeTypeName("uint8_t")]
+        public byte spirv_set1_binding_n;
     }
 
-    public partial struct sg_shader_sampler
-    {
-        public sg_shader_stage stage;
-
-        public sg_sampler_type sampler_type;
-
-        [NativeTypeName("uint8_t")]
-        public byte hlsl_register_s_n;
-
-        [NativeTypeName("uint8_t")]
-        public byte msl_sampler_n;
-
-        [NativeTypeName("uint8_t")]
-        public byte wgsl_group1_binding_n;
-    }
-
-    public partial struct sg_shader_storage_buffer
+    public partial struct sg_shader_storage_buffer_view
     {
         public sg_shader_stage stage;
 
@@ -1079,15 +1165,73 @@ namespace Zinc.Internal.Sokol
         public byte wgsl_group1_binding_n;
 
         [NativeTypeName("uint8_t")]
+        public byte spirv_set1_binding_n;
+
+        [NativeTypeName("uint8_t")]
         public byte glsl_binding_n;
     }
 
-    public unsafe partial struct sg_shader_image_sampler_pair
+    public partial struct sg_shader_storage_image_view
+    {
+        public sg_shader_stage stage;
+
+        public sg_image_type image_type;
+
+        public sg_pixel_format access_format;
+
+        [NativeTypeName("bool")]
+        public byte writeonly;
+
+        [NativeTypeName("uint8_t")]
+        public byte hlsl_register_u_n;
+
+        [NativeTypeName("uint8_t")]
+        public byte msl_texture_n;
+
+        [NativeTypeName("uint8_t")]
+        public byte wgsl_group1_binding_n;
+
+        [NativeTypeName("uint8_t")]
+        public byte spirv_set1_binding_n;
+
+        [NativeTypeName("uint8_t")]
+        public byte glsl_binding_n;
+    }
+
+    public partial struct sg_shader_view
+    {
+        public sg_shader_texture_view texture;
+
+        public sg_shader_storage_buffer_view storage_buffer;
+
+        public sg_shader_storage_image_view storage_image;
+    }
+
+    public partial struct sg_shader_sampler
+    {
+        public sg_shader_stage stage;
+
+        public sg_sampler_type sampler_type;
+
+        [NativeTypeName("uint8_t")]
+        public byte hlsl_register_s_n;
+
+        [NativeTypeName("uint8_t")]
+        public byte msl_sampler_n;
+
+        [NativeTypeName("uint8_t")]
+        public byte wgsl_group1_binding_n;
+
+        [NativeTypeName("uint8_t")]
+        public byte spirv_set1_binding_n;
+    }
+
+    public unsafe partial struct sg_shader_texture_sampler_pair
     {
         public sg_shader_stage stage;
 
         [NativeTypeName("uint8_t")]
-        public byte image_slot;
+        public byte view_slot;
 
         [NativeTypeName("uint8_t")]
         public byte sampler_slot;
@@ -1122,17 +1266,14 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("sg_shader_uniform_block[8]")]
         public _uniform_blocks_e__FixedBuffer uniform_blocks;
 
-        [NativeTypeName("sg_shader_storage_buffer[8]")]
-        public _storage_buffers_e__FixedBuffer storage_buffers;
+        [NativeTypeName("sg_shader_view[32]")]
+        public _views_e__FixedBuffer views;
 
-        [NativeTypeName("sg_shader_image[16]")]
-        public _images_e__FixedBuffer images;
-
-        [NativeTypeName("sg_shader_sampler[16]")]
+        [NativeTypeName("sg_shader_sampler[12]")]
         public _samplers_e__FixedBuffer samplers;
 
-        [NativeTypeName("sg_shader_image_sampler_pair[16]")]
-        public _image_sampler_pairs_e__FixedBuffer image_sampler_pairs;
+        [NativeTypeName("sg_shader_texture_sampler_pair[32]")]
+        public _texture_sampler_pairs_e__FixedBuffer texture_sampler_pairs;
 
         public sg_mtl_shader_threads_per_threadgroup mtl_threads_per_threadgroup;
 
@@ -1154,28 +1295,22 @@ namespace Zinc.Internal.Sokol
             public sg_shader_uniform_block e0;
         }
 
-        [InlineArray(8)]
-        public partial struct _storage_buffers_e__FixedBuffer
+        [InlineArray(32)]
+        public partial struct _views_e__FixedBuffer
         {
-            public sg_shader_storage_buffer e0;
+            public sg_shader_view e0;
         }
 
-        [InlineArray(16)]
-        public partial struct _images_e__FixedBuffer
-        {
-            public sg_shader_image e0;
-        }
-
-        [InlineArray(16)]
+        [InlineArray(12)]
         public partial struct _samplers_e__FixedBuffer
         {
             public sg_shader_sampler e0;
         }
 
-        [InlineArray(16)]
-        public partial struct _image_sampler_pairs_e__FixedBuffer
+        [InlineArray(32)]
+        public partial struct _texture_sampler_pairs_e__FixedBuffer
         {
-            public sg_shader_image_sampler_pair e0;
+            public sg_shader_texture_sampler_pair e0;
         }
     }
 
@@ -1309,7 +1444,7 @@ namespace Zinc.Internal.Sokol
 
         public int color_count;
 
-        [NativeTypeName("sg_color_target_state[4]")]
+        [NativeTypeName("sg_color_target_state[8]")]
         public _colors_e__FixedBuffer colors;
 
         public sg_primitive_type primitive_type;
@@ -1333,14 +1468,21 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("uint32_t")]
         public uint _end_canary;
 
-        [InlineArray(4)]
+        [InlineArray(8)]
         public partial struct _colors_e__FixedBuffer
         {
             public sg_color_target_state e0;
         }
     }
 
-    public partial struct sg_attachment_desc
+    public partial struct sg_buffer_view_desc
+    {
+        public sg_buffer buffer;
+
+        public int offset;
+    }
+
+    public partial struct sg_image_view_desc
     {
         public sg_image image;
 
@@ -1349,36 +1491,44 @@ namespace Zinc.Internal.Sokol
         public int slice;
     }
 
-    public unsafe partial struct sg_attachments_desc
+    public partial struct sg_texture_view_range
+    {
+        public int @base;
+
+        public int count;
+    }
+
+    public partial struct sg_texture_view_desc
+    {
+        public sg_image image;
+
+        public sg_texture_view_range mip_levels;
+
+        public sg_texture_view_range slices;
+    }
+
+    public unsafe partial struct sg_view_desc
     {
         [NativeTypeName("uint32_t")]
         public uint _start_canary;
 
-        [NativeTypeName("sg_attachment_desc[4]")]
-        public _colors_e__FixedBuffer colors;
+        public sg_texture_view_desc texture;
 
-        [NativeTypeName("sg_attachment_desc[4]")]
-        public _resolves_e__FixedBuffer resolves;
+        public sg_buffer_view_desc storage_buffer;
 
-        public sg_attachment_desc depth_stencil;
+        public sg_image_view_desc storage_image;
+
+        public sg_image_view_desc color_attachment;
+
+        public sg_image_view_desc resolve_attachment;
+
+        public sg_image_view_desc depth_stencil_attachment;
 
         [NativeTypeName("const char *")]
         public sbyte* label;
 
         [NativeTypeName("uint32_t")]
         public uint _end_canary;
-
-        [InlineArray(4)]
-        public partial struct _colors_e__FixedBuffer
-        {
-            public sg_attachment_desc e0;
-        }
-
-        [InlineArray(4)]
-        public partial struct _resolves_e__FixedBuffer
-        {
-            public sg_attachment_desc e0;
-        }
     }
 
     public unsafe partial struct sg_trace_hooks
@@ -1403,8 +1553,8 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("void (*)(const sg_pipeline_desc *, sg_pipeline, void *)")]
         public delegate* unmanaged[Cdecl]<sg_pipeline_desc*, sg_pipeline, void*, void> make_pipeline;
 
-        [NativeTypeName("void (*)(const sg_attachments_desc *, sg_attachments, void *)")]
-        public delegate* unmanaged[Cdecl]<sg_attachments_desc*, sg_attachments, void*, void> make_attachments;
+        [NativeTypeName("void (*)(const sg_view_desc *, sg_view, void *)")]
+        public delegate* unmanaged[Cdecl]<sg_view_desc*, sg_view, void*, void> make_view;
 
         [NativeTypeName("void (*)(sg_buffer, void *)")]
         public delegate* unmanaged[Cdecl]<sg_buffer, void*, void> destroy_buffer;
@@ -1421,8 +1571,8 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("void (*)(sg_pipeline, void *)")]
         public delegate* unmanaged[Cdecl]<sg_pipeline, void*, void> destroy_pipeline;
 
-        [NativeTypeName("void (*)(sg_attachments, void *)")]
-        public delegate* unmanaged[Cdecl]<sg_attachments, void*, void> destroy_attachments;
+        [NativeTypeName("void (*)(sg_view, void *)")]
+        public delegate* unmanaged[Cdecl]<sg_view, void*, void> destroy_view;
 
         [NativeTypeName("void (*)(sg_buffer, const sg_range *, void *)")]
         public delegate* unmanaged[Cdecl]<sg_buffer, sg_range*, void*, void> update_buffer;
@@ -1454,6 +1604,9 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("void (*)(int, int, int, void *)")]
         public delegate* unmanaged[Cdecl]<int, int, int, void*, void> draw;
 
+        [NativeTypeName("void (*)(int, int, int, int, int, void *)")]
+        public delegate* unmanaged[Cdecl]<int, int, int, int, int, void*, void> draw_ex;
+
         [NativeTypeName("void (*)(int, int, int, void *)")]
         public delegate* unmanaged[Cdecl]<int, int, int, void*, void> dispatch;
 
@@ -1478,8 +1631,8 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("void (*)(sg_pipeline, void *)")]
         public delegate* unmanaged[Cdecl]<sg_pipeline, void*, void> alloc_pipeline;
 
-        [NativeTypeName("void (*)(sg_attachments, void *)")]
-        public delegate* unmanaged[Cdecl]<sg_attachments, void*, void> alloc_attachments;
+        [NativeTypeName("void (*)(sg_view, void *)")]
+        public delegate* unmanaged[Cdecl]<sg_view, void*, void> alloc_view;
 
         [NativeTypeName("void (*)(sg_buffer, void *)")]
         public delegate* unmanaged[Cdecl]<sg_buffer, void*, void> dealloc_buffer;
@@ -1496,8 +1649,8 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("void (*)(sg_pipeline, void *)")]
         public delegate* unmanaged[Cdecl]<sg_pipeline, void*, void> dealloc_pipeline;
 
-        [NativeTypeName("void (*)(sg_attachments, void *)")]
-        public delegate* unmanaged[Cdecl]<sg_attachments, void*, void> dealloc_attachments;
+        [NativeTypeName("void (*)(sg_view, void *)")]
+        public delegate* unmanaged[Cdecl]<sg_view, void*, void> dealloc_view;
 
         [NativeTypeName("void (*)(sg_buffer, const sg_buffer_desc *, void *)")]
         public delegate* unmanaged[Cdecl]<sg_buffer, sg_buffer_desc*, void*, void> init_buffer;
@@ -1514,8 +1667,8 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("void (*)(sg_pipeline, const sg_pipeline_desc *, void *)")]
         public delegate* unmanaged[Cdecl]<sg_pipeline, sg_pipeline_desc*, void*, void> init_pipeline;
 
-        [NativeTypeName("void (*)(sg_attachments, const sg_attachments_desc *, void *)")]
-        public delegate* unmanaged[Cdecl]<sg_attachments, sg_attachments_desc*, void*, void> init_attachments;
+        [NativeTypeName("void (*)(sg_view, const sg_view_desc *, void *)")]
+        public delegate* unmanaged[Cdecl]<sg_view, sg_view_desc*, void*, void> init_view;
 
         [NativeTypeName("void (*)(sg_buffer, void *)")]
         public delegate* unmanaged[Cdecl]<sg_buffer, void*, void> uninit_buffer;
@@ -1532,8 +1685,8 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("void (*)(sg_pipeline, void *)")]
         public delegate* unmanaged[Cdecl]<sg_pipeline, void*, void> uninit_pipeline;
 
-        [NativeTypeName("void (*)(sg_attachments, void *)")]
-        public delegate* unmanaged[Cdecl]<sg_attachments, void*, void> uninit_attachments;
+        [NativeTypeName("void (*)(sg_view, void *)")]
+        public delegate* unmanaged[Cdecl]<sg_view, void*, void> uninit_view;
 
         [NativeTypeName("void (*)(sg_buffer, void *)")]
         public delegate* unmanaged[Cdecl]<sg_buffer, void*, void> fail_buffer;
@@ -1550,8 +1703,8 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("void (*)(sg_pipeline, void *)")]
         public delegate* unmanaged[Cdecl]<sg_pipeline, void*, void> fail_pipeline;
 
-        [NativeTypeName("void (*)(sg_attachments, void *)")]
-        public delegate* unmanaged[Cdecl]<sg_attachments, void*, void> fail_attachments;
+        [NativeTypeName("void (*)(sg_view, void *)")]
+        public delegate* unmanaged[Cdecl]<sg_view, void*, void> fail_view;
 
         [NativeTypeName("void (*)(const char *, void *)")]
         public delegate* unmanaged[Cdecl]<sbyte*, void*, void> push_debug_group;
@@ -1566,6 +1719,9 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("uint32_t")]
         public uint res_id;
+
+        [NativeTypeName("uint32_t")]
+        public uint uninit_count;
     }
 
     public partial struct sg_buffer_info
@@ -1615,7 +1771,7 @@ namespace Zinc.Internal.Sokol
         public sg_slot_info slot;
     }
 
-    public partial struct sg_attachments_info
+    public partial struct sg_view_info
     {
         public sg_slot_info slot;
     }
@@ -1633,6 +1789,9 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("uint32_t")]
         public uint num_bind_sampler;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_bind_image_texture;
 
         [NativeTypeName("uint32_t")]
         public uint num_use_program;
@@ -1822,28 +1981,64 @@ namespace Zinc.Internal.Sokol
         public uint num_set_vertex_buffer;
 
         [NativeTypeName("uint32_t")]
+        public uint num_set_vertex_buffer_offset;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_skip_redundant_vertex_buffer;
+
+        [NativeTypeName("uint32_t")]
         public uint num_set_vertex_texture;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_skip_redundant_vertex_texture;
 
         [NativeTypeName("uint32_t")]
         public uint num_set_vertex_sampler_state;
 
         [NativeTypeName("uint32_t")]
+        public uint num_skip_redundant_vertex_sampler_state;
+
+        [NativeTypeName("uint32_t")]
         public uint num_set_fragment_buffer;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_set_fragment_buffer_offset;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_skip_redundant_fragment_buffer;
 
         [NativeTypeName("uint32_t")]
         public uint num_set_fragment_texture;
 
         [NativeTypeName("uint32_t")]
+        public uint num_skip_redundant_fragment_texture;
+
+        [NativeTypeName("uint32_t")]
         public uint num_set_fragment_sampler_state;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_skip_redundant_fragment_sampler_state;
 
         [NativeTypeName("uint32_t")]
         public uint num_set_compute_buffer;
 
         [NativeTypeName("uint32_t")]
+        public uint num_set_compute_buffer_offset;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_skip_redundant_compute_buffer;
+
+        [NativeTypeName("uint32_t")]
         public uint num_set_compute_texture;
 
         [NativeTypeName("uint32_t")]
+        public uint num_skip_redundant_compute_texture;
+
+        [NativeTypeName("uint32_t")]
         public uint num_set_compute_sampler_state;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_skip_redundant_compute_sampler_state;
     }
 
     public partial struct sg_frame_stats_metal_uniforms
@@ -1927,6 +2122,90 @@ namespace Zinc.Internal.Sokol
         public sg_frame_stats_wgpu_bindings bindings;
     }
 
+    public partial struct sg_frame_stats_vk
+    {
+        [NativeTypeName("uint32_t")]
+        public uint num_cmd_pipeline_barrier;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_allocate_memory;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_free_memory;
+
+        [NativeTypeName("uint32_t")]
+        public uint size_allocate_memory;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_delete_queue_added;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_delete_queue_collected;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_cmd_copy_buffer;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_cmd_copy_buffer_to_image;
+
+        [NativeTypeName("uint32_t")]
+        public uint num_cmd_set_descriptor_buffer_offsets;
+
+        [NativeTypeName("uint32_t")]
+        public uint size_descriptor_buffer_writes;
+    }
+
+    public partial struct sg_frame_resource_stats
+    {
+        [NativeTypeName("uint32_t")]
+        public uint allocated;
+
+        [NativeTypeName("uint32_t")]
+        public uint deallocated;
+
+        [NativeTypeName("uint32_t")]
+        public uint inited;
+
+        [NativeTypeName("uint32_t")]
+        public uint uninited;
+    }
+
+    public partial struct sg_total_resource_stats
+    {
+        [NativeTypeName("uint32_t")]
+        public uint alive;
+
+        [NativeTypeName("uint32_t")]
+        public uint free;
+
+        [NativeTypeName("uint32_t")]
+        public uint allocated;
+
+        [NativeTypeName("uint32_t")]
+        public uint deallocated;
+
+        [NativeTypeName("uint32_t")]
+        public uint inited;
+
+        [NativeTypeName("uint32_t")]
+        public uint uninited;
+    }
+
+    public partial struct sg_total_stats
+    {
+        public sg_total_resource_stats buffers;
+
+        public sg_total_resource_stats images;
+
+        public sg_total_resource_stats samplers;
+
+        public sg_total_resource_stats views;
+
+        public sg_total_resource_stats shaders;
+
+        public sg_total_resource_stats pipelines;
+    }
+
     public partial struct sg_frame_stats
     {
         [NativeTypeName("uint32_t")]
@@ -1954,6 +2233,9 @@ namespace Zinc.Internal.Sokol
         public uint num_draw;
 
         [NativeTypeName("uint32_t")]
+        public uint num_draw_ex;
+
+        [NativeTypeName("uint32_t")]
         public uint num_dispatch;
 
         [NativeTypeName("uint32_t")]
@@ -1977,6 +2259,18 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("uint32_t")]
         public uint size_update_image;
 
+        public sg_frame_resource_stats buffers;
+
+        public sg_frame_resource_stats images;
+
+        public sg_frame_resource_stats samplers;
+
+        public sg_frame_resource_stats views;
+
+        public sg_frame_resource_stats shaders;
+
+        public sg_frame_resource_stats pipelines;
+
         public sg_frame_stats_gl gl;
 
         public sg_frame_stats_d3d11 d3d11;
@@ -1984,6 +2278,17 @@ namespace Zinc.Internal.Sokol
         public sg_frame_stats_metal metal;
 
         public sg_frame_stats_wgpu wgpu;
+
+        public sg_frame_stats_vk vk;
+    }
+
+    public partial struct sg_stats
+    {
+        public sg_frame_stats prev_frame;
+
+        public sg_frame_stats cur_frame;
+
+        public sg_total_stats total;
     }
 
     [NativeTypeName("unsigned int")]
@@ -1995,6 +2300,7 @@ namespace Zinc.Internal.Sokol
         SG_LOGITEM_GL_3D_TEXTURES_NOT_SUPPORTED,
         SG_LOGITEM_GL_ARRAY_TEXTURES_NOT_SUPPORTED,
         SG_LOGITEM_GL_STORAGEBUFFER_GLSL_BINDING_OUT_OF_RANGE,
+        SG_LOGITEM_GL_STORAGEIMAGE_GLSL_BINDING_OUT_OF_RANGE,
         SG_LOGITEM_GL_SHADER_COMPILATION_FAILED,
         SG_LOGITEM_GL_SHADER_LINKING_FAILED,
         SG_LOGITEM_GL_VERTEX_ATTRIBUTE_NOT_FOUND_IN_SHADER,
@@ -2006,6 +2312,7 @@ namespace Zinc.Internal.Sokol
         SG_LOGITEM_GL_FRAMEBUFFER_STATUS_UNSUPPORTED,
         SG_LOGITEM_GL_FRAMEBUFFER_STATUS_INCOMPLETE_MULTISAMPLE,
         SG_LOGITEM_GL_FRAMEBUFFER_STATUS_UNKNOWN,
+        SG_LOGITEM_D3D11_FEATURE_LEVEL_0_DETECTED,
         SG_LOGITEM_D3D11_CREATE_BUFFER_FAILED,
         SG_LOGITEM_D3D11_CREATE_BUFFER_SRV_FAILED,
         SG_LOGITEM_D3D11_CREATE_BUFFER_UAV_FAILED,
@@ -2023,6 +2330,7 @@ namespace Zinc.Internal.Sokol
         SG_LOGITEM_D3D11_STORAGEBUFFER_HLSL_REGISTER_T_OUT_OF_RANGE,
         SG_LOGITEM_D3D11_STORAGEBUFFER_HLSL_REGISTER_U_OUT_OF_RANGE,
         SG_LOGITEM_D3D11_IMAGE_HLSL_REGISTER_T_OUT_OF_RANGE,
+        SG_LOGITEM_D3D11_STORAGEIMAGE_HLSL_REGISTER_U_OUT_OF_RANGE,
         SG_LOGITEM_D3D11_SAMPLER_HLSL_REGISTER_S_OUT_OF_RANGE,
         SG_LOGITEM_D3D11_LOAD_D3DCOMPILER_47_DLL_FAILED,
         SG_LOGITEM_D3D11_SHADER_COMPILATION_FAILED,
@@ -2034,6 +2342,7 @@ namespace Zinc.Internal.Sokol
         SG_LOGITEM_D3D11_CREATE_BLEND_STATE_FAILED,
         SG_LOGITEM_D3D11_CREATE_RTV_FAILED,
         SG_LOGITEM_D3D11_CREATE_DSV_FAILED,
+        SG_LOGITEM_D3D11_CREATE_UAV_FAILED,
         SG_LOGITEM_D3D11_MAP_FOR_UPDATE_BUFFER_FAILED,
         SG_LOGITEM_D3D11_MAP_FOR_APPEND_BUFFER_FAILED,
         SG_LOGITEM_D3D11_MAP_FOR_UPDATE_IMAGE_FAILED,
@@ -2047,6 +2356,7 @@ namespace Zinc.Internal.Sokol
         SG_LOGITEM_METAL_SHADER_ENTRY_NOT_FOUND,
         SG_LOGITEM_METAL_UNIFORMBLOCK_MSL_BUFFER_SLOT_OUT_OF_RANGE,
         SG_LOGITEM_METAL_STORAGEBUFFER_MSL_BUFFER_SLOT_OUT_OF_RANGE,
+        SG_LOGITEM_METAL_STORAGEIMAGE_MSL_TEXTURE_SLOT_OUT_OF_RANGE,
         SG_LOGITEM_METAL_IMAGE_MSL_TEXTURE_SLOT_OUT_OF_RANGE,
         SG_LOGITEM_METAL_SAMPLER_MSL_SAMPLER_SLOT_OUT_OF_RANGE,
         SG_LOGITEM_METAL_CREATE_CPS_FAILED,
@@ -2065,13 +2375,49 @@ namespace Zinc.Internal.Sokol
         SG_LOGITEM_WGPU_CREATE_SHADER_MODULE_FAILED,
         SG_LOGITEM_WGPU_SHADER_CREATE_BINDGROUP_LAYOUT_FAILED,
         SG_LOGITEM_WGPU_UNIFORMBLOCK_WGSL_GROUP0_BINDING_OUT_OF_RANGE,
+        SG_LOGITEM_WGPU_TEXTURE_WGSL_GROUP1_BINDING_OUT_OF_RANGE,
         SG_LOGITEM_WGPU_STORAGEBUFFER_WGSL_GROUP1_BINDING_OUT_OF_RANGE,
-        SG_LOGITEM_WGPU_IMAGE_WGSL_GROUP1_BINDING_OUT_OF_RANGE,
+        SG_LOGITEM_WGPU_STORAGEIMAGE_WGSL_GROUP1_BINDING_OUT_OF_RANGE,
         SG_LOGITEM_WGPU_SAMPLER_WGSL_GROUP1_BINDING_OUT_OF_RANGE,
         SG_LOGITEM_WGPU_CREATE_PIPELINE_LAYOUT_FAILED,
         SG_LOGITEM_WGPU_CREATE_RENDER_PIPELINE_FAILED,
         SG_LOGITEM_WGPU_CREATE_COMPUTE_PIPELINE_FAILED,
-        SG_LOGITEM_WGPU_ATTACHMENTS_CREATE_TEXTURE_VIEW_FAILED,
+        SG_LOGITEM_VULKAN_REQUIRED_EXTENSION_FUNCTION_MISSING,
+        SG_LOGITEM_VULKAN_ALLOC_DEVICE_MEMORY_NO_SUITABLE_MEMORY_TYPE,
+        SG_LOGITEM_VULKAN_ALLOCATE_MEMORY_FAILED,
+        SG_LOGITEM_VULKAN_ALLOC_BUFFER_DEVICE_MEMORY_FAILED,
+        SG_LOGITEM_VULKAN_ALLOC_IMAGE_DEVICE_MEMORY_FAILED,
+        SG_LOGITEM_VULKAN_DELETE_QUEUE_EXHAUSTED,
+        SG_LOGITEM_VULKAN_STAGING_CREATE_BUFFER_FAILED,
+        SG_LOGITEM_VULKAN_STAGING_ALLOCATE_MEMORY_FAILED,
+        SG_LOGITEM_VULKAN_STAGING_BIND_BUFFER_MEMORY_FAILED,
+        SG_LOGITEM_VULKAN_STAGING_STREAM_BUFFER_OVERFLOW,
+        SG_LOGITEM_VULKAN_CREATE_SHARED_BUFFER_FAILED,
+        SG_LOGITEM_VULKAN_ALLOCATE_SHARED_BUFFER_MEMORY_FAILED,
+        SG_LOGITEM_VULKAN_BIND_SHARED_BUFFER_MEMORY_FAILED,
+        SG_LOGITEM_VULKAN_MAP_SHARED_BUFFER_MEMORY_FAILED,
+        SG_LOGITEM_VULKAN_CREATE_BUFFER_FAILED,
+        SG_LOGITEM_VULKAN_BIND_BUFFER_MEMORY_FAILED,
+        SG_LOGITEM_VULKAN_CREATE_IMAGE_FAILED,
+        SG_LOGITEM_VULKAN_BIND_IMAGE_MEMORY_FAILED,
+        SG_LOGITEM_VULKAN_CREATE_SHADER_MODULE_FAILED,
+        SG_LOGITEM_VULKAN_UNIFORMBLOCK_SPIRV_SET0_BINDING_OUT_OF_RANGE,
+        SG_LOGITEM_VULKAN_TEXTURE_SPIRV_SET1_BINDING_OUT_OF_RANGE,
+        SG_LOGITEM_VULKAN_STORAGEBUFFER_SPIRV_SET1_BINDING_OUT_OF_RANGE,
+        SG_LOGITEM_VULKAN_STORAGEIMAGE_SPIRV_SET1_BINDING_OUT_OF_RANGE,
+        SG_LOGITEM_VULKAN_SAMPLER_SPIRV_SET1_BINDING_OUT_OF_RANGE,
+        SG_LOGITEM_VULKAN_CREATE_DESCRIPTOR_SET_LAYOUT_FAILED,
+        SG_LOGITEM_VULKAN_SHADER_UNIFORM_DESCRIPTOR_SET_SIZE_VS_CACHE_SIZE,
+        SG_LOGITEM_VULKAN_CREATE_PIPELINE_LAYOUT_FAILED,
+        SG_LOGITEM_VULKAN_CREATE_GRAPHICS_PIPELINE_FAILED,
+        SG_LOGITEM_VULKAN_CREATE_COMPUTE_PIPELINE_FAILED,
+        SG_LOGITEM_VULKAN_CREATE_IMAGE_VIEW_FAILED,
+        SG_LOGITEM_VULKAN_VIEW_MAX_DESCRIPTOR_SIZE,
+        SG_LOGITEM_VULKAN_CREATE_SAMPLER_FAILED,
+        SG_LOGITEM_VULKAN_SAMPLER_MAX_DESCRIPTOR_SIZE,
+        SG_LOGITEM_VULKAN_WAIT_FOR_FENCE_FAILED,
+        SG_LOGITEM_VULKAN_UNIFORM_BUFFER_OVERFLOW,
+        SG_LOGITEM_VULKAN_DESCRIPTOR_BUFFER_OVERFLOW,
         SG_LOGITEM_IDENTICAL_COMMIT_LISTENER,
         SG_LOGITEM_COMMIT_LISTENER_ARRAY_FULL,
         SG_LOGITEM_TRACE_HOOKS_NOT_ENABLED,
@@ -2080,56 +2426,82 @@ namespace Zinc.Internal.Sokol
         SG_LOGITEM_DEALLOC_SAMPLER_INVALID_STATE,
         SG_LOGITEM_DEALLOC_SHADER_INVALID_STATE,
         SG_LOGITEM_DEALLOC_PIPELINE_INVALID_STATE,
-        SG_LOGITEM_DEALLOC_ATTACHMENTS_INVALID_STATE,
+        SG_LOGITEM_DEALLOC_VIEW_INVALID_STATE,
         SG_LOGITEM_INIT_BUFFER_INVALID_STATE,
         SG_LOGITEM_INIT_IMAGE_INVALID_STATE,
         SG_LOGITEM_INIT_SAMPLER_INVALID_STATE,
         SG_LOGITEM_INIT_SHADER_INVALID_STATE,
         SG_LOGITEM_INIT_PIPELINE_INVALID_STATE,
-        SG_LOGITEM_INIT_ATTACHMENTS_INVALID_STATE,
+        SG_LOGITEM_INIT_VIEW_INVALID_STATE,
         SG_LOGITEM_UNINIT_BUFFER_INVALID_STATE,
         SG_LOGITEM_UNINIT_IMAGE_INVALID_STATE,
         SG_LOGITEM_UNINIT_SAMPLER_INVALID_STATE,
         SG_LOGITEM_UNINIT_SHADER_INVALID_STATE,
         SG_LOGITEM_UNINIT_PIPELINE_INVALID_STATE,
-        SG_LOGITEM_UNINIT_ATTACHMENTS_INVALID_STATE,
+        SG_LOGITEM_UNINIT_VIEW_INVALID_STATE,
         SG_LOGITEM_FAIL_BUFFER_INVALID_STATE,
         SG_LOGITEM_FAIL_IMAGE_INVALID_STATE,
         SG_LOGITEM_FAIL_SAMPLER_INVALID_STATE,
         SG_LOGITEM_FAIL_SHADER_INVALID_STATE,
         SG_LOGITEM_FAIL_PIPELINE_INVALID_STATE,
-        SG_LOGITEM_FAIL_ATTACHMENTS_INVALID_STATE,
+        SG_LOGITEM_FAIL_VIEW_INVALID_STATE,
         SG_LOGITEM_BUFFER_POOL_EXHAUSTED,
         SG_LOGITEM_IMAGE_POOL_EXHAUSTED,
         SG_LOGITEM_SAMPLER_POOL_EXHAUSTED,
         SG_LOGITEM_SHADER_POOL_EXHAUSTED,
         SG_LOGITEM_PIPELINE_POOL_EXHAUSTED,
-        SG_LOGITEM_PASS_POOL_EXHAUSTED,
-        SG_LOGITEM_BEGINPASS_ATTACHMENT_INVALID,
-        SG_LOGITEM_APPLY_BINDINGS_STORAGE_BUFFER_TRACKER_EXHAUSTED,
+        SG_LOGITEM_VIEW_POOL_EXHAUSTED,
+        SG_LOGITEM_BEGINPASS_TOO_MANY_COLOR_ATTACHMENTS,
+        SG_LOGITEM_BEGINPASS_TOO_MANY_RESOLVE_ATTACHMENTS,
+        SG_LOGITEM_BEGINPASS_ATTACHMENTS_ALIVE,
         SG_LOGITEM_DRAW_WITHOUT_BINDINGS,
+        SG_LOGITEM_SHADERDESC_TOO_MANY_VERTEXSTAGE_TEXTURES,
+        SG_LOGITEM_SHADERDESC_TOO_MANY_FRAGMENTSTAGE_TEXTURES,
+        SG_LOGITEM_SHADERDESC_TOO_MANY_COMPUTESTAGE_TEXTURES,
+        SG_LOGITEM_SHADERDESC_TOO_MANY_VERTEXSTAGE_STORAGEBUFFERS,
+        SG_LOGITEM_SHADERDESC_TOO_MANY_FRAGMENTSTAGE_STORAGEBUFFERS,
+        SG_LOGITEM_SHADERDESC_TOO_MANY_COMPUTESTAGE_STORAGEBUFFERS,
+        SG_LOGITEM_SHADERDESC_TOO_MANY_VERTEXSTAGE_STORAGEIMAGES,
+        SG_LOGITEM_SHADERDESC_TOO_MANY_FRAGMENTSTAGE_STORAGEIMAGES,
+        SG_LOGITEM_SHADERDESC_TOO_MANY_COMPUTESTAGE_STORAGEIMAGES,
+        SG_LOGITEM_SHADERDESC_TOO_MANY_VERTEXSTAGE_TEXTURESAMPLERPAIRS,
+        SG_LOGITEM_SHADERDESC_TOO_MANY_FRAGMENTSTAGE_TEXTURESAMPLERPAIRS,
+        SG_LOGITEM_SHADERDESC_TOO_MANY_COMPUTESTAGE_TEXTURESAMPLERPAIRS,
         SG_LOGITEM_VALIDATE_BUFFERDESC_CANARY,
+        SG_LOGITEM_VALIDATE_BUFFERDESC_IMMUTABLE_DYNAMIC_STREAM,
+        SG_LOGITEM_VALIDATE_BUFFERDESC_SEPARATE_BUFFER_TYPES,
         SG_LOGITEM_VALIDATE_BUFFERDESC_EXPECT_NONZERO_SIZE,
         SG_LOGITEM_VALIDATE_BUFFERDESC_EXPECT_MATCHING_DATA_SIZE,
         SG_LOGITEM_VALIDATE_BUFFERDESC_EXPECT_ZERO_DATA_SIZE,
         SG_LOGITEM_VALIDATE_BUFFERDESC_EXPECT_NO_DATA,
+        SG_LOGITEM_VALIDATE_BUFFERDESC_EXPECT_DATA,
         SG_LOGITEM_VALIDATE_BUFFERDESC_STORAGEBUFFER_SUPPORTED,
         SG_LOGITEM_VALIDATE_BUFFERDESC_STORAGEBUFFER_SIZE_MULTIPLE_4,
         SG_LOGITEM_VALIDATE_IMAGEDATA_NODATA,
         SG_LOGITEM_VALIDATE_IMAGEDATA_DATA_SIZE,
         SG_LOGITEM_VALIDATE_IMAGEDESC_CANARY,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_IMMUTABLE_DYNAMIC_STREAM,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_IMAGETYPE_2D_NUMSLICES,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_IMAGETYPE_CUBE_NUMSLICES,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_IMAGETYPE_ARRAY_NUMSLICES,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_IMAGETYPE_3D_NUMSLICES,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_NUMSLICES,
         SG_LOGITEM_VALIDATE_IMAGEDESC_WIDTH,
         SG_LOGITEM_VALIDATE_IMAGEDESC_HEIGHT,
-        SG_LOGITEM_VALIDATE_IMAGEDESC_RT_PIXELFORMAT,
         SG_LOGITEM_VALIDATE_IMAGEDESC_NONRT_PIXELFORMAT,
-        SG_LOGITEM_VALIDATE_IMAGEDESC_MSAA_BUT_NO_RT,
-        SG_LOGITEM_VALIDATE_IMAGEDESC_NO_MSAA_RT_SUPPORT,
-        SG_LOGITEM_VALIDATE_IMAGEDESC_MSAA_NUM_MIPMAPS,
-        SG_LOGITEM_VALIDATE_IMAGEDESC_MSAA_3D_IMAGE,
-        SG_LOGITEM_VALIDATE_IMAGEDESC_MSAA_CUBE_IMAGE,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_MSAA_BUT_NO_ATTACHMENT,
         SG_LOGITEM_VALIDATE_IMAGEDESC_DEPTH_3D_IMAGE,
-        SG_LOGITEM_VALIDATE_IMAGEDESC_RT_IMMUTABLE,
-        SG_LOGITEM_VALIDATE_IMAGEDESC_RT_NO_DATA,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_ATTACHMENT_EXPECT_IMMUTABLE,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_ATTACHMENT_EXPECT_NO_DATA,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_ATTACHMENT_PIXELFORMAT,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_ATTACHMENT_RESOLVE_EXPECT_NO_MSAA,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_ATTACHMENT_NO_MSAA_SUPPORT,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_ATTACHMENT_MSAA_NUM_MIPMAPS,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_ATTACHMENT_MSAA_3D_IMAGE,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_ATTACHMENT_MSAA_CUBE_IMAGE,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_ATTACHMENT_MSAA_ARRAY_IMAGE,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_STORAGEIMAGE_PIXELFORMAT,
+        SG_LOGITEM_VALIDATE_IMAGEDESC_STORAGEIMAGE_EXPECT_NO_MSAA,
         SG_LOGITEM_VALIDATE_IMAGEDESC_INJECTED_NO_DATA,
         SG_LOGITEM_VALIDATE_IMAGEDESC_DYNAMIC_NO_DATA,
         SG_LOGITEM_VALIDATE_IMAGEDESC_COMPRESSED_IMMUTABLE,
@@ -2144,51 +2516,49 @@ namespace Zinc.Internal.Sokol
         SG_LOGITEM_VALIDATE_SHADERDESC_COMPUTE_SOURCE_OR_BYTECODE,
         SG_LOGITEM_VALIDATE_SHADERDESC_INVALID_SHADER_COMBO,
         SG_LOGITEM_VALIDATE_SHADERDESC_NO_BYTECODE_SIZE,
-        SG_LOGITEM_VALIDATE_SHADERDESC_METAL_THREADS_PER_THREADGROUP,
+        SG_LOGITEM_VALIDATE_SHADERDESC_METAL_THREADS_PER_THREADGROUP_INITIALIZED,
+        SG_LOGITEM_VALIDATE_SHADERDESC_METAL_THREADS_PER_THREADGROUP_MULTIPLE_32,
         SG_LOGITEM_VALIDATE_SHADERDESC_UNIFORMBLOCK_NO_CONT_MEMBERS,
         SG_LOGITEM_VALIDATE_SHADERDESC_UNIFORMBLOCK_SIZE_IS_ZERO,
-        SG_LOGITEM_VALIDATE_SHADERDESC_UNIFORMBLOCK_METAL_BUFFER_SLOT_OUT_OF_RANGE,
         SG_LOGITEM_VALIDATE_SHADERDESC_UNIFORMBLOCK_METAL_BUFFER_SLOT_COLLISION,
-        SG_LOGITEM_VALIDATE_SHADERDESC_UNIFORMBLOCK_HLSL_REGISTER_B_OUT_OF_RANGE,
         SG_LOGITEM_VALIDATE_SHADERDESC_UNIFORMBLOCK_HLSL_REGISTER_B_COLLISION,
-        SG_LOGITEM_VALIDATE_SHADERDESC_UNIFORMBLOCK_WGSL_GROUP0_BINDING_OUT_OF_RANGE,
         SG_LOGITEM_VALIDATE_SHADERDESC_UNIFORMBLOCK_WGSL_GROUP0_BINDING_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_UNIFORMBLOCK_SPIRV_SET0_BINDING_COLLISION,
         SG_LOGITEM_VALIDATE_SHADERDESC_UNIFORMBLOCK_NO_MEMBERS,
         SG_LOGITEM_VALIDATE_SHADERDESC_UNIFORMBLOCK_UNIFORM_GLSL_NAME,
         SG_LOGITEM_VALIDATE_SHADERDESC_UNIFORMBLOCK_SIZE_MISMATCH,
         SG_LOGITEM_VALIDATE_SHADERDESC_UNIFORMBLOCK_ARRAY_COUNT,
         SG_LOGITEM_VALIDATE_SHADERDESC_UNIFORMBLOCK_STD140_ARRAY_TYPE,
-        SG_LOGITEM_VALIDATE_SHADERDESC_STORAGEBUFFER_METAL_BUFFER_SLOT_OUT_OF_RANGE,
-        SG_LOGITEM_VALIDATE_SHADERDESC_STORAGEBUFFER_METAL_BUFFER_SLOT_COLLISION,
-        SG_LOGITEM_VALIDATE_SHADERDESC_STORAGEBUFFER_HLSL_REGISTER_T_OUT_OF_RANGE,
-        SG_LOGITEM_VALIDATE_SHADERDESC_STORAGEBUFFER_HLSL_REGISTER_T_COLLISION,
-        SG_LOGITEM_VALIDATE_SHADERDESC_STORAGEBUFFER_HLSL_REGISTER_U_OUT_OF_RANGE,
-        SG_LOGITEM_VALIDATE_SHADERDESC_STORAGEBUFFER_HLSL_REGISTER_U_COLLISION,
-        SG_LOGITEM_VALIDATE_SHADERDESC_STORAGEBUFFER_GLSL_BINDING_OUT_OF_RANGE,
-        SG_LOGITEM_VALIDATE_SHADERDESC_STORAGEBUFFER_GLSL_BINDING_COLLISION,
-        SG_LOGITEM_VALIDATE_SHADERDESC_STORAGEBUFFER_WGSL_GROUP1_BINDING_OUT_OF_RANGE,
-        SG_LOGITEM_VALIDATE_SHADERDESC_STORAGEBUFFER_WGSL_GROUP1_BINDING_COLLISION,
-        SG_LOGITEM_VALIDATE_SHADERDESC_IMAGE_METAL_TEXTURE_SLOT_OUT_OF_RANGE,
-        SG_LOGITEM_VALIDATE_SHADERDESC_IMAGE_METAL_TEXTURE_SLOT_COLLISION,
-        SG_LOGITEM_VALIDATE_SHADERDESC_IMAGE_HLSL_REGISTER_T_OUT_OF_RANGE,
-        SG_LOGITEM_VALIDATE_SHADERDESC_IMAGE_HLSL_REGISTER_T_COLLISION,
-        SG_LOGITEM_VALIDATE_SHADERDESC_IMAGE_WGSL_GROUP1_BINDING_OUT_OF_RANGE,
-        SG_LOGITEM_VALIDATE_SHADERDESC_IMAGE_WGSL_GROUP1_BINDING_COLLISION,
-        SG_LOGITEM_VALIDATE_SHADERDESC_SAMPLER_METAL_SAMPLER_SLOT_OUT_OF_RANGE,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_STORAGEBUFFER_METAL_BUFFER_SLOT_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_STORAGEBUFFER_HLSL_REGISTER_T_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_STORAGEBUFFER_HLSL_REGISTER_U_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_STORAGEBUFFER_GLSL_BINDING_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_STORAGEBUFFER_WGSL_GROUP1_BINDING_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_STORAGEBUFFER_SPIRV_SET1_BINDING_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_STORAGEIMAGE_EXPECT_COMPUTE_STAGE,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_STORAGEIMAGE_METAL_TEXTURE_SLOT_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_STORAGEIMAGE_HLSL_REGISTER_U_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_STORAGEIMAGE_GLSL_BINDING_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_STORAGEIMAGE_WGSL_GROUP1_BINDING_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_STORAGEIMAGE_SPIRV_SET1_BINDING_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_TEXTURE_METAL_TEXTURE_SLOT_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_TEXTURE_HLSL_REGISTER_T_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_TEXTURE_WGSL_GROUP1_BINDING_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_VIEW_TEXTURE_SPIRV_SET1_BINDING_COLLISION,
         SG_LOGITEM_VALIDATE_SHADERDESC_SAMPLER_METAL_SAMPLER_SLOT_COLLISION,
-        SG_LOGITEM_VALIDATE_SHADERDESC_SAMPLER_HLSL_REGISTER_S_OUT_OF_RANGE,
         SG_LOGITEM_VALIDATE_SHADERDESC_SAMPLER_HLSL_REGISTER_S_COLLISION,
-        SG_LOGITEM_VALIDATE_SHADERDESC_SAMPLER_WGSL_GROUP1_BINDING_OUT_OF_RANGE,
         SG_LOGITEM_VALIDATE_SHADERDESC_SAMPLER_WGSL_GROUP1_BINDING_COLLISION,
-        SG_LOGITEM_VALIDATE_SHADERDESC_IMAGE_SAMPLER_PAIR_IMAGE_SLOT_OUT_OF_RANGE,
-        SG_LOGITEM_VALIDATE_SHADERDESC_IMAGE_SAMPLER_PAIR_SAMPLER_SLOT_OUT_OF_RANGE,
-        SG_LOGITEM_VALIDATE_SHADERDESC_IMAGE_SAMPLER_PAIR_IMAGE_STAGE_MISMATCH,
-        SG_LOGITEM_VALIDATE_SHADERDESC_IMAGE_SAMPLER_PAIR_SAMPLER_STAGE_MISMATCH,
-        SG_LOGITEM_VALIDATE_SHADERDESC_IMAGE_SAMPLER_PAIR_GLSL_NAME,
+        SG_LOGITEM_VALIDATE_SHADERDESC_SAMPLER_SPIRV_SET1_BINDING_COLLISION,
+        SG_LOGITEM_VALIDATE_SHADERDESC_TEXTURE_SAMPLER_PAIR_VIEW_SLOT_OUT_OF_RANGE,
+        SG_LOGITEM_VALIDATE_SHADERDESC_TEXTURE_SAMPLER_PAIR_SAMPLER_SLOT_OUT_OF_RANGE,
+        SG_LOGITEM_VALIDATE_SHADERDESC_TEXTURE_SAMPLER_PAIR_TEXTURE_STAGE_MISMATCH,
+        SG_LOGITEM_VALIDATE_SHADERDESC_TEXTURE_SAMPLER_PAIR_EXPECT_TEXTURE_VIEW,
+        SG_LOGITEM_VALIDATE_SHADERDESC_TEXTURE_SAMPLER_PAIR_SAMPLER_STAGE_MISMATCH,
+        SG_LOGITEM_VALIDATE_SHADERDESC_TEXTURE_SAMPLER_PAIR_GLSL_NAME,
         SG_LOGITEM_VALIDATE_SHADERDESC_NONFILTERING_SAMPLER_REQUIRED,
         SG_LOGITEM_VALIDATE_SHADERDESC_COMPARISON_SAMPLER_REQUIRED,
-        SG_LOGITEM_VALIDATE_SHADERDESC_IMAGE_NOT_REFERENCED_BY_IMAGE_SAMPLER_PAIRS,
-        SG_LOGITEM_VALIDATE_SHADERDESC_SAMPLER_NOT_REFERENCED_BY_IMAGE_SAMPLER_PAIRS,
+        SG_LOGITEM_VALIDATE_SHADERDESC_TEXVIEW_NOT_REFERENCED_BY_TEXTURE_SAMPLER_PAIRS,
+        SG_LOGITEM_VALIDATE_SHADERDESC_SAMPLER_NOT_REFERENCED_BY_TEXTURE_SAMPLER_PAIRS,
         SG_LOGITEM_VALIDATE_SHADERDESC_ATTR_STRING_TOO_LONG,
         SG_LOGITEM_VALIDATE_PIPELINEDESC_CANARY,
         SG_LOGITEM_VALIDATE_PIPELINEDESC_SHADER,
@@ -2200,44 +2570,36 @@ namespace Zinc.Internal.Sokol
         SG_LOGITEM_VALIDATE_PIPELINEDESC_ATTR_SEMANTICS,
         SG_LOGITEM_VALIDATE_PIPELINEDESC_SHADER_READONLY_STORAGEBUFFERS,
         SG_LOGITEM_VALIDATE_PIPELINEDESC_BLENDOP_MINMAX_REQUIRES_BLENDFACTOR_ONE,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_CANARY,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_NO_ATTACHMENTS,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_NO_CONT_COLOR_ATTS,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_IMAGE,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_MIPLEVEL,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_FACE,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_LAYER,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_SLICE,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_IMAGE_NO_RT,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_COLOR_INV_PIXELFORMAT,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_DEPTH_INV_PIXELFORMAT,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_IMAGE_SIZES,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_IMAGE_SAMPLE_COUNTS,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_RESOLVE_COLOR_IMAGE_MSAA,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_RESOLVE_IMAGE,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_RESOLVE_SAMPLE_COUNT,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_RESOLVE_MIPLEVEL,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_RESOLVE_FACE,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_RESOLVE_LAYER,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_RESOLVE_SLICE,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_RESOLVE_IMAGE_NO_RT,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_RESOLVE_IMAGE_SIZES,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_RESOLVE_IMAGE_FORMAT,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_DEPTH_IMAGE,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_DEPTH_MIPLEVEL,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_DEPTH_FACE,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_DEPTH_LAYER,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_DEPTH_SLICE,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_DEPTH_IMAGE_NO_RT,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_DEPTH_IMAGE_SIZES,
-        SG_LOGITEM_VALIDATE_ATTACHMENTSDESC_DEPTH_IMAGE_SAMPLE_COUNT,
+        SG_LOGITEM_VALIDATE_PIPELINEDESC_DUAL_SOURCE_BLENDING_NOT_SUPPORTED,
+        SG_LOGITEM_VALIDATE_VIEWDESC_CANARY,
+        SG_LOGITEM_VALIDATE_VIEWDESC_UNIQUE_VIEWTYPE,
+        SG_LOGITEM_VALIDATE_VIEWDESC_ANY_VIEWTYPE,
+        SG_LOGITEM_VALIDATE_VIEWDESC_RESOURCE_ALIVE,
+        SG_LOGITEM_VALIDATE_VIEWDESC_RESOURCE_FAILED,
+        SG_LOGITEM_VALIDATE_VIEWDESC_STORAGEBUFFER_OFFSET_VS_BUFFER_SIZE,
+        SG_LOGITEM_VALIDATE_VIEWDESC_STORAGEBUFFER_OFFSET_MULTIPLE_256,
+        SG_LOGITEM_VALIDATE_VIEWDESC_STORAGEBUFFER_USAGE,
+        SG_LOGITEM_VALIDATE_VIEWDESC_STORAGEIMAGE_USAGE,
+        SG_LOGITEM_VALIDATE_VIEWDESC_COLORATTACHMENT_USAGE,
+        SG_LOGITEM_VALIDATE_VIEWDESC_RESOLVEATTACHMENT_USAGE,
+        SG_LOGITEM_VALIDATE_VIEWDESC_DEPTHSTENCILATTACHMENT_USAGE,
+        SG_LOGITEM_VALIDATE_VIEWDESC_IMAGE_MIPLEVEL,
+        SG_LOGITEM_VALIDATE_VIEWDESC_IMAGE_2D_SLICE,
+        SG_LOGITEM_VALIDATE_VIEWDESC_IMAGE_CUBEMAP_SLICE,
+        SG_LOGITEM_VALIDATE_VIEWDESC_IMAGE_ARRAY_SLICE,
+        SG_LOGITEM_VALIDATE_VIEWDESC_IMAGE_3D_SLICE,
+        SG_LOGITEM_VALIDATE_VIEWDESC_TEXTURE_EXPECT_NO_MSAA,
+        SG_LOGITEM_VALIDATE_VIEWDESC_TEXTURE_MIPLEVELS,
+        SG_LOGITEM_VALIDATE_VIEWDESC_TEXTURE_2D_SLICES,
+        SG_LOGITEM_VALIDATE_VIEWDESC_TEXTURE_CUBEMAP_SLICES,
+        SG_LOGITEM_VALIDATE_VIEWDESC_TEXTURE_ARRAY_SLICES,
+        SG_LOGITEM_VALIDATE_VIEWDESC_TEXTURE_3D_SLICES,
+        SG_LOGITEM_VALIDATE_VIEWDESC_STORAGEIMAGE_PIXELFORMAT,
+        SG_LOGITEM_VALIDATE_VIEWDESC_COLORATTACHMENT_PIXELFORMAT,
+        SG_LOGITEM_VALIDATE_VIEWDESC_DEPTHSTENCILATTACHMENT_PIXELFORMAT,
+        SG_LOGITEM_VALIDATE_VIEWDESC_RESOLVEATTACHMENT_SAMPLECOUNT,
         SG_LOGITEM_VALIDATE_BEGINPASS_CANARY,
-        SG_LOGITEM_VALIDATE_BEGINPASS_EXPECT_NO_ATTACHMENTS,
-        SG_LOGITEM_VALIDATE_BEGINPASS_ATTACHMENTS_EXISTS,
-        SG_LOGITEM_VALIDATE_BEGINPASS_ATTACHMENTS_VALID,
-        SG_LOGITEM_VALIDATE_BEGINPASS_COLOR_ATTACHMENT_IMAGE,
-        SG_LOGITEM_VALIDATE_BEGINPASS_RESOLVE_ATTACHMENT_IMAGE,
-        SG_LOGITEM_VALIDATE_BEGINPASS_DEPTHSTENCIL_ATTACHMENT_IMAGE,
+        SG_LOGITEM_VALIDATE_BEGINPASS_COMPUTEPASS_EXPECT_NO_ATTACHMENTS,
         SG_LOGITEM_VALIDATE_BEGINPASS_SWAPCHAIN_EXPECT_WIDTH,
         SG_LOGITEM_VALIDATE_BEGINPASS_SWAPCHAIN_EXPECT_WIDTH_NOTSET,
         SG_LOGITEM_VALIDATE_BEGINPASS_SWAPCHAIN_EXPECT_HEIGHT,
@@ -2266,62 +2628,117 @@ namespace Zinc.Internal.Sokol
         SG_LOGITEM_VALIDATE_BEGINPASS_SWAPCHAIN_WGPU_EXPECT_DEPTHSTENCILVIEW,
         SG_LOGITEM_VALIDATE_BEGINPASS_SWAPCHAIN_WGPU_EXPECT_DEPTHSTENCILVIEW_NOTSET,
         SG_LOGITEM_VALIDATE_BEGINPASS_SWAPCHAIN_GL_EXPECT_FRAMEBUFFER_NOTSET,
+        SG_LOGITEM_VALIDATE_BEGINPASS_COLORATTACHMENTVIEWS_CONTINUOUS,
+        SG_LOGITEM_VALIDATE_BEGINPASS_COLORATTACHMENTVIEW_ALIVE,
+        SG_LOGITEM_VALIDATE_BEGINPASS_COLORATTACHMENTVIEW_VALID,
+        SG_LOGITEM_VALIDATE_BEGINPASS_COLORATTACHMENTVIEW_TYPE,
+        SG_LOGITEM_VALIDATE_BEGINPASS_COLORATTACHMENTVIEW_IMAGE_ALIVE,
+        SG_LOGITEM_VALIDATE_BEGINPASS_COLORATTACHMENTVIEW_IMAGE_VALID,
+        SG_LOGITEM_VALIDATE_BEGINPASS_COLORATTACHMENTVIEW_SIZES,
+        SG_LOGITEM_VALIDATE_BEGINPASS_COLORATTACHMENTVIEW_SAMPLECOUNT,
+        SG_LOGITEM_VALIDATE_BEGINPASS_COLORATTACHMENTVIEW_SAMPLECOUNTS_EQUAL,
+        SG_LOGITEM_VALIDATE_BEGINPASS_RESOLVEATTACHMENTVIEW_NO_COLORATTACHMENTVIEW,
+        SG_LOGITEM_VALIDATE_BEGINPASS_RESOLVEATTACHMENTVIEW_ALIVE,
+        SG_LOGITEM_VALIDATE_BEGINPASS_RESOLVEATTACHMENTVIEW_VALID,
+        SG_LOGITEM_VALIDATE_BEGINPASS_RESOLVEATTACHMENTVIEW_TYPE,
+        SG_LOGITEM_VALIDATE_BEGINPASS_RESOLVEATTACHMENTVIEW_IMAGE_ALIVE,
+        SG_LOGITEM_VALIDATE_BEGINPASS_RESOLVEATTACHMENTVIEW_IMAGE_VALID,
+        SG_LOGITEM_VALIDATE_BEGINPASS_RESOLVEATTACHMENTVIEW_SIZES,
+        SG_LOGITEM_VALIDATE_BEGINPASS_DEPTHSTENCILATTACHMENTVIEWS_CONTINUOUS,
+        SG_LOGITEM_VALIDATE_BEGINPASS_DEPTHSTENCILATTACHMENTVIEW_ALIVE,
+        SG_LOGITEM_VALIDATE_BEGINPASS_DEPTHSTENCILATTACHMENTVIEW_VALID,
+        SG_LOGITEM_VALIDATE_BEGINPASS_DEPTHSTENCILATTACHMENTVIEW_TYPE,
+        SG_LOGITEM_VALIDATE_BEGINPASS_DEPTHSTENCILATTACHMENTVIEW_IMAGE_ALIVE,
+        SG_LOGITEM_VALIDATE_BEGINPASS_DEPTHSTENCILATTACHMENTVIEW_IMAGE_VALID,
+        SG_LOGITEM_VALIDATE_BEGINPASS_DEPTHSTENCILATTACHMENTVIEW_SIZES,
+        SG_LOGITEM_VALIDATE_BEGINPASS_DEPTHSTENCILATTACHMENTVIEW_SAMPLECOUNT,
+        SG_LOGITEM_VALIDATE_BEGINPASS_ATTACHMENTS_EXPECTED,
         SG_LOGITEM_VALIDATE_AVP_RENDERPASS_EXPECTED,
         SG_LOGITEM_VALIDATE_ASR_RENDERPASS_EXPECTED,
         SG_LOGITEM_VALIDATE_APIP_PIPELINE_VALID_ID,
         SG_LOGITEM_VALIDATE_APIP_PIPELINE_EXISTS,
         SG_LOGITEM_VALIDATE_APIP_PIPELINE_VALID,
         SG_LOGITEM_VALIDATE_APIP_PASS_EXPECTED,
-        SG_LOGITEM_VALIDATE_APIP_SHADER_EXISTS,
-        SG_LOGITEM_VALIDATE_APIP_SHADER_VALID,
+        SG_LOGITEM_VALIDATE_APIP_PIPELINE_SHADER_ALIVE,
+        SG_LOGITEM_VALIDATE_APIP_PIPELINE_SHADER_VALID,
         SG_LOGITEM_VALIDATE_APIP_COMPUTEPASS_EXPECTED,
         SG_LOGITEM_VALIDATE_APIP_RENDERPASS_EXPECTED,
-        SG_LOGITEM_VALIDATE_APIP_CURPASS_ATTACHMENTS_EXISTS,
-        SG_LOGITEM_VALIDATE_APIP_CURPASS_ATTACHMENTS_VALID,
-        SG_LOGITEM_VALIDATE_APIP_ATT_COUNT,
-        SG_LOGITEM_VALIDATE_APIP_COLOR_FORMAT,
-        SG_LOGITEM_VALIDATE_APIP_DEPTH_FORMAT,
-        SG_LOGITEM_VALIDATE_APIP_SAMPLE_COUNT,
+        SG_LOGITEM_VALIDATE_APIP_SWAPCHAIN_COLOR_COUNT,
+        SG_LOGITEM_VALIDATE_APIP_SWAPCHAIN_COLOR_FORMAT,
+        SG_LOGITEM_VALIDATE_APIP_SWAPCHAIN_DEPTH_FORMAT,
+        SG_LOGITEM_VALIDATE_APIP_SWAPCHAIN_SAMPLE_COUNT,
+        SG_LOGITEM_VALIDATE_APIP_ATTACHMENTS_ALIVE,
+        SG_LOGITEM_VALIDATE_APIP_COLORATTACHMENTS_COUNT,
+        SG_LOGITEM_VALIDATE_APIP_COLORATTACHMENTS_VIEW_VALID,
+        SG_LOGITEM_VALIDATE_APIP_COLORATTACHMENTS_IMAGE_VALID,
+        SG_LOGITEM_VALIDATE_APIP_COLORATTACHMENTS_FORMAT,
+        SG_LOGITEM_VALIDATE_APIP_DEPTHSTENCILATTACHMENT_VIEW_VALID,
+        SG_LOGITEM_VALIDATE_APIP_DEPTHSTENCILATTACHMENT_IMAGE_VALID,
+        SG_LOGITEM_VALIDATE_APIP_DEPTHSTENCILATTACHMENT_FORMAT,
+        SG_LOGITEM_VALIDATE_APIP_ATTACHMENT_SAMPLE_COUNT,
         SG_LOGITEM_VALIDATE_ABND_PASS_EXPECTED,
         SG_LOGITEM_VALIDATE_ABND_EMPTY_BINDINGS,
-        SG_LOGITEM_VALIDATE_ABND_PIPELINE,
-        SG_LOGITEM_VALIDATE_ABND_PIPELINE_EXISTS,
+        SG_LOGITEM_VALIDATE_ABND_NO_PIPELINE,
+        SG_LOGITEM_VALIDATE_ABND_PIPELINE_ALIVE,
         SG_LOGITEM_VALIDATE_ABND_PIPELINE_VALID,
-        SG_LOGITEM_VALIDATE_ABND_COMPUTE_EXPECTED_NO_VBS,
-        SG_LOGITEM_VALIDATE_ABND_COMPUTE_EXPECTED_NO_IB,
-        SG_LOGITEM_VALIDATE_ABND_EXPECTED_VB,
-        SG_LOGITEM_VALIDATE_ABND_VB_EXISTS,
-        SG_LOGITEM_VALIDATE_ABND_VB_TYPE,
-        SG_LOGITEM_VALIDATE_ABND_VB_OVERFLOW,
-        SG_LOGITEM_VALIDATE_ABND_NO_IB,
-        SG_LOGITEM_VALIDATE_ABND_IB,
-        SG_LOGITEM_VALIDATE_ABND_IB_EXISTS,
-        SG_LOGITEM_VALIDATE_ABND_IB_TYPE,
-        SG_LOGITEM_VALIDATE_ABND_IB_OVERFLOW,
-        SG_LOGITEM_VALIDATE_ABND_EXPECTED_IMAGE_BINDING,
-        SG_LOGITEM_VALIDATE_ABND_IMG_EXISTS,
-        SG_LOGITEM_VALIDATE_ABND_IMAGE_TYPE_MISMATCH,
-        SG_LOGITEM_VALIDATE_ABND_EXPECTED_MULTISAMPLED_IMAGE,
-        SG_LOGITEM_VALIDATE_ABND_IMAGE_MSAA,
-        SG_LOGITEM_VALIDATE_ABND_EXPECTED_FILTERABLE_IMAGE,
-        SG_LOGITEM_VALIDATE_ABND_EXPECTED_DEPTH_IMAGE,
+        SG_LOGITEM_VALIDATE_ABND_PIPELINE_SHADER_ALIVE,
+        SG_LOGITEM_VALIDATE_ABND_PIPELINE_SHADER_VALID,
+        SG_LOGITEM_VALIDATE_ABND_COMPUTE_EXPECTED_NO_VBUFS,
+        SG_LOGITEM_VALIDATE_ABND_COMPUTE_EXPECTED_NO_IBUF,
+        SG_LOGITEM_VALIDATE_ABND_EXPECTED_VBUF,
+        SG_LOGITEM_VALIDATE_ABND_VBUF_ALIVE,
+        SG_LOGITEM_VALIDATE_ABND_VBUF_USAGE,
+        SG_LOGITEM_VALIDATE_ABND_VBUF_OVERFLOW,
+        SG_LOGITEM_VALIDATE_ABND_EXPECTED_NO_IBUF,
+        SG_LOGITEM_VALIDATE_ABND_EXPECTED_IBUF,
+        SG_LOGITEM_VALIDATE_ABND_IBUF_ALIVE,
+        SG_LOGITEM_VALIDATE_ABND_IBUF_USAGE,
+        SG_LOGITEM_VALIDATE_ABND_IBUF_OVERFLOW,
+        SG_LOGITEM_VALIDATE_ABND_EXPECTED_VIEW_BINDING,
+        SG_LOGITEM_VALIDATE_ABND_VIEW_ALIVE,
+        SG_LOGITEM_VALIDATE_ABND_EXPECT_TEXVIEW,
+        SG_LOGITEM_VALIDATE_ABND_EXPECT_SBVIEW,
+        SG_LOGITEM_VALIDATE_ABND_EXPECT_SIMGVIEW,
+        SG_LOGITEM_VALIDATE_ABND_TEXVIEW_IMAGETYPE_MISMATCH,
+        SG_LOGITEM_VALIDATE_ABND_TEXVIEW_EXPECTED_MULTISAMPLED_IMAGE,
+        SG_LOGITEM_VALIDATE_ABND_TEXVIEW_EXPECTED_NON_MULTISAMPLED_IMAGE,
+        SG_LOGITEM_VALIDATE_ABND_TEXVIEW_EXPECTED_FILTERABLE_IMAGE,
+        SG_LOGITEM_VALIDATE_ABND_TEXVIEW_EXPECTED_DEPTH_IMAGE,
+        SG_LOGITEM_VALIDATE_ABND_SBVIEW_READWRITE_IMMUTABLE,
+        SG_LOGITEM_VALIDATE_ABND_SIMGVIEW_COMPUTE_PASS_EXPECTED,
+        SG_LOGITEM_VALIDATE_ABND_SIMGVIEW_IMAGETYPE_MISMATCH,
+        SG_LOGITEM_VALIDATE_ABND_SIMGVIEW_ACCESSFORMAT,
         SG_LOGITEM_VALIDATE_ABND_EXPECTED_SAMPLER_BINDING,
         SG_LOGITEM_VALIDATE_ABND_UNEXPECTED_SAMPLER_COMPARE_NEVER,
         SG_LOGITEM_VALIDATE_ABND_EXPECTED_SAMPLER_COMPARE_NEVER,
         SG_LOGITEM_VALIDATE_ABND_EXPECTED_NONFILTERING_SAMPLER,
-        SG_LOGITEM_VALIDATE_ABND_SMP_EXISTS,
-        SG_LOGITEM_VALIDATE_ABND_EXPECTED_STORAGEBUFFER_BINDING,
-        SG_LOGITEM_VALIDATE_ABND_STORAGEBUFFER_EXISTS,
-        SG_LOGITEM_VALIDATE_ABND_STORAGEBUFFER_BINDING_BUFFERTYPE,
-        SG_LOGITEM_VALIDATE_ABND_STORAGEBUFFER_READWRITE_IMMUTABLE,
+        SG_LOGITEM_VALIDATE_ABND_SAMPLER_ALIVE,
+        SG_LOGITEM_VALIDATE_ABND_SAMPLER_VALID,
+        SG_LOGITEM_VALIDATE_ABND_TEXTURE_BINDING_VS_DEPTHSTENCIL_ATTACHMENT,
+        SG_LOGITEM_VALIDATE_ABND_TEXTURE_BINDING_VS_COLOR_ATTACHMENT,
+        SG_LOGITEM_VALIDATE_ABND_TEXTURE_BINDING_VS_RESOLVE_ATTACHMENT,
+        SG_LOGITEM_VALIDATE_ABND_TEXTURE_VS_STORAGEIMAGE_BINDING,
         SG_LOGITEM_VALIDATE_AU_PASS_EXPECTED,
         SG_LOGITEM_VALIDATE_AU_NO_PIPELINE,
+        SG_LOGITEM_VALIDATE_AU_PIPELINE_ALIVE,
+        SG_LOGITEM_VALIDATE_AU_PIPELINE_VALID,
+        SG_LOGITEM_VALIDATE_AU_PIPELINE_SHADER_ALIVE,
+        SG_LOGITEM_VALIDATE_AU_PIPELINE_SHADER_VALID,
         SG_LOGITEM_VALIDATE_AU_NO_UNIFORMBLOCK_AT_SLOT,
         SG_LOGITEM_VALIDATE_AU_SIZE,
         SG_LOGITEM_VALIDATE_DRAW_RENDERPASS_EXPECTED,
-        SG_LOGITEM_VALIDATE_DRAW_BASEELEMENT,
-        SG_LOGITEM_VALIDATE_DRAW_NUMELEMENTS,
-        SG_LOGITEM_VALIDATE_DRAW_NUMINSTANCES,
+        SG_LOGITEM_VALIDATE_DRAW_BASEELEMENT_GE_ZERO,
+        SG_LOGITEM_VALIDATE_DRAW_NUMELEMENTS_GE_ZERO,
+        SG_LOGITEM_VALIDATE_DRAW_NUMINSTANCES_GE_ZERO,
+        SG_LOGITEM_VALIDATE_DRAW_EX_RENDERPASS_EXPECTED,
+        SG_LOGITEM_VALIDATE_DRAW_EX_BASEELEMENT_GE_ZERO,
+        SG_LOGITEM_VALIDATE_DRAW_EX_NUMELEMENTS_GE_ZERO,
+        SG_LOGITEM_VALIDATE_DRAW_EX_NUMINSTANCES_GE_ZERO,
+        SG_LOGITEM_VALIDATE_DRAW_EX_BASEINSTANCE_GE_ZERO,
+        SG_LOGITEM_VALIDATE_DRAW_EX_BASEVERTEX_VS_INDEXED,
+        SG_LOGITEM_VALIDATE_DRAW_EX_BASEINSTANCE_VS_INSTANCED,
+        SG_LOGITEM_VALIDATE_DRAW_EX_BASEVERTEX_NOT_SUPPORTED,
+        SG_LOGITEM_VALIDATE_DRAW_EX_BASEINSTANCE_NOT_SUPPORTED,
         SG_LOGITEM_VALIDATE_DRAW_REQUIRED_BINDINGS_OR_UNIFORMS_MISSING,
         SG_LOGITEM_VALIDATE_DISPATCH_COMPUTEPASS_EXPECTED,
         SG_LOGITEM_VALIDATE_DISPATCH_NUMGROUPSX,
@@ -2370,6 +2787,24 @@ namespace Zinc.Internal.Sokol
         public void* device;
     }
 
+    public unsafe partial struct sg_vulkan_environment
+    {
+        [NativeTypeName("const void *")]
+        public void* instance;
+
+        [NativeTypeName("const void *")]
+        public void* physical_device;
+
+        [NativeTypeName("const void *")]
+        public void* device;
+
+        [NativeTypeName("const void *")]
+        public void* queue;
+
+        [NativeTypeName("uint32_t")]
+        public uint queue_family_index;
+    }
+
     public partial struct sg_environment
     {
         public sg_environment_defaults defaults;
@@ -2379,6 +2814,8 @@ namespace Zinc.Internal.Sokol
         public sg_d3d11_environment d3d11;
 
         public sg_wgpu_environment wgpu;
+
+        public sg_vulkan_environment vulkan;
     }
 
     public unsafe partial struct sg_commit_listener
@@ -2408,6 +2845,38 @@ namespace Zinc.Internal.Sokol
         public void* user_data;
     }
 
+    public partial struct sg_d3d11_desc
+    {
+        [NativeTypeName("bool")]
+        public byte shader_debugging;
+    }
+
+    public partial struct sg_metal_desc
+    {
+        [NativeTypeName("bool")]
+        public byte force_managed_storage_mode;
+
+        [NativeTypeName("bool")]
+        public byte use_command_buffer_with_retained_references;
+    }
+
+    public partial struct sg_wgpu_desc
+    {
+        [NativeTypeName("bool")]
+        public byte disable_bindgroups_cache;
+
+        public int bindgroups_cache_size;
+    }
+
+    public partial struct sg_vulkan_desc
+    {
+        public int copy_staging_buffer_size;
+
+        public int stream_staging_buffer_size;
+
+        public int descriptor_buffer_size;
+    }
+
     public partial struct sg_desc
     {
         [NativeTypeName("uint32_t")]
@@ -2423,11 +2892,9 @@ namespace Zinc.Internal.Sokol
 
         public int pipeline_pool_size;
 
-        public int attachments_pool_size;
+        public int view_pool_size;
 
         public int uniform_buffer_size;
-
-        public int max_dispatch_calls_per_pass;
 
         public int max_commit_listeners;
 
@@ -2435,18 +2902,15 @@ namespace Zinc.Internal.Sokol
         public byte disable_validation;
 
         [NativeTypeName("bool")]
-        public byte d3d11_shader_debugging;
+        public byte enforce_portable_limits;
 
-        [NativeTypeName("bool")]
-        public byte mtl_force_managed_storage_mode;
+        public sg_d3d11_desc d3d11;
 
-        [NativeTypeName("bool")]
-        public byte mtl_use_command_buffer_with_retained_references;
+        public sg_metal_desc metal;
 
-        [NativeTypeName("bool")]
-        public byte wgpu_disable_bindgroups_cache;
+        public sg_wgpu_desc wgpu;
 
-        public int wgpu_bindgroups_cache_size;
+        public sg_vulkan_desc vulkan;
 
         public sg_allocator allocator;
 
@@ -2474,9 +2938,6 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("const void *")]
         public void* res;
-
-        [NativeTypeName("const void *")]
-        public void* srv;
     }
 
     public unsafe partial struct sg_d3d11_sampler_info
@@ -2536,56 +2997,19 @@ namespace Zinc.Internal.Sokol
         public void* bs;
     }
 
-    public unsafe partial struct sg_d3d11_attachments_info
+    public unsafe partial struct sg_d3d11_view_info
     {
-        [NativeTypeName("const void *[4]")]
-        public _color_rtv_e__FixedBuffer color_rtv;
+        [NativeTypeName("const void *")]
+        public void* srv;
 
-        [NativeTypeName("const void *[4]")]
-        public _resolve_rtv_e__FixedBuffer resolve_rtv;
+        [NativeTypeName("const void *")]
+        public void* uav;
+
+        [NativeTypeName("const void *")]
+        public void* rtv;
 
         [NativeTypeName("const void *")]
         public void* dsv;
-
-        public unsafe partial struct _color_rtv_e__FixedBuffer
-        {
-            public void* e0;
-            public void* e1;
-            public void* e2;
-            public void* e3;
-
-            public ref void* this[int index]
-            {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get
-                {
-                    fixed (void** pThis = &e0)
-                    {
-                        return ref pThis[index];
-                    }
-                }
-            }
-        }
-
-        public unsafe partial struct _resolve_rtv_e__FixedBuffer
-        {
-            public void* e0;
-            public void* e1;
-            public void* e2;
-            public void* e3;
-
-            public ref void* this[int index]
-            {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get
-                {
-                    fixed (void** pThis = &e0)
-                    {
-                        return ref pThis[index];
-                    }
-                }
-            }
-        }
     }
 
     public partial struct sg_mtl_buffer_info
@@ -2680,9 +3104,6 @@ namespace Zinc.Internal.Sokol
     {
         [NativeTypeName("const void *")]
         public void* tex;
-
-        [NativeTypeName("const void *")]
-        public void* view;
     }
 
     public unsafe partial struct sg_wgpu_sampler_info
@@ -2712,56 +3133,10 @@ namespace Zinc.Internal.Sokol
         public void* compute_pipeline;
     }
 
-    public unsafe partial struct sg_wgpu_attachments_info
+    public unsafe partial struct sg_wgpu_view_info
     {
-        [NativeTypeName("const void *[4]")]
-        public _color_view_e__FixedBuffer color_view;
-
-        [NativeTypeName("const void *[4]")]
-        public _resolve_view_e__FixedBuffer resolve_view;
-
         [NativeTypeName("const void *")]
-        public void* ds_view;
-
-        public unsafe partial struct _color_view_e__FixedBuffer
-        {
-            public void* e0;
-            public void* e1;
-            public void* e2;
-            public void* e3;
-
-            public ref void* this[int index]
-            {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get
-                {
-                    fixed (void** pThis = &e0)
-                    {
-                        return ref pThis[index];
-                    }
-                }
-            }
-        }
-
-        public unsafe partial struct _resolve_view_e__FixedBuffer
-        {
-            public void* e0;
-            public void* e1;
-            public void* e2;
-            public void* e3;
-
-            public ref void* this[int index]
-            {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get
-                {
-                    fixed (void** pThis = &e0)
-                    {
-                        return ref pThis[index];
-                    }
-                }
-            }
-        }
+        public void* view;
     }
 
     public partial struct sg_gl_buffer_info
@@ -2786,9 +3161,6 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("uint32_t")]
         public uint tex_target;
 
-        [NativeTypeName("uint32_t")]
-        public uint msaa_render_buffer;
-
         public int active_slot;
 
         [InlineArray(2)]
@@ -2810,16 +3182,19 @@ namespace Zinc.Internal.Sokol
         public uint prog;
     }
 
-    public partial struct sg_gl_attachments_info
+    public partial struct sg_gl_view_info
     {
+        [NativeTypeName("uint32_t[2]")]
+        public _tex_view_e__FixedBuffer tex_view;
+
         [NativeTypeName("uint32_t")]
-        public uint framebuffer;
+        public uint msaa_render_buffer;
 
-        [NativeTypeName("uint32_t[4]")]
-        public _msaa_resolve_framebuffer_e__FixedBuffer msaa_resolve_framebuffer;
+        [NativeTypeName("uint32_t")]
+        public uint msaa_resolve_frame_buffer;
 
-        [InlineArray(4)]
-        public partial struct _msaa_resolve_framebuffer_e__FixedBuffer
+        [InlineArray(2)]
+        public partial struct _tex_view_e__FixedBuffer
         {
             public uint e0;
         }
@@ -2829,17 +3204,19 @@ namespace Zinc.Internal.Sokol
     {
         public const uint SG_INVALID_ID = 0;
         public const uint SG_NUM_INFLIGHT_FRAMES = 2;
-        public const uint SG_MAX_COLOR_ATTACHMENTS = 4;
+        public const uint SG_MAX_COLOR_ATTACHMENTS = 8;
         public const uint SG_MAX_UNIFORMBLOCK_MEMBERS = 16;
         public const uint SG_MAX_VERTEX_ATTRIBUTES = 16;
         public const uint SG_MAX_MIPMAPS = 16;
-        public const uint SG_MAX_TEXTUREARRAY_LAYERS = 128;
-        public const uint SG_MAX_UNIFORMBLOCK_BINDSLOTS = 8;
         public const uint SG_MAX_VERTEXBUFFER_BINDSLOTS = 8;
-        public const uint SG_MAX_IMAGE_BINDSLOTS = 16;
-        public const uint SG_MAX_SAMPLER_BINDSLOTS = 16;
-        public const uint SG_MAX_STORAGEBUFFER_BINDSLOTS = 8;
-        public const uint SG_MAX_IMAGE_SAMPLER_PAIRS = 16;
+        public const uint SG_MAX_UNIFORMBLOCK_BINDSLOTS = 8;
+        public const uint SG_MAX_VIEW_BINDSLOTS = 32;
+        public const uint SG_MAX_SAMPLER_BINDSLOTS = 12;
+        public const uint SG_MAX_TEXTURE_SAMPLER_PAIRS = 32;
+        public const uint SG_MAX_PORTABLE_COLOR_ATTACHMENTS = 4;
+        public const uint SG_MAX_PORTABLE_TEXTURE_BINDINGS_PER_STAGE = 16;
+        public const uint SG_MAX_PORTABLE_STORAGEBUFFER_BINDINGS_PER_STAGE = 8;
+        public const uint SG_MAX_PORTABLE_STORAGEIMAGE_BINDINGS_PER_STAGE = 4;
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_setup", ExactSpelling = true)]
         public static extern void setup([NativeTypeName("const sg_desc *")] sg_desc* desc);
@@ -2886,8 +3263,8 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_make_pipeline", ExactSpelling = true)]
         public static extern sg_pipeline make_pipeline([NativeTypeName("const sg_pipeline_desc *")] sg_pipeline_desc* desc);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_make_attachments", ExactSpelling = true)]
-        public static extern sg_attachments make_attachments([NativeTypeName("const sg_attachments_desc *")] sg_attachments_desc* desc);
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_make_view", ExactSpelling = true)]
+        public static extern sg_view make_view([NativeTypeName("const sg_view_desc *")] sg_view_desc* desc);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_destroy_buffer", ExactSpelling = true)]
         public static extern void destroy_buffer(sg_buffer buf);
@@ -2904,8 +3281,8 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_destroy_pipeline", ExactSpelling = true)]
         public static extern void destroy_pipeline(sg_pipeline pip);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_destroy_attachments", ExactSpelling = true)]
-        public static extern void destroy_attachments(sg_attachments atts);
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_destroy_view", ExactSpelling = true)]
+        public static extern void destroy_view(sg_view view);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_update_buffer", ExactSpelling = true)]
         public static extern void update_buffer(sg_buffer buf, [NativeTypeName("const sg_range *")] sg_range* data);
@@ -2950,6 +3327,9 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_draw", ExactSpelling = true)]
         public static extern void draw(int base_element, int num_elements, int num_instances);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_draw_ex", ExactSpelling = true)]
+        public static extern void draw_ex(int base_element, int num_elements, int num_instances, int base_vertex, int base_instance);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_dispatch", ExactSpelling = true)]
         public static extern void dispatch(int num_groups_x, int num_groups_y, int num_groups_z);
@@ -2996,8 +3376,8 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_pipeline_state", ExactSpelling = true)]
         public static extern sg_resource_state query_pipeline_state(sg_pipeline pip);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_attachments_state", ExactSpelling = true)]
-        public static extern sg_resource_state query_attachments_state(sg_attachments atts);
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_view_state", ExactSpelling = true)]
+        public static extern sg_resource_state query_view_state(sg_view view);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_buffer_info", ExactSpelling = true)]
         public static extern sg_buffer_info query_buffer_info(sg_buffer buf);
@@ -3014,8 +3394,8 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_pipeline_info", ExactSpelling = true)]
         public static extern sg_pipeline_info query_pipeline_info(sg_pipeline pip);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_attachments_info", ExactSpelling = true)]
-        public static extern sg_attachments_info query_attachments_info(sg_attachments atts);
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_view_info", ExactSpelling = true)]
+        public static extern sg_view_info query_view_info(sg_view view);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_buffer_desc", ExactSpelling = true)]
         public static extern sg_buffer_desc query_buffer_desc(sg_buffer buf);
@@ -3032,8 +3412,8 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_pipeline_desc", ExactSpelling = true)]
         public static extern sg_pipeline_desc query_pipeline_desc(sg_pipeline pip);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_attachments_desc", ExactSpelling = true)]
-        public static extern sg_attachments_desc query_attachments_desc(sg_attachments atts);
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_view_desc", ExactSpelling = true)]
+        public static extern sg_view_desc query_view_desc(sg_view view);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_buffer_defaults", ExactSpelling = true)]
         public static extern sg_buffer_desc query_buffer_defaults([NativeTypeName("const sg_buffer_desc *")] sg_buffer_desc* desc);
@@ -3050,18 +3430,15 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_pipeline_defaults", ExactSpelling = true)]
         public static extern sg_pipeline_desc query_pipeline_defaults([NativeTypeName("const sg_pipeline_desc *")] sg_pipeline_desc* desc);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_attachments_defaults", ExactSpelling = true)]
-        public static extern sg_attachments_desc query_attachments_defaults([NativeTypeName("const sg_attachments_desc *")] sg_attachments_desc* desc);
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_view_defaults", ExactSpelling = true)]
+        public static extern sg_view_desc query_view_defaults([NativeTypeName("const sg_view_desc *")] sg_view_desc* desc);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_buffer_size", ExactSpelling = true)]
         [return: NativeTypeName("size_t")]
         public static extern nuint query_buffer_size(sg_buffer buf);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_buffer_type", ExactSpelling = true)]
-        public static extern sg_buffer_type query_buffer_type(sg_buffer buf);
-
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_buffer_usage", ExactSpelling = true)]
-        public static extern sg_usage query_buffer_usage(sg_buffer buf);
+        public static extern sg_buffer_usage query_buffer_usage(sg_buffer buf);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_image_type", ExactSpelling = true)]
         public static extern sg_image_type query_image_type(sg_image img);
@@ -3082,10 +3459,19 @@ namespace Zinc.Internal.Sokol
         public static extern sg_pixel_format query_image_pixelformat(sg_image img);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_image_usage", ExactSpelling = true)]
-        public static extern sg_usage query_image_usage(sg_image img);
+        public static extern sg_image_usage query_image_usage(sg_image img);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_image_sample_count", ExactSpelling = true)]
         public static extern int query_image_sample_count(sg_image img);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_view_type", ExactSpelling = true)]
+        public static extern sg_view_type query_view_type(sg_view view);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_view_image", ExactSpelling = true)]
+        public static extern sg_image query_view_image(sg_view view);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_view_buffer", ExactSpelling = true)]
+        public static extern sg_buffer query_view_buffer(sg_view view);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_alloc_buffer", ExactSpelling = true)]
         public static extern sg_buffer alloc_buffer();
@@ -3102,8 +3488,8 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_alloc_pipeline", ExactSpelling = true)]
         public static extern sg_pipeline alloc_pipeline();
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_alloc_attachments", ExactSpelling = true)]
-        public static extern sg_attachments alloc_attachments();
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_alloc_view", ExactSpelling = true)]
+        public static extern sg_view alloc_view();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_dealloc_buffer", ExactSpelling = true)]
         public static extern void dealloc_buffer(sg_buffer buf);
@@ -3120,8 +3506,8 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_dealloc_pipeline", ExactSpelling = true)]
         public static extern void dealloc_pipeline(sg_pipeline pip);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_dealloc_attachments", ExactSpelling = true)]
-        public static extern void dealloc_attachments(sg_attachments attachments);
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_dealloc_view", ExactSpelling = true)]
+        public static extern void dealloc_view(sg_view view);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_init_buffer", ExactSpelling = true)]
         public static extern void init_buffer(sg_buffer buf, [NativeTypeName("const sg_buffer_desc *")] sg_buffer_desc* desc);
@@ -3138,8 +3524,8 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_init_pipeline", ExactSpelling = true)]
         public static extern void init_pipeline(sg_pipeline pip, [NativeTypeName("const sg_pipeline_desc *")] sg_pipeline_desc* desc);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_init_attachments", ExactSpelling = true)]
-        public static extern void init_attachments(sg_attachments attachments, [NativeTypeName("const sg_attachments_desc *")] sg_attachments_desc* desc);
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_init_view", ExactSpelling = true)]
+        public static extern void init_view(sg_view view, [NativeTypeName("const sg_view_desc *")] sg_view_desc* desc);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_uninit_buffer", ExactSpelling = true)]
         public static extern void uninit_buffer(sg_buffer buf);
@@ -3156,8 +3542,8 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_uninit_pipeline", ExactSpelling = true)]
         public static extern void uninit_pipeline(sg_pipeline pip);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_uninit_attachments", ExactSpelling = true)]
-        public static extern void uninit_attachments(sg_attachments atts);
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_uninit_view", ExactSpelling = true)]
+        public static extern void uninit_view(sg_view view);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_fail_buffer", ExactSpelling = true)]
         public static extern void fail_buffer(sg_buffer buf);
@@ -3174,21 +3560,21 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_fail_pipeline", ExactSpelling = true)]
         public static extern void fail_pipeline(sg_pipeline pip);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_fail_attachments", ExactSpelling = true)]
-        public static extern void fail_attachments(sg_attachments atts);
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_fail_view", ExactSpelling = true)]
+        public static extern void fail_view(sg_view view);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_enable_frame_stats", ExactSpelling = true)]
-        public static extern void enable_frame_stats();
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_enable_stats", ExactSpelling = true)]
+        public static extern void enable_stats();
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_disable_frame_stats", ExactSpelling = true)]
-        public static extern void disable_frame_stats();
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_disable_stats", ExactSpelling = true)]
+        public static extern void disable_stats();
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_frame_stats_enabled", ExactSpelling = true)]
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_stats_enabled", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte frame_stats_enabled();
+        public static extern byte stats_enabled();
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_frame_stats", ExactSpelling = true)]
-        public static extern sg_frame_stats query_frame_stats();
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_query_stats", ExactSpelling = true)]
+        public static extern sg_stats query_stats();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_d3d11_device", ExactSpelling = true)]
         [return: NativeTypeName("const void *")]
@@ -3213,8 +3599,8 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_d3d11_query_pipeline_info", ExactSpelling = true)]
         public static extern sg_d3d11_pipeline_info d3d11_query_pipeline_info(sg_pipeline pip);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_d3d11_query_attachments_info", ExactSpelling = true)]
-        public static extern sg_d3d11_attachments_info d3d11_query_attachments_info(sg_attachments atts);
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_d3d11_query_view_info", ExactSpelling = true)]
+        public static extern sg_d3d11_view_info d3d11_query_view_info(sg_view view);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_mtl_device", ExactSpelling = true)]
         [return: NativeTypeName("const void *")]
@@ -3227,6 +3613,10 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_mtl_compute_command_encoder", ExactSpelling = true)]
         [return: NativeTypeName("const void *")]
         public static extern void* mtl_compute_command_encoder();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_mtl_command_queue", ExactSpelling = true)]
+        [return: NativeTypeName("const void *")]
+        public static extern void* mtl_command_queue();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_mtl_query_buffer_info", ExactSpelling = true)]
         public static extern sg_mtl_buffer_info mtl_query_buffer_info(sg_buffer buf);
@@ -3278,8 +3668,8 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_wgpu_query_pipeline_info", ExactSpelling = true)]
         public static extern sg_wgpu_pipeline_info wgpu_query_pipeline_info(sg_pipeline pip);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_wgpu_query_attachments_info", ExactSpelling = true)]
-        public static extern sg_wgpu_attachments_info wgpu_query_attachments_info(sg_attachments atts);
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_wgpu_query_view_info", ExactSpelling = true)]
+        public static extern sg_wgpu_view_info wgpu_query_view_info(sg_view view);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_gl_query_buffer_info", ExactSpelling = true)]
         public static extern sg_gl_buffer_info gl_query_buffer_info(sg_buffer buf);
@@ -3293,7 +3683,7 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_gl_query_shader_info", ExactSpelling = true)]
         public static extern sg_gl_shader_info gl_query_shader_info(sg_shader shd);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_gl_query_attachments_info", ExactSpelling = true)]
-        public static extern sg_gl_attachments_info gl_query_attachments_info(sg_attachments atts);
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sg_gl_query_view_info", ExactSpelling = true)]
+        public static extern sg_gl_view_info gl_query_view_info(sg_view view);
     }
 }

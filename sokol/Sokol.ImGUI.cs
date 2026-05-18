@@ -9,7 +9,11 @@ namespace Zinc.Internal.Sokol
     {
     }
 
-    public partial struct ImFontBuilderIO_t
+    public partial struct ImFontAtlasBuilder_t
+    {
+    }
+
+    public partial struct ImFontLoader_t
     {
     }
 
@@ -33,6 +37,15 @@ namespace Zinc.Internal.Sokol
         public float z;
 
         public float w;
+    }
+
+    public unsafe partial struct ImTextureRef_t
+    {
+        [NativeTypeName("ImTextureData *")]
+        public ImTextureData_t* _TexData;
+
+        [NativeTypeName("ImTextureID")]
+        public ulong _TexID;
     }
 
     [NativeTypeName("unsigned int")]
@@ -68,8 +81,6 @@ namespace Zinc.Internal.Sokol
         ImGuiWindowFlags_Popup = 1 << 26,
         ImGuiWindowFlags_Modal = 1 << 27,
         ImGuiWindowFlags_ChildMenu = 1 << 28,
-        ImGuiWindowFlags_NavFlattened = 1 << 29,
-        ImGuiWindowFlags_AlwaysUseWindowPadding = 1 << 30,
     }
 
     [NativeTypeName("unsigned int")]
@@ -85,7 +96,6 @@ namespace Zinc.Internal.Sokol
         ImGuiChildFlags_AlwaysAutoResize = 1 << 6,
         ImGuiChildFlags_FrameStyle = 1 << 7,
         ImGuiChildFlags_NavFlattened = 1 << 8,
-        ImGuiChildFlags_Border = ImGuiChildFlags_Borders,
     }
 
     [NativeTypeName("unsigned int")]
@@ -98,6 +108,7 @@ namespace Zinc.Internal.Sokol
         ImGuiItemFlags_ButtonRepeat = 1 << 3,
         ImGuiItemFlags_AutoClosePopups = 1 << 4,
         ImGuiItemFlags_AllowDuplicateId = 1 << 5,
+        ImGuiItemFlags_Disabled = 1 << 6,
     }
 
     [NativeTypeName("unsigned int")]
@@ -128,6 +139,7 @@ namespace Zinc.Internal.Sokol
         ImGuiInputTextFlags_CallbackCharFilter = 1 << 21,
         ImGuiInputTextFlags_CallbackResize = 1 << 22,
         ImGuiInputTextFlags_CallbackEdit = 1 << 23,
+        ImGuiInputTextFlags_WordWrap = 1 << 24,
     }
 
     [NativeTypeName("unsigned int")]
@@ -150,9 +162,12 @@ namespace Zinc.Internal.Sokol
         ImGuiTreeNodeFlags_SpanLabelWidth = 1 << 13,
         ImGuiTreeNodeFlags_SpanAllColumns = 1 << 14,
         ImGuiTreeNodeFlags_LabelSpanAllColumns = 1 << 15,
-        ImGuiTreeNodeFlags_NavLeftJumpsBackHere = 1 << 17,
+        ImGuiTreeNodeFlags_NavLeftJumpsToParent = 1 << 17,
         ImGuiTreeNodeFlags_CollapsingHeader = ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_NoAutoOpenOnLog,
-        ImGuiTreeNodeFlags_AllowItemOverlap = ImGuiTreeNodeFlags_AllowOverlap,
+        ImGuiTreeNodeFlags_DrawLinesNone = 1 << 18,
+        ImGuiTreeNodeFlags_DrawLinesFull = 1 << 19,
+        ImGuiTreeNodeFlags_DrawLinesToNodes = 1 << 20,
+        ImGuiTreeNodeFlags_NavLeftJumpsBackHere = ImGuiTreeNodeFlags_NavLeftJumpsToParent,
         ImGuiTreeNodeFlags_SpanTextWidth = ImGuiTreeNodeFlags_SpanLabelWidth,
     }
 
@@ -160,17 +175,18 @@ namespace Zinc.Internal.Sokol
     public enum ImGuiPopupFlags_ : uint
     {
         ImGuiPopupFlags_None = 0,
-        ImGuiPopupFlags_MouseButtonLeft = 0,
-        ImGuiPopupFlags_MouseButtonRight = 1,
-        ImGuiPopupFlags_MouseButtonMiddle = 2,
-        ImGuiPopupFlags_MouseButtonMask_ = 0x1F,
-        ImGuiPopupFlags_MouseButtonDefault_ = 1,
+        ImGuiPopupFlags_MouseButtonLeft = 1 << 2,
+        ImGuiPopupFlags_MouseButtonRight = 2 << 2,
+        ImGuiPopupFlags_MouseButtonMiddle = 3 << 2,
         ImGuiPopupFlags_NoReopen = 1 << 5,
         ImGuiPopupFlags_NoOpenOverExistingPopup = 1 << 7,
         ImGuiPopupFlags_NoOpenOverItems = 1 << 8,
         ImGuiPopupFlags_AnyPopupId = 1 << 10,
         ImGuiPopupFlags_AnyPopupLevel = 1 << 11,
         ImGuiPopupFlags_AnyPopup = ImGuiPopupFlags_AnyPopupId | ImGuiPopupFlags_AnyPopupLevel,
+        ImGuiPopupFlags_MouseButtonShift_ = 2,
+        ImGuiPopupFlags_MouseButtonMask_ = 0x0C,
+        ImGuiPopupFlags_InvalidMask_ = 0x03,
     }
 
     [NativeTypeName("unsigned int")]
@@ -183,8 +199,8 @@ namespace Zinc.Internal.Sokol
         ImGuiSelectableFlags_Disabled = 1 << 3,
         ImGuiSelectableFlags_AllowOverlap = 1 << 4,
         ImGuiSelectableFlags_Highlight = 1 << 5,
+        ImGuiSelectableFlags_SelectOnNav = 1 << 6,
         ImGuiSelectableFlags_DontClosePopups = ImGuiSelectableFlags_NoAutoClosePopups,
-        ImGuiSelectableFlags_AllowItemOverlap = ImGuiSelectableFlags_AllowOverlap,
     }
 
     [NativeTypeName("unsigned int")]
@@ -213,10 +229,12 @@ namespace Zinc.Internal.Sokol
         ImGuiTabBarFlags_NoTabListScrollingButtons = 1 << 4,
         ImGuiTabBarFlags_NoTooltip = 1 << 5,
         ImGuiTabBarFlags_DrawSelectedOverline = 1 << 6,
-        ImGuiTabBarFlags_FittingPolicyResizeDown = 1 << 7,
-        ImGuiTabBarFlags_FittingPolicyScroll = 1 << 8,
-        ImGuiTabBarFlags_FittingPolicyMask_ = ImGuiTabBarFlags_FittingPolicyResizeDown | ImGuiTabBarFlags_FittingPolicyScroll,
-        ImGuiTabBarFlags_FittingPolicyDefault_ = ImGuiTabBarFlags_FittingPolicyResizeDown,
+        ImGuiTabBarFlags_FittingPolicyMixed = 1 << 7,
+        ImGuiTabBarFlags_FittingPolicyShrink = 1 << 8,
+        ImGuiTabBarFlags_FittingPolicyScroll = 1 << 9,
+        ImGuiTabBarFlags_FittingPolicyMask_ = ImGuiTabBarFlags_FittingPolicyMixed | ImGuiTabBarFlags_FittingPolicyShrink | ImGuiTabBarFlags_FittingPolicyScroll,
+        ImGuiTabBarFlags_FittingPolicyDefault_ = ImGuiTabBarFlags_FittingPolicyMixed,
+        ImGuiTabBarFlags_FittingPolicyResizeDown = ImGuiTabBarFlags_FittingPolicyShrink,
     }
 
     [NativeTypeName("unsigned int")]
@@ -302,6 +320,7 @@ namespace Zinc.Internal.Sokol
         ImGuiDragDropFlags_AcceptBeforeDelivery = 1 << 10,
         ImGuiDragDropFlags_AcceptNoDrawDefaultRect = 1 << 11,
         ImGuiDragDropFlags_AcceptNoPreviewTooltip = 1 << 12,
+        ImGuiDragDropFlags_AcceptDrawAsHovered = 1 << 13,
         ImGuiDragDropFlags_AcceptPeekOnly = ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect,
         ImGuiDragDropFlags_SourceAutoExpirePayload = ImGuiDragDropFlags_PayloadAutoExpire,
     }
@@ -351,12 +370,12 @@ namespace Zinc.Internal.Sokol
         ImGuiConfigFlags_NoKeyboard = 1 << 6,
         ImGuiConfigFlags_DockingEnable = 1 << 7,
         ImGuiConfigFlags_ViewportsEnable = 1 << 10,
-        ImGuiConfigFlags_DpiEnableScaleViewports = 1 << 14,
-        ImGuiConfigFlags_DpiEnableScaleFonts = 1 << 15,
         ImGuiConfigFlags_IsSRGB = 1 << 20,
         ImGuiConfigFlags_IsTouchScreen = 1 << 21,
         ImGuiConfigFlags_NavEnableSetMousePos = 1 << 2,
         ImGuiConfigFlags_NavNoCaptureKeyboard = 1 << 3,
+        ImGuiConfigFlags_DpiEnableScaleFonts = 1 << 14,
+        ImGuiConfigFlags_DpiEnableScaleViewports = 1 << 15,
     }
 
     [NativeTypeName("unsigned int")]
@@ -367,9 +386,11 @@ namespace Zinc.Internal.Sokol
         ImGuiBackendFlags_HasMouseCursors = 1 << 1,
         ImGuiBackendFlags_HasSetMousePos = 1 << 2,
         ImGuiBackendFlags_RendererHasVtxOffset = 1 << 3,
-        ImGuiBackendFlags_PlatformHasViewports = 1 << 10,
-        ImGuiBackendFlags_HasMouseHoveredViewport = 1 << 11,
-        ImGuiBackendFlags_RendererHasViewports = 1 << 12,
+        ImGuiBackendFlags_RendererHasTextures = 1 << 4,
+        ImGuiBackendFlags_RendererHasViewports = 1 << 10,
+        ImGuiBackendFlags_PlatformHasViewports = 1 << 11,
+        ImGuiBackendFlags_HasMouseHoveredViewport = 1 << 12,
+        ImGuiBackendFlags_HasParentViewport = 1 << 13,
     }
 
     [NativeTypeName("unsigned int")]
@@ -394,6 +415,7 @@ namespace Zinc.Internal.Sokol
         ImGuiCol_ScrollbarGrabHovered,
         ImGuiCol_ScrollbarGrabActive,
         ImGuiCol_CheckMark,
+        ImGuiCol_CheckboxSelectedBg,
         ImGuiCol_SliderGrab,
         ImGuiCol_SliderGrabActive,
         ImGuiCol_Button,
@@ -408,6 +430,7 @@ namespace Zinc.Internal.Sokol
         ImGuiCol_ResizeGrip,
         ImGuiCol_ResizeGripHovered,
         ImGuiCol_ResizeGripActive,
+        ImGuiCol_InputTextCursor,
         ImGuiCol_TabHovered,
         ImGuiCol_Tab,
         ImGuiCol_TabSelected,
@@ -428,7 +451,10 @@ namespace Zinc.Internal.Sokol
         ImGuiCol_TableRowBgAlt,
         ImGuiCol_TextLink,
         ImGuiCol_TextSelectedBg,
+        ImGuiCol_TreeLines,
         ImGuiCol_DragDropTarget,
+        ImGuiCol_DragDropTargetBg,
+        ImGuiCol_UnsavedMarker,
         ImGuiCol_NavCursor,
         ImGuiCol_NavWindowingHighlight,
         ImGuiCol_NavWindowingDimBg,
@@ -463,17 +489,25 @@ namespace Zinc.Internal.Sokol
         ImGuiStyleVar_CellPadding,
         ImGuiStyleVar_ScrollbarSize,
         ImGuiStyleVar_ScrollbarRounding,
+        ImGuiStyleVar_ScrollbarPadding,
         ImGuiStyleVar_GrabMinSize,
         ImGuiStyleVar_GrabRounding,
+        ImGuiStyleVar_ImageRounding,
         ImGuiStyleVar_ImageBorderSize,
         ImGuiStyleVar_TabRounding,
         ImGuiStyleVar_TabBorderSize,
+        ImGuiStyleVar_TabMinWidthBase,
+        ImGuiStyleVar_TabMinWidthShrink,
         ImGuiStyleVar_TabBarBorderSize,
         ImGuiStyleVar_TabBarOverlineSize,
         ImGuiStyleVar_TableAngledHeadersAngle,
         ImGuiStyleVar_TableAngledHeadersTextAlign,
+        ImGuiStyleVar_TreeLinesSize,
+        ImGuiStyleVar_TreeLinesRounding,
+        ImGuiStyleVar_DragDropTargetRounding,
         ImGuiStyleVar_ButtonTextAlign,
         ImGuiStyleVar_SelectableTextAlign,
+        ImGuiStyleVar_SeparatorSize,
         ImGuiStyleVar_SeparatorTextBorderSize,
         ImGuiStyleVar_SeparatorTextAlign,
         ImGuiStyleVar_SeparatorTextPadding,
@@ -490,6 +524,7 @@ namespace Zinc.Internal.Sokol
         ImGuiButtonFlags_MouseButtonMiddle = 1 << 2,
         ImGuiButtonFlags_MouseButtonMask_ = ImGuiButtonFlags_MouseButtonLeft | ImGuiButtonFlags_MouseButtonRight | ImGuiButtonFlags_MouseButtonMiddle,
         ImGuiButtonFlags_EnableNav = 1 << 3,
+        ImGuiButtonFlags_AllowOverlap = 1 << 12,
     }
 
     [NativeTypeName("unsigned int")]
@@ -506,10 +541,11 @@ namespace Zinc.Internal.Sokol
         ImGuiColorEditFlags_NoSidePreview = 1 << 8,
         ImGuiColorEditFlags_NoDragDrop = 1 << 9,
         ImGuiColorEditFlags_NoBorder = 1 << 10,
-        ImGuiColorEditFlags_AlphaOpaque = 1 << 11,
-        ImGuiColorEditFlags_AlphaNoBg = 1 << 12,
-        ImGuiColorEditFlags_AlphaPreviewHalf = 1 << 13,
-        ImGuiColorEditFlags_AlphaBar = 1 << 16,
+        ImGuiColorEditFlags_NoColorMarkers = 1 << 11,
+        ImGuiColorEditFlags_AlphaOpaque = 1 << 12,
+        ImGuiColorEditFlags_AlphaNoBg = 1 << 13,
+        ImGuiColorEditFlags_AlphaPreviewHalf = 1 << 14,
+        ImGuiColorEditFlags_AlphaBar = 1 << 18,
         ImGuiColorEditFlags_HDR = 1 << 19,
         ImGuiColorEditFlags_DisplayRGB = 1 << 20,
         ImGuiColorEditFlags_DisplayHSV = 1 << 21,
@@ -540,6 +576,7 @@ namespace Zinc.Internal.Sokol
         ImGuiSliderFlags_ClampOnInput = 1 << 9,
         ImGuiSliderFlags_ClampZeroRange = 1 << 10,
         ImGuiSliderFlags_NoSpeedTweaks = 1 << 11,
+        ImGuiSliderFlags_ColorMarkers = 1 << 12,
         ImGuiSliderFlags_AlwaysClamp = ImGuiSliderFlags_ClampOnInput | ImGuiSliderFlags_ClampZeroRange,
         ImGuiSliderFlags_InvalidMask_ = 0x7000000F,
     }
@@ -697,17 +734,7 @@ namespace Zinc.Internal.Sokol
         public byte SortDirection;
     }
 
-    public unsafe partial struct ImVector_ImWchar_t
-    {
-        public int Size;
-
-        public int Capacity;
-
-        [NativeTypeName("ImWchar *")]
-        public ushort* Data;
-    }
-
-    public unsafe partial struct ImVector_ImGuiTextFilter_ImGuiTextRange_t
+    public unsafe partial struct ImVector_ImGuiTextRange_t
     {
         public int Size;
 
@@ -747,6 +774,16 @@ namespace Zinc.Internal.Sokol
         public ImGuiSelectionRequest_t* Data;
     }
 
+    public unsafe partial struct ImVector_ImDrawChannel_t
+    {
+        public int Size;
+
+        public int Capacity;
+
+        [NativeTypeName("ImDrawChannel *")]
+        public ImDrawChannel_t* Data;
+    }
+
     public unsafe partial struct ImVector_ImDrawCmd_t
     {
         public int Size;
@@ -765,16 +802,6 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("ImDrawIdx *")]
         public ushort* Data;
-    }
-
-    public unsafe partial struct ImVector_ImDrawChannel_t
-    {
-        public int Size;
-
-        public int Capacity;
-
-        [NativeTypeName("ImDrawChannel *")]
-        public ImDrawChannel_t* Data;
     }
 
     public unsafe partial struct ImVector_ImDrawVert_t
@@ -807,14 +834,14 @@ namespace Zinc.Internal.Sokol
         public ImVec4_t* Data;
     }
 
-    public unsafe partial struct ImVector_ImTextureID_t
+    public unsafe partial struct ImVector_ImTextureRef_t
     {
         public int Size;
 
         public int Capacity;
 
-        [NativeTypeName("ImTextureID *")]
-        public ulong* Data;
+        [NativeTypeName("ImTextureRef *")]
+        public ImTextureRef_t* Data;
     }
 
     public unsafe partial struct ImVector_ImU8_t
@@ -837,6 +864,16 @@ namespace Zinc.Internal.Sokol
         public ImDrawList_t** Data;
     }
 
+    public unsafe partial struct ImVector_ImTextureRect_t
+    {
+        public int Size;
+
+        public int Capacity;
+
+        [NativeTypeName("ImTextureRect *")]
+        public ImTextureRect_t* Data;
+    }
+
     public unsafe partial struct ImVector_ImU32_t
     {
         public int Size;
@@ -845,6 +882,16 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("ImU32 *")]
         public uint* Data;
+    }
+
+    public unsafe partial struct ImVector_ImWchar_t
+    {
+        public int Size;
+
+        public int Capacity;
+
+        [NativeTypeName("ImWchar *")]
+        public ushort* Data;
     }
 
     public unsafe partial struct ImVector_ImFontPtr_t
@@ -857,16 +904,6 @@ namespace Zinc.Internal.Sokol
         public ImFont_t** Data;
     }
 
-    public unsafe partial struct ImVector_ImFontAtlasCustomRect_t
-    {
-        public int Size;
-
-        public int Capacity;
-
-        [NativeTypeName("ImFontAtlasCustomRect *")]
-        public ImFontAtlasCustomRect_t* Data;
-    }
-
     public unsafe partial struct ImVector_ImFontConfig_t
     {
         public int Size;
@@ -875,6 +912,16 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("ImFontConfig *")]
         public ImFontConfig_t* Data;
+    }
+
+    public unsafe partial struct ImVector_ImDrawListSharedDataPtr_t
+    {
+        public int Size;
+
+        public int Capacity;
+
+        [NativeTypeName("ImDrawListSharedData **")]
+        public ImDrawListSharedData_t** Data;
     }
 
     public unsafe partial struct ImVector_float_t
@@ -906,6 +953,16 @@ namespace Zinc.Internal.Sokol
         public ImFontGlyph_t* Data;
     }
 
+    public unsafe partial struct ImVector_ImFontConfigPtr_t
+    {
+        public int Size;
+
+        public int Capacity;
+
+        [NativeTypeName("ImFontConfig **")]
+        public ImFontConfig_t** Data;
+    }
+
     public unsafe partial struct ImVector_ImGuiPlatformMonitor_t
     {
         public int Size;
@@ -914,6 +971,16 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("ImGuiPlatformMonitor *")]
         public ImGuiPlatformMonitor_t* Data;
+    }
+
+    public unsafe partial struct ImVector_ImTextureDataPtr_t
+    {
+        public int Size;
+
+        public int Capacity;
+
+        [NativeTypeName("ImTextureData **")]
+        public ImTextureData_t** Data;
     }
 
     public unsafe partial struct ImVector_ImGuiViewportPtr_t
@@ -928,6 +995,12 @@ namespace Zinc.Internal.Sokol
 
     public partial struct ImGuiStyle_t
     {
+        public float FontSizeBase;
+
+        public float FontScaleMain;
+
+        public float FontScaleDpi;
+
         public float Alpha;
 
         public float DisabledAlpha;
@@ -985,17 +1058,25 @@ namespace Zinc.Internal.Sokol
 
         public float ScrollbarRounding;
 
+        public float ScrollbarPadding;
+
         public float GrabMinSize;
 
         public float GrabRounding;
 
         public float LogSliderDeadzone;
 
+        public float ImageRounding;
+
         public float ImageBorderSize;
 
         public float TabRounding;
 
         public float TabBorderSize;
+
+        public float TabMinWidthBase;
+
+        public float TabMinWidthShrink;
 
         public float TabCloseButtonMinWidthSelected;
 
@@ -1010,6 +1091,21 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImVec2")]
         public ImVec2_t TableAngledHeadersTextAlign;
 
+        [NativeTypeName("ImGuiTreeNodeFlags")]
+        public int TreeLinesFlags;
+
+        public float TreeLinesSize;
+
+        public float TreeLinesRounding;
+
+        public float DragDropTargetRounding;
+
+        public float DragDropTargetBorderSize;
+
+        public float DragDropTargetPadding;
+
+        public float ColorMarkerSize;
+
         [NativeTypeName("ImGuiDir")]
         public int ColorButtonPosition;
 
@@ -1018,6 +1114,8 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("ImVec2")]
         public ImVec2_t SelectableTextAlign;
+
+        public float SeparatorSize;
 
         public float SeparatorTextBorderSize;
 
@@ -1032,6 +1130,9 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("ImVec2")]
         public ImVec2_t DisplaySafeAreaPadding;
+
+        [NativeTypeName("bool")]
+        public byte DockingNodeHasCloseButton;
 
         public float DockingSeparatorSize;
 
@@ -1050,7 +1151,7 @@ namespace Zinc.Internal.Sokol
 
         public float CircleTessellationMaxError;
 
-        [NativeTypeName("ImVec4[58]")]
+        [NativeTypeName("ImVec4[63]")]
         public _Colors_e__FixedBuffer Colors;
 
         public float HoverStationaryDelay;
@@ -1065,7 +1166,11 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImGuiHoveredFlags")]
         public int HoverFlagsForTooltipNav;
 
-        [InlineArray(58)]
+        public float _MainScale;
+
+        public float _NextFrameFontSizeBase;
+
+        [InlineArray(63)]
         public partial struct _Colors_e__FixedBuffer
         {
             public ImVec4_t e0;
@@ -1095,6 +1200,9 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImVec2")]
         public ImVec2_t DisplaySize;
 
+        [NativeTypeName("ImVec2")]
+        public ImVec2_t DisplayFramebufferScale;
+
         public float DeltaTime;
 
         public float IniSavingRate;
@@ -1110,16 +1218,11 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImFontAtlas *")]
         public ImFontAtlas_t* Fonts;
 
-        public float FontGlobalScale;
-
-        [NativeTypeName("bool")]
-        public byte FontAllowUserScaling;
-
         [NativeTypeName("ImFont *")]
         public ImFont_t* FontDefault;
 
-        [NativeTypeName("ImVec2")]
-        public ImVec2_t DisplayFramebufferScale;
+        [NativeTypeName("bool")]
+        public byte FontAllowUserScaling;
 
         [NativeTypeName("bool")]
         public byte ConfigNavSwapGamepadButtons;
@@ -1146,6 +1249,9 @@ namespace Zinc.Internal.Sokol
         public byte ConfigDockingNoSplit;
 
         [NativeTypeName("bool")]
+        public byte ConfigDockingNoDockingOver;
+
+        [NativeTypeName("bool")]
         public byte ConfigDockingWithShift;
 
         [NativeTypeName("bool")]
@@ -1165,6 +1271,15 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("bool")]
         public byte ConfigViewportsNoDefaultParent;
+
+        [NativeTypeName("bool")]
+        public byte ConfigViewportsPlatformFocusSetsImGuiFocus;
+
+        [NativeTypeName("bool")]
+        public byte ConfigDpiScaleFonts;
+
+        [NativeTypeName("bool")]
+        public byte ConfigDpiScaleViewports;
 
         [NativeTypeName("bool")]
         public byte MouseDrawCursor;
@@ -1392,6 +1507,8 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImVector_ImWchar")]
         public ImVector_ImWchar_t InputQueueCharacters;
 
+        public float FontGlobalScale;
+
         [NativeTypeName("const char *(*)(void *)")]
         public delegate* unmanaged[Cdecl]<void*, sbyte*> GetClipboardTextFn;
 
@@ -1510,11 +1627,20 @@ namespace Zinc.Internal.Sokol
 
         public void* UserData;
 
-        [NativeTypeName("ImWchar")]
-        public ushort EventChar;
+        [NativeTypeName("ImGuiID")]
+        public uint ID;
 
         [NativeTypeName("ImGuiKey")]
         public int EventKey;
+
+        [NativeTypeName("ImWchar")]
+        public ushort EventChar;
+
+        [NativeTypeName("bool")]
+        public byte EventActivated;
+
+        [NativeTypeName("bool")]
+        public byte BufDirty;
 
         [NativeTypeName("char *")]
         public sbyte* Buf;
@@ -1522,9 +1648,6 @@ namespace Zinc.Internal.Sokol
         public int BufTextLen;
 
         public int BufSize;
-
-        [NativeTypeName("bool")]
-        public byte BufDirty;
 
         public int CursorPos;
 
@@ -1547,7 +1670,7 @@ namespace Zinc.Internal.Sokol
         public ImVec2_t DesiredSize;
     }
 
-    public partial struct ImGuiWindowClass_t
+    public unsafe partial struct ImGuiWindowClass_t
     {
         [NativeTypeName("ImGuiID")]
         public uint ClassId;
@@ -1575,6 +1698,8 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("bool")]
         public byte DockingAllowUnclassed;
+
+        public void* PlatformIconData;
     }
 
     public unsafe partial struct ImGuiPayload_t
@@ -1621,8 +1746,8 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("char[256]")]
         public _InputBuf_e__FixedBuffer InputBuf;
 
-        [NativeTypeName("ImVector_ImGuiTextFilter_ImGuiTextRange")]
-        public ImVector_ImGuiTextFilter_ImGuiTextRange_t Filters;
+        [NativeTypeName("ImVector_ImGuiTextRange")]
+        public ImVector_ImGuiTextRange_t Filters;
 
         public int CountGrep;
 
@@ -1644,7 +1769,7 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImGuiID")]
         public uint key;
 
-        [NativeTypeName("__AnonymousRecord_cimgui_L2831_C5")]
+        [NativeTypeName("__AnonymousRecord_cimgui_L3016_C5")]
         public _Anonymous_e__Union Anonymous;
 
         [UnscopedRef]
@@ -1697,22 +1822,34 @@ namespace Zinc.Internal.Sokol
         public ImVector_ImGuiStoragePair_t Data;
     }
 
+    [NativeTypeName("unsigned int")]
+    public enum ImGuiListClipperFlags_ : uint
+    {
+        ImGuiListClipperFlags_None = 0,
+        ImGuiListClipperFlags_NoSetTableRowCounters = 1 << 0,
+    }
+
     public unsafe partial struct ImGuiListClipper_t
     {
-        [NativeTypeName("ImGuiContext *")]
-        public ImGuiContext_t* Ctx;
-
         public int DisplayStart;
 
         public int DisplayEnd;
+
+        public int UserIndex;
 
         public int ItemsCount;
 
         public float ItemsHeight;
 
-        public float StartPosY;
+        [NativeTypeName("ImGuiListClipperFlags")]
+        public int Flags;
+
+        public double StartPosY;
 
         public double StartSeekOffsetY;
+
+        [NativeTypeName("ImGuiContext *")]
+        public ImGuiContext_t* Ctx;
 
         public void* TempData;
     }
@@ -1740,9 +1877,13 @@ namespace Zinc.Internal.Sokol
         ImGuiMultiSelectFlags_ClearOnClickVoid = 1 << 10,
         ImGuiMultiSelectFlags_ScopeWindow = 1 << 11,
         ImGuiMultiSelectFlags_ScopeRect = 1 << 12,
-        ImGuiMultiSelectFlags_SelectOnClick = 1 << 13,
-        ImGuiMultiSelectFlags_SelectOnClickRelease = 1 << 14,
+        ImGuiMultiSelectFlags_SelectOnAuto = 1 << 13,
+        ImGuiMultiSelectFlags_SelectOnClickAlways = 1 << 14,
+        ImGuiMultiSelectFlags_SelectOnClickRelease = 1 << 15,
         ImGuiMultiSelectFlags_NavWrapX = 1 << 16,
+        ImGuiMultiSelectFlags_NoSelectOnRightClick = 1 << 17,
+        ImGuiMultiSelectFlags_SelectOnMask_ = ImGuiMultiSelectFlags_SelectOnAuto | ImGuiMultiSelectFlags_SelectOnClickAlways | ImGuiMultiSelectFlags_SelectOnClickRelease,
+        ImGuiMultiSelectFlags_SelectOnClick = ImGuiMultiSelectFlags_SelectOnAuto,
     }
 
     public partial struct ImGuiMultiSelectIO_t
@@ -1821,8 +1962,8 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImVec4")]
         public ImVec4_t ClipRect;
 
-        [NativeTypeName("ImTextureID")]
-        public ulong TextureId;
+        [NativeTypeName("ImTextureRef")]
+        public ImTextureRef_t TexRef;
 
         [NativeTypeName("unsigned int")]
         public uint VtxOffset;
@@ -1860,8 +2001,8 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImVec4")]
         public ImVec4_t ClipRect;
 
-        [NativeTypeName("ImTextureID")]
-        public ulong TextureId;
+        [NativeTypeName("ImTextureRef")]
+        public ImTextureRef_t TexRef;
 
         [NativeTypeName("unsigned int")]
         public uint VtxOffset;
@@ -1886,16 +2027,15 @@ namespace Zinc.Internal.Sokol
         public ImVector_ImDrawChannel_t _Channels;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImDrawFlags_ : uint
+    public enum ImDrawFlags_
     {
         ImDrawFlags_None = 0,
-        ImDrawFlags_Closed = 1 << 0,
         ImDrawFlags_RoundCornersTopLeft = 1 << 4,
         ImDrawFlags_RoundCornersTopRight = 1 << 5,
         ImDrawFlags_RoundCornersBottomLeft = 1 << 6,
         ImDrawFlags_RoundCornersBottomRight = 1 << 7,
         ImDrawFlags_RoundCornersNone = 1 << 8,
+        ImDrawFlags_Closed = 1 << 9,
         ImDrawFlags_RoundCornersTop = ImDrawFlags_RoundCornersTopLeft | ImDrawFlags_RoundCornersTopRight,
         ImDrawFlags_RoundCornersBottom = ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersBottomRight,
         ImDrawFlags_RoundCornersLeft = ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersTopLeft,
@@ -1903,6 +2043,7 @@ namespace Zinc.Internal.Sokol
         ImDrawFlags_RoundCornersAll = ImDrawFlags_RoundCornersTopLeft | ImDrawFlags_RoundCornersTopRight | ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersBottomRight,
         ImDrawFlags_RoundCornersDefault_ = ImDrawFlags_RoundCornersAll,
         ImDrawFlags_RoundCornersMask_ = ImDrawFlags_RoundCornersAll | ImDrawFlags_RoundCornersNone,
+        ImDrawFlags_InvalidMask_ = unchecked((int)(0x8000000F)),
     }
 
     [NativeTypeName("unsigned int")]
@@ -1953,8 +2094,8 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImVector_ImVec4")]
         public ImVector_ImVec4_t _ClipRectStack;
 
-        [NativeTypeName("ImVector_ImTextureID")]
-        public ImVector_ImTextureID_t _TextureIdStack;
+        [NativeTypeName("ImVector_ImTextureRef")]
+        public ImVector_ImTextureRef_t _TextureStack;
 
         [NativeTypeName("ImVector_ImU8")]
         public ImVector_ImU8_t _CallbacksDataBuf;
@@ -1990,10 +2131,91 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("ImGuiViewport *")]
         public ImGuiViewport_t* OwnerViewport;
+
+        [NativeTypeName("ImVector_ImTextureDataPtr *")]
+        public ImVector_ImTextureDataPtr_t* Textures;
+    }
+
+    [NativeTypeName("unsigned int")]
+    public enum ImTextureFormat : uint
+    {
+        ImTextureFormat_RGBA32,
+        ImTextureFormat_Alpha8,
+    }
+
+    [NativeTypeName("unsigned int")]
+    public enum ImTextureStatus : uint
+    {
+        ImTextureStatus_OK,
+        ImTextureStatus_Destroyed,
+        ImTextureStatus_WantCreate,
+        ImTextureStatus_WantUpdates,
+        ImTextureStatus_WantDestroy,
+    }
+
+    public partial struct ImTextureRect_t
+    {
+        [NativeTypeName("unsigned short")]
+        public ushort x;
+
+        [NativeTypeName("unsigned short")]
+        public ushort y;
+
+        [NativeTypeName("unsigned short")]
+        public ushort w;
+
+        [NativeTypeName("unsigned short")]
+        public ushort h;
+    }
+
+    public unsafe partial struct ImTextureData_t
+    {
+        public int UniqueID;
+
+        public ImTextureStatus Status;
+
+        public void* BackendUserData;
+
+        [NativeTypeName("ImTextureID")]
+        public ulong TexID;
+
+        public ImTextureFormat Format;
+
+        public int Width;
+
+        public int Height;
+
+        public int BytesPerPixel;
+
+        [NativeTypeName("unsigned char *")]
+        public byte* Pixels;
+
+        [NativeTypeName("ImTextureRect")]
+        public ImTextureRect_t UsedRect;
+
+        [NativeTypeName("ImTextureRect")]
+        public ImTextureRect_t UpdateRect;
+
+        [NativeTypeName("ImVector_ImTextureRect")]
+        public ImVector_ImTextureRect_t Updates;
+
+        public int UnusedFrames;
+
+        [NativeTypeName("unsigned short")]
+        public ushort RefCount;
+
+        [NativeTypeName("bool")]
+        public byte UseColors;
+
+        [NativeTypeName("bool")]
+        public byte WantDestroyNextFrame;
     }
 
     public unsafe partial struct ImFontConfig_t
     {
+        [NativeTypeName("char[40]")]
+        public _Name_e__FixedBuffer Name;
+
         public void* FontData;
 
         public int FontDataSize;
@@ -2007,19 +2229,25 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("bool")]
         public byte PixelSnapH;
 
-        public int FontNo;
+        [NativeTypeName("ImS8")]
+        public sbyte OversampleH;
 
-        public int OversampleH;
+        [NativeTypeName("ImS8")]
+        public sbyte OversampleV;
 
-        public int OversampleV;
+        [NativeTypeName("ImWchar")]
+        public ushort EllipsisChar;
 
         public float SizePixels;
 
-        [NativeTypeName("ImVec2")]
-        public ImVec2_t GlyphOffset;
-
         [NativeTypeName("const ImWchar *")]
         public ushort* GlyphRanges;
+
+        [NativeTypeName("const ImWchar *")]
+        public ushort* GlyphExcludeRanges;
+
+        [NativeTypeName("ImVec2")]
+        public ImVec2_t GlyphOffset;
 
         public float GlyphMinAdvanceX;
 
@@ -2027,21 +2255,31 @@ namespace Zinc.Internal.Sokol
 
         public float GlyphExtraAdvanceX;
 
+        [NativeTypeName("ImU32")]
+        public uint FontNo;
+
         [NativeTypeName("unsigned int")]
-        public uint FontBuilderFlags;
+        public uint FontLoaderFlags;
 
         public float RasterizerMultiply;
 
         public float RasterizerDensity;
 
-        [NativeTypeName("ImWchar")]
-        public ushort EllipsisChar;
+        public float ExtraSizeScale;
 
-        [NativeTypeName("char[40]")]
-        public _Name_e__FixedBuffer Name;
+        [NativeTypeName("ImFontFlags")]
+        public int Flags;
 
         [NativeTypeName("ImFont *")]
         public ImFont_t* DstFont;
+
+        [NativeTypeName("const ImFontLoader *")]
+        public ImFontLoader_t* FontLoader;
+
+        public void* FontLoaderData;
+
+        [NativeTypeName("bool")]
+        public byte PixelSnapV;
 
         [InlineArray(40)]
         public partial struct _Name_e__FixedBuffer
@@ -2086,19 +2324,35 @@ namespace Zinc.Internal.Sokol
             }
         }
 
-        [NativeTypeName("unsigned int : 30")]
-        public uint Codepoint
+        [NativeTypeName("unsigned int : 4")]
+        public uint SourceIdx
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             readonly get
             {
-                return (_bitfield >> 2) & 0x3FFFFFFFu;
+                return (_bitfield >> 2) & 0xFu;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                _bitfield = (_bitfield & ~(0x3FFFFFFFu << 2)) | ((value & 0x3FFFFFFFu) << 2);
+                _bitfield = (_bitfield & ~(0xFu << 2)) | ((value & 0xFu) << 2);
+            }
+        }
+
+        [NativeTypeName("unsigned int : 26")]
+        public uint Codepoint
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            readonly get
+            {
+                return (_bitfield >> 6) & 0x3FFFFFFu;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set
+            {
+                _bitfield = (_bitfield & ~(0x3FFFFFFu << 6)) | ((value & 0x3FFFFFFu) << 6);
             }
         }
 
@@ -2119,6 +2373,8 @@ namespace Zinc.Internal.Sokol
         public float U1;
 
         public float V1;
+
+        public int PackId;
     }
 
     public partial struct ImFontGlyphRangesBuilder_t
@@ -2127,61 +2383,25 @@ namespace Zinc.Internal.Sokol
         public ImVector_ImU32_t UsedChars;
     }
 
-    public unsafe partial struct ImFontAtlasCustomRect_t
+    public partial struct ImFontAtlasRect_t
     {
         [NativeTypeName("unsigned short")]
-        public ushort X;
+        public ushort x;
 
         [NativeTypeName("unsigned short")]
-        public ushort Y;
+        public ushort y;
 
         [NativeTypeName("unsigned short")]
-        public ushort Width;
+        public ushort w;
 
         [NativeTypeName("unsigned short")]
-        public ushort Height;
-
-        public uint _bitfield;
-
-        [NativeTypeName("unsigned int : 31")]
-        public uint GlyphID
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get
-            {
-                return _bitfield & 0x7FFFFFFFu;
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set
-            {
-                _bitfield = (_bitfield & ~0x7FFFFFFFu) | (value & 0x7FFFFFFFu);
-            }
-        }
-
-        [NativeTypeName("unsigned int : 1")]
-        public uint GlyphColored
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get
-            {
-                return (_bitfield >> 31) & 0x1u;
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set
-            {
-                _bitfield = (_bitfield & ~(0x1u << 31)) | ((value & 0x1u) << 31);
-            }
-        }
-
-        public float GlyphAdvanceX;
+        public ushort h;
 
         [NativeTypeName("ImVec2")]
-        public ImVec2_t GlyphOffset;
+        public ImVec2_t uv0;
 
-        [NativeTypeName("ImFont *")]
-        public ImFont_t* Font;
+        [NativeTypeName("ImVec2")]
+        public ImVec2_t uv1;
     }
 
     [NativeTypeName("unsigned int")]
@@ -2198,33 +2418,40 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImFontAtlasFlags")]
         public int Flags;
 
-        [NativeTypeName("ImTextureID")]
-        public ulong TexID;
-
-        public int TexDesiredWidth;
+        public ImTextureFormat TexDesiredFormat;
 
         public int TexGlyphPadding;
 
+        public int TexMinWidth;
+
+        public int TexMinHeight;
+
+        public int TexMaxWidth;
+
+        public int TexMaxHeight;
+
         public void* UserData;
+
+        [NativeTypeName("__AnonymousRecord_cimgui_L3838_C5")]
+        public _Anonymous_e__Union Anonymous;
+
+        [NativeTypeName("ImTextureData *")]
+        public ImTextureData_t* TexData;
+
+        [NativeTypeName("ImVector_ImTextureDataPtr")]
+        public ImVector_ImTextureDataPtr_t TexList;
 
         [NativeTypeName("bool")]
         public byte Locked;
 
         [NativeTypeName("bool")]
-        public byte TexReady;
+        public byte RendererHasTextures;
+
+        [NativeTypeName("bool")]
+        public byte TexIsBuilt;
 
         [NativeTypeName("bool")]
         public byte TexPixelsUseColors;
-
-        [NativeTypeName("unsigned char *")]
-        public byte* TexPixelsAlpha8;
-
-        [NativeTypeName("unsigned int *")]
-        public uint* TexPixelsRGBA32;
-
-        public int TexWidth;
-
-        public int TexHeight;
 
         [NativeTypeName("ImVec2")]
         public ImVec2_t TexUvScale;
@@ -2235,24 +2462,72 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImVector_ImFontPtr")]
         public ImVector_ImFontPtr_t Fonts;
 
-        [NativeTypeName("ImVector_ImFontAtlasCustomRect")]
-        public ImVector_ImFontAtlasCustomRect_t CustomRects;
-
         [NativeTypeName("ImVector_ImFontConfig")]
         public ImVector_ImFontConfig_t Sources;
 
         [NativeTypeName("ImVec4[33]")]
         public _TexUvLines_e__FixedBuffer TexUvLines;
 
-        [NativeTypeName("const ImFontBuilderIO *")]
-        public ImFontBuilderIO_t* FontBuilderIO;
+        public int TexNextUniqueID;
+
+        public int FontNextUniqueID;
+
+        [NativeTypeName("ImVector_ImDrawListSharedDataPtr")]
+        public ImVector_ImDrawListSharedDataPtr_t DrawListSharedDatas;
+
+        [NativeTypeName("ImFontAtlasBuilder *")]
+        public ImFontAtlasBuilder_t* Builder;
+
+        [NativeTypeName("const ImFontLoader *")]
+        public ImFontLoader_t* FontLoader;
+
+        [NativeTypeName("const char *")]
+        public sbyte* FontLoaderName;
+
+        public void* FontLoaderData;
 
         [NativeTypeName("unsigned int")]
-        public uint FontBuilderFlags;
+        public uint FontLoaderFlags;
 
-        public int PackIdMouseCursors;
+        public int RefCount;
 
-        public int PackIdLines;
+        [NativeTypeName("ImGuiContext *")]
+        public ImGuiContext_t* OwnerContext;
+
+        [NativeTypeName("ImFontAtlasRect")]
+        public ImFontAtlasRect_t TempRect;
+
+        [UnscopedRef]
+        public ref ImTextureRef_t TexRef
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return ref Anonymous.TexRef;
+            }
+        }
+
+        [UnscopedRef]
+        public ref ImTextureRef_t TexID
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return ref Anonymous.TexID;
+            }
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        public partial struct _Anonymous_e__Union
+        {
+            [FieldOffset(0)]
+            [NativeTypeName("ImTextureRef")]
+            public ImTextureRef_t TexRef;
+
+            [FieldOffset(0)]
+            [NativeTypeName("ImTextureRef")]
+            public ImTextureRef_t TexID;
+        }
 
         [InlineArray(33)]
         public partial struct _TexUvLines_e__FixedBuffer
@@ -2261,14 +2536,16 @@ namespace Zinc.Internal.Sokol
         }
     }
 
-    public unsafe partial struct ImFont_t
+    public unsafe partial struct ImFontBaked_t
     {
         [NativeTypeName("ImVector_float")]
         public ImVector_float_t IndexAdvanceX;
 
         public float FallbackAdvanceX;
 
-        public float FontSize;
+        public float Size;
+
+        public float RasterizerDensity;
 
         [NativeTypeName("ImVector_ImU16")]
         public ImVector_ImU16_t IndexLookup;
@@ -2276,18 +2553,119 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImVector_ImFontGlyph")]
         public ImVector_ImFontGlyph_t Glyphs;
 
-        [NativeTypeName("ImFontGlyph *")]
-        public ImFontGlyph_t* FallbackGlyph;
+        public int FallbackGlyphIndex;
+
+        public float Ascent;
+
+        public float Descent;
+
+        public uint _bitfield;
+
+        [NativeTypeName("unsigned int : 26")]
+        public uint MetricsTotalSurface
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            readonly get
+            {
+                return _bitfield & 0x3FFFFFFu;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set
+            {
+                _bitfield = (_bitfield & ~0x3FFFFFFu) | (value & 0x3FFFFFFu);
+            }
+        }
+
+        [NativeTypeName("unsigned int : 1")]
+        public uint WantDestroy
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            readonly get
+            {
+                return (_bitfield >> 26) & 0x1u;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set
+            {
+                _bitfield = (_bitfield & ~(0x1u << 26)) | ((value & 0x1u) << 26);
+            }
+        }
+
+        [NativeTypeName("unsigned int : 1")]
+        public uint LoadNoFallback
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            readonly get
+            {
+                return (_bitfield >> 27) & 0x1u;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set
+            {
+                _bitfield = (_bitfield & ~(0x1u << 27)) | ((value & 0x1u) << 27);
+            }
+        }
+
+        [NativeTypeName("unsigned int : 1")]
+        public uint LoadNoRenderOnLayout
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            readonly get
+            {
+                return (_bitfield >> 28) & 0x1u;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set
+            {
+                _bitfield = (_bitfield & ~(0x1u << 28)) | ((value & 0x1u) << 28);
+            }
+        }
+
+        public int LastUsedFrame;
+
+        [NativeTypeName("ImGuiID")]
+        public uint BakedId;
+
+        [NativeTypeName("ImFont *")]
+        public ImFont_t* OwnerFont;
+
+        public void* FontLoaderDatas;
+    }
+
+    [NativeTypeName("unsigned int")]
+    public enum ImFontFlags_ : uint
+    {
+        ImFontFlags_None = 0,
+        ImFontFlags_NoLoadError = 1 << 1,
+        ImFontFlags_NoLoadGlyphs = 1 << 2,
+        ImFontFlags_LockBakedSizes = 1 << 3,
+        ImFontFlags_ImplicitRefSize = 1 << 4,
+    }
+
+    public unsafe partial struct ImFont_t
+    {
+        [NativeTypeName("ImFontBaked *")]
+        public ImFontBaked_t* LastBaked;
 
         [NativeTypeName("ImFontAtlas *")]
-        public ImFontAtlas_t* ContainerAtlas;
+        public ImFontAtlas_t* OwnerAtlas;
 
-        [NativeTypeName("ImFontConfig *")]
-        public ImFontConfig_t* Sources;
+        [NativeTypeName("ImFontFlags")]
+        public int Flags;
 
-        public short SourcesCount;
+        public float CurrentRasterizerDensity;
 
-        public short EllipsisCharCount;
+        [NativeTypeName("ImGuiID")]
+        public uint FontId;
+
+        public float LegacySize;
+
+        [NativeTypeName("ImVector_ImFontConfigPtr")]
+        public ImVector_ImFontConfigPtr_t Sources;
 
         [NativeTypeName("ImWchar")]
         public ushort EllipsisChar;
@@ -2295,23 +2673,16 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImWchar")]
         public ushort FallbackChar;
 
-        public float EllipsisWidth;
-
-        public float EllipsisCharStep;
-
-        public float Scale;
-
-        public float Ascent;
-
-        public float Descent;
-
-        public int MetricsTotalSurface;
-
-        [NativeTypeName("bool")]
-        public byte DirtyLookupTables;
-
         [NativeTypeName("ImU8[1]")]
         public _Used8kPagesMap_e__FixedBuffer Used8kPagesMap;
+
+        [NativeTypeName("bool")]
+        public byte EllipsisAutoBake;
+
+        [NativeTypeName("ImGuiStorage")]
+        public ImGuiStorage_t RemapPairs;
+
+        public float Scale;
 
         public partial struct _Used8kPagesMap_e__FixedBuffer
         {
@@ -2368,6 +2739,9 @@ namespace Zinc.Internal.Sokol
         public ImVec2_t Size;
 
         [NativeTypeName("ImVec2")]
+        public ImVec2_t FramebufferScale;
+
+        [NativeTypeName("ImVec2")]
         public ImVec2_t WorkPos;
 
         [NativeTypeName("ImVec2")]
@@ -2378,12 +2752,17 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImGuiID")]
         public uint ParentViewportId;
 
+        [NativeTypeName("ImGuiViewport *")]
+        public ImGuiViewport_t* ParentViewport;
+
         [NativeTypeName("ImDrawData *")]
         public ImDrawData_t* DrawData;
 
         public void* RendererUserData;
 
         public void* PlatformUserData;
+
+        public void* PlatformIconData;
 
         public void* PlatformHandle;
 
@@ -2425,7 +2804,20 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImWchar")]
         public ushort Platform_LocaleDecimalPoint;
 
+        public int Renderer_TextureMaxWidth;
+
+        public int Renderer_TextureMaxHeight;
+
         public void* Renderer_RenderState;
+
+        [NativeTypeName("ImDrawCallback")]
+        public delegate* unmanaged[Cdecl]<ImDrawList_t*, ImDrawCmd_t*, void> DrawCallback_ResetRenderState;
+
+        [NativeTypeName("ImDrawCallback")]
+        public delegate* unmanaged[Cdecl]<ImDrawList_t*, ImDrawCmd_t*, void> DrawCallback_SetSamplerLinear;
+
+        [NativeTypeName("ImDrawCallback")]
+        public delegate* unmanaged[Cdecl]<ImDrawList_t*, ImDrawCmd_t*, void> DrawCallback_SetSamplerNearest;
 
         [NativeTypeName("void (*)(ImGuiViewport *)")]
         public delegate* unmanaged[Cdecl]<ImGuiViewport_t*, void> Platform_CreateWindow;
@@ -2447,6 +2839,9 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("ImVec2 (*)(ImGuiViewport *)")]
         public delegate* unmanaged[Cdecl]<ImGuiViewport_t*, ImVec2_t> Platform_GetWindowSize;
+
+        [NativeTypeName("ImVec2 (*)(ImGuiViewport *)")]
+        public delegate* unmanaged[Cdecl]<ImGuiViewport_t*, ImVec2_t> Platform_GetWindowFramebufferScale;
 
         [NativeTypeName("void (*)(ImGuiViewport *)")]
         public delegate* unmanaged[Cdecl]<ImGuiViewport_t*, void> Platform_SetWindowFocus;
@@ -2502,6 +2897,9 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImVector_ImGuiPlatformMonitor")]
         public ImVector_ImGuiPlatformMonitor_t Monitors;
 
+        [NativeTypeName("ImVector_ImTextureDataPtr")]
+        public ImVector_ImTextureDataPtr_t Textures;
+
         [NativeTypeName("ImVector_ImGuiViewportPtr")]
         public ImVector_ImGuiViewportPtr_t Viewports;
     }
@@ -2530,10 +2928,16 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("bool")]
         public byte WantVisible;
 
+        [NativeTypeName("bool")]
+        public byte WantTextInput;
+
         [NativeTypeName("ImVec2")]
         public ImVec2_t InputPos;
 
         public float InputLineHeight;
+
+        [NativeTypeName("ImGuiID")]
+        public uint ViewportId;
     }
 
     [NativeTypeName("unsigned int")]
@@ -2541,6 +2945,7 @@ namespace Zinc.Internal.Sokol
     {
         SIMGUI_LOGITEM_OK,
         SIMGUI_LOGITEM_MALLOC_FAILED,
+        SIMGUI_LOGITEM_BUFFER_OVERFLOW,
     }
 
     public unsafe partial struct simgui_allocator_t
@@ -2615,6 +3020,10 @@ namespace Zinc.Internal.Sokol
 
     public static unsafe partial class ImGUI
     {
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("ImTextureID")]
+        public static extern ulong ImTextureRef_GetTexID([NativeTypeName("const ImTextureRef *")] ImTextureRef_t* self);
+
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImGuiContext *")]
         public static extern ImGuiContext_t* igCreateContext([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* shared_font_atlas);
@@ -2800,9 +3209,6 @@ namespace Zinc.Internal.Sokol
         public static extern void igSetWindowFocus();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igSetWindowFontScale(float scale);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igSetWindowPosStr([NativeTypeName("const char *")] sbyte* name, [NativeTypeName("ImVec2")] ImVec2_t pos, [NativeTypeName("ImGuiCond")] int cond);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
@@ -2845,10 +3251,21 @@ namespace Zinc.Internal.Sokol
         public static extern void igSetScrollFromPosY(float local_y, float center_y_ratio);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igPushFont([NativeTypeName("ImFont *")] ImFont_t* font);
+        public static extern void igPushFontFloat([NativeTypeName("ImFont *")] ImFont_t* font, float font_size_base_unscaled);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igPopFont();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("ImFont *")]
+        public static extern ImFont_t* igGetFont();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern float igGetFontSize();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("ImFontBaked *")]
+        public static extern ImFontBaked_t* igGetFontBaked();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igPushStyleColor([NativeTypeName("ImGuiCol")] int idx, [NativeTypeName("ImU32")] uint col);
@@ -2903,13 +3320,6 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igPopTextWrapPos();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("ImFont *")]
-        public static extern ImFont_t* igGetFont();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern float igGetFontSize();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImVec2")]
@@ -3151,30 +3561,32 @@ namespace Zinc.Internal.Sokol
         public static extern byte igTextLink([NativeTypeName("const char *")] sbyte* label);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igTextLinkOpenURL([NativeTypeName("const char *")] sbyte* label);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igTextLinkOpenURLEx([NativeTypeName("const char *")] sbyte* label, [NativeTypeName("const char *")] sbyte* url);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igImage([NativeTypeName("ImTextureID")] ulong user_texture_id, [NativeTypeName("ImVec2")] ImVec2_t image_size);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igImageEx([NativeTypeName("ImTextureID")] ulong user_texture_id, [NativeTypeName("ImVec2")] ImVec2_t image_size, [NativeTypeName("ImVec2")] ImVec2_t uv0, [NativeTypeName("ImVec2")] ImVec2_t uv1);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igImageWithBg([NativeTypeName("ImTextureID")] ulong user_texture_id, [NativeTypeName("ImVec2")] ImVec2_t image_size);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igImageWithBgEx([NativeTypeName("ImTextureID")] ulong user_texture_id, [NativeTypeName("ImVec2")] ImVec2_t image_size, [NativeTypeName("ImVec2")] ImVec2_t uv0, [NativeTypeName("ImVec2")] ImVec2_t uv1, [NativeTypeName("ImVec4")] ImVec4_t bg_col, [NativeTypeName("ImVec4")] ImVec4_t tint_col);
+        [return: NativeTypeName("bool")]
+        public static extern byte igTextLinkOpenURL([NativeTypeName("const char *")] sbyte* label);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte igImageButton([NativeTypeName("const char *")] sbyte* str_id, [NativeTypeName("ImTextureID")] ulong user_texture_id, [NativeTypeName("ImVec2")] ImVec2_t image_size);
+        public static extern byte igTextLinkOpenURLEx([NativeTypeName("const char *")] sbyte* label, [NativeTypeName("const char *")] sbyte* url);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void igImage([NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref, [NativeTypeName("ImVec2")] ImVec2_t image_size);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void igImageEx([NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref, [NativeTypeName("ImVec2")] ImVec2_t image_size, [NativeTypeName("ImVec2")] ImVec2_t uv0, [NativeTypeName("ImVec2")] ImVec2_t uv1);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void igImageWithBg([NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref, [NativeTypeName("ImVec2")] ImVec2_t image_size);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void igImageWithBgEx([NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref, [NativeTypeName("ImVec2")] ImVec2_t image_size, [NativeTypeName("ImVec2")] ImVec2_t uv0, [NativeTypeName("ImVec2")] ImVec2_t uv1, [NativeTypeName("ImVec4")] ImVec4_t bg_col, [NativeTypeName("ImVec4")] ImVec4_t tint_col);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte igImageButtonEx([NativeTypeName("const char *")] sbyte* str_id, [NativeTypeName("ImTextureID")] ulong user_texture_id, [NativeTypeName("ImVec2")] ImVec2_t image_size, [NativeTypeName("ImVec2")] ImVec2_t uv0, [NativeTypeName("ImVec2")] ImVec2_t uv1, [NativeTypeName("ImVec4")] ImVec4_t bg_col, [NativeTypeName("ImVec4")] ImVec4_t tint_col);
+        public static extern byte igImageButton([NativeTypeName("const char *")] sbyte* str_id, [NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref, [NativeTypeName("ImVec2")] ImVec2_t image_size);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        public static extern byte igImageButtonEx([NativeTypeName("const char *")] sbyte* str_id, [NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref, [NativeTypeName("ImVec2")] ImVec2_t image_size, [NativeTypeName("ImVec2")] ImVec2_t uv0, [NativeTypeName("ImVec2")] ImVec2_t uv1, [NativeTypeName("ImVec4")] ImVec4_t bg_col, [NativeTypeName("ImVec4")] ImVec4_t tint_col);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -3607,6 +4019,10 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igSetNextItemStorageID([NativeTypeName("ImGuiID")] uint storage_id);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        public static extern byte igTreeNodeGetOpen([NativeTypeName("ImGuiID")] uint storage_id);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -4095,6 +4511,10 @@ namespace Zinc.Internal.Sokol
         public static extern ImVec2_t igGetItemRectSize();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("ImGuiItemFlags")]
+        public static extern int igGetItemFlags();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImGuiViewport *")]
         public static extern ImGuiViewport_t* igGetMainViewport();
 
@@ -4203,7 +4623,8 @@ namespace Zinc.Internal.Sokol
         public static extern void igSetNextItemShortcut([NativeTypeName("ImGuiKeyChord")] int key_chord, [NativeTypeName("ImGuiInputFlags")] int flags);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igSetItemKeyOwner([NativeTypeName("ImGuiKey")] int key);
+        [return: NativeTypeName("bool")]
+        public static extern byte igSetItemKeyOwner([NativeTypeName("ImGuiKey")] int key);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -4345,7 +4766,7 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImGuiViewport *")]
-        public static extern ImGuiViewport_t* igFindViewportByID([NativeTypeName("ImGuiID")] uint id);
+        public static extern ImGuiViewport_t* igFindViewportByID([NativeTypeName("ImGuiID")] uint viewport_id);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImGuiViewport *")]
@@ -4520,19 +4941,15 @@ namespace Zinc.Internal.Sokol
         public const uint ImGuiKey_ReservedForModAlt = 665;
         public const uint ImGuiKey_ReservedForModSuper = 666;
         public const uint ImGuiKey_NamedKey_END = 667;
+        public const uint ImGuiKey_NamedKey_COUNT = ImGuiKey_NamedKey_END - ImGuiKey_NamedKey_BEGIN;
         public const uint ImGuiMod_None = 0;
         public const uint ImGuiMod_Ctrl = 1 << 12;
         public const uint ImGuiMod_Shift = 1 << 13;
         public const uint ImGuiMod_Alt = 1 << 14;
         public const uint ImGuiMod_Super = 1 << 15;
         public const uint ImGuiMod_Mask_ = 0xF000;
-        public const uint ImGuiKey_NamedKey_COUNT = ImGuiKey_NamedKey_END - ImGuiKey_NamedKey_BEGIN;
         public const uint ImGuiKey_COUNT = ImGuiKey_NamedKey_END;
         public const uint ImGuiMod_Shortcut = ImGuiMod_Ctrl;
-        public const uint ImGuiKey_ModCtrl = ImGuiMod_Ctrl;
-        public const uint ImGuiKey_ModShift = ImGuiMod_Shift;
-        public const uint ImGuiKey_ModAlt = ImGuiMod_Alt;
-        public const uint ImGuiKey_ModSuper = ImGuiMod_Super;
 
         public const uint ImGuiMouseSource_Mouse = 0;
         public const uint ImGuiMouseSource_TouchScreen = 1;
@@ -4544,6 +4961,18 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImVector_Destruct(void* vector);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImGuiPlatformIO_SetPlatform_GetWindowWorkAreaInsets([NativeTypeName("void (*)(ImGuiViewport *, ImVec4 *)")] delegate* unmanaged[Cdecl]<ImGuiViewport_t*, ImVec4_t*, void> getWindowWorkAreaInsetsFunc);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImGuiPlatformIO_SetPlatform_GetWindowFramebufferScale([NativeTypeName("void (*)(ImGuiViewport *, ImVec2 *)")] delegate* unmanaged[Cdecl]<ImGuiViewport_t*, ImVec2_t*, void> getWindowFramebufferScaleFunc);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImGuiPlatformIO_SetPlatform_GetWindowPos([NativeTypeName("void (*)(ImGuiViewport *, ImVec2 *)")] delegate* unmanaged[Cdecl]<ImGuiViewport_t*, ImVec2_t*, void> getWindowPosFunc);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImGuiPlatformIO_SetPlatform_GetWindowSize([NativeTypeName("void (*)(ImGuiViewport *, ImVec2 *)")] delegate* unmanaged[Cdecl]<ImGuiViewport_t*, ImVec2_t*, void> getWindowSizeFunc);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImGuiStyle_ScaleAllSizes([NativeTypeName("ImGuiStyle *")] ImGuiStyle_t* self, float scale_factor);
@@ -4600,9 +5029,6 @@ namespace Zinc.Internal.Sokol
         public static extern void ImGuiIO_ClearInputMouse([NativeTypeName("ImGuiIO *")] ImGuiIO_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImGuiIO_ClearInputCharacters([NativeTypeName("ImGuiIO *")] ImGuiIO_t* self);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImGuiInputTextCallbackData_DeleteChars([NativeTypeName("ImGuiInputTextCallbackData *")] ImGuiInputTextCallbackData_t* self, int pos, int bytes_count);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
@@ -4610,6 +5036,9 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImGuiInputTextCallbackData_SelectAll([NativeTypeName("ImGuiInputTextCallbackData *")] ImGuiInputTextCallbackData_t* self);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImGuiInputTextCallbackData_SetSelection([NativeTypeName("ImGuiInputTextCallbackData *")] ImGuiInputTextCallbackData_t* self, int s, int e);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImGuiInputTextCallbackData_ClearSelection([NativeTypeName("ImGuiInputTextCallbackData *")] ImGuiInputTextCallbackData_t* self);
@@ -4638,7 +5067,7 @@ namespace Zinc.Internal.Sokol
         public static extern byte ImGuiTextFilter_ImGuiTextRange_empty([NativeTypeName("const ImGuiTextFilter_ImGuiTextRange *")] ImGuiTextFilter_ImGuiTextRange_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImGuiTextFilter_ImGuiTextRange_split([NativeTypeName("const ImGuiTextFilter_ImGuiTextRange *")] ImGuiTextFilter_ImGuiTextRange_t* self, [NativeTypeName("char")] sbyte separator, [NativeTypeName("ImVector_ImGuiTextFilter_ImGuiTextRange *")] ImVector_ImGuiTextFilter_ImGuiTextRange_t* @out);
+        public static extern void ImGuiTextFilter_ImGuiTextRange_split([NativeTypeName("const ImGuiTextFilter_ImGuiTextRange *")] ImGuiTextFilter_ImGuiTextRange_t* self, [NativeTypeName("char")] sbyte separator, [NativeTypeName("ImVector_ImGuiTextRange *")] ImVector_ImGuiTextRange_t* @out);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -4761,12 +5190,6 @@ namespace Zinc.Internal.Sokol
         public static extern void ImGuiListClipper_SeekCursorForItem([NativeTypeName("ImGuiListClipper *")] ImGuiListClipper_t* self, int item_index);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImGuiListClipper_IncludeRangeByIndices([NativeTypeName("ImGuiListClipper *")] ImGuiListClipper_t* self, int item_begin, int item_end);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImGuiListClipper_ForceDisplayRangeByIndices([NativeTypeName("ImGuiListClipper *")] ImGuiListClipper_t* self, int item_begin, int item_end);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImColor_SetHSV([NativeTypeName("ImColor *")] ImColor_t* self, float h, float s, float v, float a);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
@@ -4829,10 +5252,10 @@ namespace Zinc.Internal.Sokol
         public static extern void ImDrawList_PopClipRect([NativeTypeName("ImDrawList *")] ImDrawList_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImDrawList_PushTextureID([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureID")] ulong texture_id);
+        public static extern void ImDrawList_PushTexture([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImDrawList_PopTextureID([NativeTypeName("ImDrawList *")] ImDrawList_t* self);
+        public static extern void ImDrawList_PopTexture([NativeTypeName("ImDrawList *")] ImDrawList_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImVec2")]
@@ -4849,10 +5272,22 @@ namespace Zinc.Internal.Sokol
         public static extern void ImDrawList_AddLineEx([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImVec2")] ImVec2_t p1, [NativeTypeName("ImVec2")] ImVec2_t p2, [NativeTypeName("ImU32")] uint col, float thickness);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImDrawList_AddLineH([NativeTypeName("ImDrawList *")] ImDrawList_t* self, float min_x, float max_x, float y, [NativeTypeName("ImU32")] uint col);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImDrawList_AddLineHEx([NativeTypeName("ImDrawList *")] ImDrawList_t* self, float min_x, float max_x, float y, [NativeTypeName("ImU32")] uint col, float thickness);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImDrawList_AddLineV([NativeTypeName("ImDrawList *")] ImDrawList_t* self, float x, float min_y, float max_y, [NativeTypeName("ImU32")] uint col);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImDrawList_AddLineVEx([NativeTypeName("ImDrawList *")] ImDrawList_t* self, float x, float min_y, float max_y, [NativeTypeName("ImU32")] uint col, float thickness);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImDrawList_AddRect([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImVec2")] ImVec2_t p_min, [NativeTypeName("ImVec2")] ImVec2_t p_max, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImDrawList_AddRectEx([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImVec2")] ImVec2_t p_min, [NativeTypeName("ImVec2")] ImVec2_t p_max, [NativeTypeName("ImU32")] uint col, float rounding, [NativeTypeName("ImDrawFlags")] int flags, float thickness);
+        public static extern void ImDrawList_AddRectEx([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImVec2")] ImVec2_t p_min, [NativeTypeName("ImVec2")] ImVec2_t p_max, [NativeTypeName("ImU32")] uint col, float rounding, float thickness, [NativeTypeName("ImDrawFlags")] int flags);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImDrawList_AddRectFilled([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImVec2")] ImVec2_t p_min, [NativeTypeName("ImVec2")] ImVec2_t p_max, [NativeTypeName("ImU32")] uint col);
@@ -4930,7 +5365,7 @@ namespace Zinc.Internal.Sokol
         public static extern void ImDrawList_AddBezierQuadratic([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImVec2")] ImVec2_t p1, [NativeTypeName("ImVec2")] ImVec2_t p2, [NativeTypeName("ImVec2")] ImVec2_t p3, [NativeTypeName("ImU32")] uint col, float thickness, int num_segments);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImDrawList_AddPolyline([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("const ImVec2 *")] ImVec2_t* points, int num_points, [NativeTypeName("ImU32")] uint col, [NativeTypeName("ImDrawFlags")] int flags, float thickness);
+        public static extern void ImDrawList_AddPolyline([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("const ImVec2 *")] ImVec2_t* points, int num_points, [NativeTypeName("ImU32")] uint col, float thickness, [NativeTypeName("ImDrawFlags")] int flags);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImDrawList_AddConvexPolyFilled([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("const ImVec2 *")] ImVec2_t* points, int num_points, [NativeTypeName("ImU32")] uint col);
@@ -4939,19 +5374,19 @@ namespace Zinc.Internal.Sokol
         public static extern void ImDrawList_AddConcavePolyFilled([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("const ImVec2 *")] ImVec2_t* points, int num_points, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImDrawList_AddImage([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureID")] ulong user_texture_id, [NativeTypeName("ImVec2")] ImVec2_t p_min, [NativeTypeName("ImVec2")] ImVec2_t p_max);
+        public static extern void ImDrawList_AddImage([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref, [NativeTypeName("ImVec2")] ImVec2_t p_min, [NativeTypeName("ImVec2")] ImVec2_t p_max);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImDrawList_AddImageEx([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureID")] ulong user_texture_id, [NativeTypeName("ImVec2")] ImVec2_t p_min, [NativeTypeName("ImVec2")] ImVec2_t p_max, [NativeTypeName("ImVec2")] ImVec2_t uv_min, [NativeTypeName("ImVec2")] ImVec2_t uv_max, [NativeTypeName("ImU32")] uint col);
+        public static extern void ImDrawList_AddImageEx([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref, [NativeTypeName("ImVec2")] ImVec2_t p_min, [NativeTypeName("ImVec2")] ImVec2_t p_max, [NativeTypeName("ImVec2")] ImVec2_t uv_min, [NativeTypeName("ImVec2")] ImVec2_t uv_max, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImDrawList_AddImageQuad([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureID")] ulong user_texture_id, [NativeTypeName("ImVec2")] ImVec2_t p1, [NativeTypeName("ImVec2")] ImVec2_t p2, [NativeTypeName("ImVec2")] ImVec2_t p3, [NativeTypeName("ImVec2")] ImVec2_t p4);
+        public static extern void ImDrawList_AddImageQuad([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref, [NativeTypeName("ImVec2")] ImVec2_t p1, [NativeTypeName("ImVec2")] ImVec2_t p2, [NativeTypeName("ImVec2")] ImVec2_t p3, [NativeTypeName("ImVec2")] ImVec2_t p4);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImDrawList_AddImageQuadEx([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureID")] ulong user_texture_id, [NativeTypeName("ImVec2")] ImVec2_t p1, [NativeTypeName("ImVec2")] ImVec2_t p2, [NativeTypeName("ImVec2")] ImVec2_t p3, [NativeTypeName("ImVec2")] ImVec2_t p4, [NativeTypeName("ImVec2")] ImVec2_t uv1, [NativeTypeName("ImVec2")] ImVec2_t uv2, [NativeTypeName("ImVec2")] ImVec2_t uv3, [NativeTypeName("ImVec2")] ImVec2_t uv4, [NativeTypeName("ImU32")] uint col);
+        public static extern void ImDrawList_AddImageQuadEx([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref, [NativeTypeName("ImVec2")] ImVec2_t p1, [NativeTypeName("ImVec2")] ImVec2_t p2, [NativeTypeName("ImVec2")] ImVec2_t p3, [NativeTypeName("ImVec2")] ImVec2_t p4, [NativeTypeName("ImVec2")] ImVec2_t uv1, [NativeTypeName("ImVec2")] ImVec2_t uv2, [NativeTypeName("ImVec2")] ImVec2_t uv3, [NativeTypeName("ImVec2")] ImVec2_t uv4, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImDrawList_AddImageRounded([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureID")] ulong user_texture_id, [NativeTypeName("ImVec2")] ImVec2_t p_min, [NativeTypeName("ImVec2")] ImVec2_t p_max, [NativeTypeName("ImVec2")] ImVec2_t uv_min, [NativeTypeName("ImVec2")] ImVec2_t uv_max, [NativeTypeName("ImU32")] uint col, float rounding, [NativeTypeName("ImDrawFlags")] int flags);
+        public static extern void ImDrawList_AddImageRounded([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref, [NativeTypeName("ImVec2")] ImVec2_t p_min, [NativeTypeName("ImVec2")] ImVec2_t p_max, [NativeTypeName("ImVec2")] ImVec2_t uv_min, [NativeTypeName("ImVec2")] ImVec2_t uv_max, [NativeTypeName("ImU32")] uint col, float rounding, [NativeTypeName("ImDrawFlags")] int flags);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImDrawList_PathClear([NativeTypeName("ImDrawList *")] ImDrawList_t* self);
@@ -4969,7 +5404,7 @@ namespace Zinc.Internal.Sokol
         public static extern void ImDrawList_PathFillConcave([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImDrawList_PathStroke([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImU32")] uint col, [NativeTypeName("ImDrawFlags")] int flags, float thickness);
+        public static extern void ImDrawList_PathStroke([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImU32")] uint col, float thickness, [NativeTypeName("ImDrawFlags")] int flags);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImDrawList_PathArcTo([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImVec2")] ImVec2_t center, float radius, float a_min, float a_max, int num_segments);
@@ -4993,7 +5428,7 @@ namespace Zinc.Internal.Sokol
         public static extern void ImDrawList_PathRect([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImVec2")] ImVec2_t rect_min, [NativeTypeName("ImVec2")] ImVec2_t rect_max, float rounding, [NativeTypeName("ImDrawFlags")] int flags);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImDrawList_AddCallback([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImDrawCallback")] delegate* unmanaged[Cdecl]<ImDrawList_t*, ImDrawCmd_t*, void> callback, void* userdata);
+        public static extern void ImDrawList_AddCallback([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImDrawCallback")] delegate* unmanaged[Cdecl]<ImDrawList_t*, ImDrawCmd_t*, void> callback);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImDrawList_AddCallbackEx([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImDrawCallback")] delegate* unmanaged[Cdecl]<ImDrawList_t*, ImDrawCmd_t*, void> callback, void* userdata, [NativeTypeName("size_t")] nuint userdata_size);
@@ -5039,6 +5474,24 @@ namespace Zinc.Internal.Sokol
         public static extern void ImDrawList_PrimVtx([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImVec2")] ImVec2_t pos, [NativeTypeName("ImVec2")] ImVec2_t uv, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImDrawList_AddRectImDrawFlags([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImVec2")] ImVec2_t p_min, [NativeTypeName("ImVec2")] ImVec2_t p_max, [NativeTypeName("ImU32")] uint col, float rounding, [NativeTypeName("ImDrawFlags")] int flags, float thickness);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImDrawList_AddPolylineImDrawFlags([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("const ImVec2 *")] ImVec2_t* points, int num_points, [NativeTypeName("ImU32")] uint col, [NativeTypeName("ImDrawFlags")] int flags, float thickness);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImDrawList_PathStrokeImDrawFlags([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImU32")] uint col, [NativeTypeName("ImDrawFlags")] int flags, float thickness);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImDrawList_PushTextureID([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImDrawList_PopTextureID([NativeTypeName("ImDrawList *")] ImDrawList_t* self);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImDrawList__SetDrawListSharedData([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImDrawListSharedData *")] ImDrawListSharedData_t* data);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImDrawList__ResetForNewFrame([NativeTypeName("ImDrawList *")] ImDrawList_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
@@ -5054,13 +5507,13 @@ namespace Zinc.Internal.Sokol
         public static extern void ImDrawList__OnChangedClipRect([NativeTypeName("ImDrawList *")] ImDrawList_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImDrawList__OnChangedTextureID([NativeTypeName("ImDrawList *")] ImDrawList_t* self);
+        public static extern void ImDrawList__OnChangedTexture([NativeTypeName("ImDrawList *")] ImDrawList_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImDrawList__OnChangedVtxOffset([NativeTypeName("ImDrawList *")] ImDrawList_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImDrawList__SetTextureID([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureID")] ulong texture_id);
+        public static extern void ImDrawList__SetTexture([NativeTypeName("ImDrawList *")] ImDrawList_t* self, [NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern int ImDrawList__CalcCircleAutoSegmentCount([NativeTypeName("const ImDrawList *")] ImDrawList_t* self, float radius);
@@ -5082,6 +5535,38 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImDrawData_ScaleClipRects([NativeTypeName("ImDrawData *")] ImDrawData_t* self, [NativeTypeName("ImVec2")] ImVec2_t fb_scale);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImTextureData_Create([NativeTypeName("ImTextureData *")] ImTextureData_t* self, ImTextureFormat format, int w, int h);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImTextureData_DestroyPixels([NativeTypeName("ImTextureData *")] ImTextureData_t* self);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void* ImTextureData_GetPixels([NativeTypeName("ImTextureData *")] ImTextureData_t* self);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void* ImTextureData_GetPixelsAt([NativeTypeName("ImTextureData *")] ImTextureData_t* self, int x, int y);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern int ImTextureData_GetSizeInBytes([NativeTypeName("const ImTextureData *")] ImTextureData_t* self);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern int ImTextureData_GetPitch([NativeTypeName("const ImTextureData *")] ImTextureData_t* self);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("ImTextureRef")]
+        public static extern ImTextureRef_t ImTextureData_GetTexRef([NativeTypeName("ImTextureData *")] ImTextureData_t* self);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("ImTextureID")]
+        public static extern ulong ImTextureData_GetTexID([NativeTypeName("const ImTextureData *")] ImTextureData_t* self);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImTextureData_SetTexID([NativeTypeName("ImTextureData *")] ImTextureData_t* self, [NativeTypeName("ImTextureID")] ulong tex_id);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImTextureData_SetStatus([NativeTypeName("ImTextureData *")] ImTextureData_t* self, ImTextureStatus status);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImFontGlyphRangesBuilder_Clear([NativeTypeName("ImFontGlyphRangesBuilder *")] ImFontGlyphRangesBuilder_t* self);
@@ -5106,16 +5591,20 @@ namespace Zinc.Internal.Sokol
         public static extern void ImFontGlyphRangesBuilder_BuildRanges([NativeTypeName("ImFontGlyphRangesBuilder *")] ImFontGlyphRangesBuilder_t* self, [NativeTypeName("ImVector_ImWchar *")] ImVector_ImWchar_t* out_ranges);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("bool")]
-        public static extern byte ImFontAtlasCustomRect_IsPacked([NativeTypeName("const ImFontAtlasCustomRect *")] ImFontAtlasCustomRect_t* self);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImFont *")]
         public static extern ImFont_t* ImFontAtlas_AddFont([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("const ImFontConfig *")] ImFontConfig_t* font_cfg);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImFont *")]
         public static extern ImFont_t* ImFontAtlas_AddFontDefault([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("const ImFontConfig *")] ImFontConfig_t* font_cfg);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("ImFont *")]
+        public static extern ImFont_t* ImFontAtlas_AddFontDefaultVector([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("const ImFontConfig *")] ImFontConfig_t* font_cfg);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("ImFont *")]
+        public static extern ImFont_t* ImFontAtlas_AddFontDefaultBitmap([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("const ImFontConfig *")] ImFontConfig_t* font_cfg);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImFont *")]
@@ -5134,16 +5623,25 @@ namespace Zinc.Internal.Sokol
         public static extern ImFont_t* ImFontAtlas_AddFontFromMemoryCompressedBase85TTF([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("const char *")] sbyte* compressed_font_data_base85, float size_pixels, [NativeTypeName("const ImFontConfig *")] ImFontConfig_t* font_cfg, [NativeTypeName("const ImWchar *")] ushort* glyph_ranges);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImFontAtlas_ClearInputData([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
+        public static extern void ImFontAtlas_RemoveFont([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("ImFont *")] ImFont_t* font);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImFontAtlas_Clear([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImFontAtlas_ClearFonts([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImFontAtlas_ClearTexData([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
+        public static extern void ImFontAtlas_CompactCache([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImFontAtlas_Clear([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
+        public static extern void ImFontAtlas_SetFontLoader([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("const ImFontLoader *")] ImFontLoader_t* font_loader);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImFontAtlas_ClearInputData([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImFontAtlas_ClearTexData([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -5156,11 +5654,14 @@ namespace Zinc.Internal.Sokol
         public static extern void ImFontAtlas_GetTexDataAsRGBA32([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("unsigned char **")] byte** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("bool")]
-        public static extern byte ImFontAtlas_IsBuilt([NativeTypeName("const ImFontAtlas *")] ImFontAtlas_t* self);
+        public static extern void ImFontAtlas_SetTexID([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("ImTextureID")] ulong id);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImFontAtlas_SetTexID([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("ImTextureID")] ulong id);
+        public static extern void ImFontAtlas_SetTexIDImTextureRef([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("ImTextureRef")] ImTextureRef_t id);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        public static extern byte ImFontAtlas_IsBuilt([NativeTypeName("const ImFontAtlas *")] ImFontAtlas_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("const ImWchar *")]
@@ -5199,28 +5700,56 @@ namespace Zinc.Internal.Sokol
         public static extern ushort* ImFontAtlas_GetGlyphRangesVietnamese([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern int ImFontAtlas_AddCustomRectRegular([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, int width, int height);
+        [return: NativeTypeName("ImFontAtlasRectId")]
+        public static extern int ImFontAtlas_AddCustomRect([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, int width, int height, [NativeTypeName("ImFontAtlasRect *")] ImFontAtlasRect_t* out_r);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern int ImFontAtlas_AddCustomRectFontGlyph([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("ImFont *")] ImFont_t* font, [NativeTypeName("ImWchar")] ushort id, int width, int height, float advance_x, [NativeTypeName("ImVec2")] ImVec2_t offset);
+        public static extern void ImFontAtlas_RemoveCustomRect([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("ImFontAtlasRectId")] int id);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("ImFontAtlasCustomRect *")]
-        public static extern ImFontAtlasCustomRect_t* ImFontAtlas_GetCustomRectByIndex([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, int index);
+        [return: NativeTypeName("bool")]
+        public static extern byte ImFontAtlas_GetCustomRect([NativeTypeName("const ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("ImFontAtlasRectId")] int id, [NativeTypeName("ImFontAtlasRect *")] ImFontAtlasRect_t* out_r);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImFontAtlas_CalcCustomRectUV([NativeTypeName("const ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("const ImFontAtlasCustomRect *")] ImFontAtlasCustomRect_t* rect, [NativeTypeName("ImVec2 *")] ImVec2_t* out_uv_min, [NativeTypeName("ImVec2 *")] ImVec2_t* out_uv_max);
+        [return: NativeTypeName("ImFontAtlasRectId")]
+        public static extern int ImFontAtlas_AddCustomRectRegular([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, int w, int h);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("const ImFontAtlasRect *")]
+        public static extern ImFontAtlasRect_t* ImFontAtlas_GetCustomRectByIndex([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("ImFontAtlasRectId")] int id);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImFontAtlas_CalcCustomRectUV([NativeTypeName("const ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("const ImFontAtlasRect *")] ImFontAtlasRect_t* r, [NativeTypeName("ImVec2 *")] ImVec2_t* out_uv_min, [NativeTypeName("ImVec2 *")] ImVec2_t* out_uv_max);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("ImFontAtlasRectId")]
+        public static extern int ImFontAtlas_AddCustomRectFontGlyph([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("ImFont *")] ImFont_t* font, [NativeTypeName("ImWchar")] ushort codepoint, int w, int h, float advance_x, [NativeTypeName("ImVec2")] ImVec2_t offset);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("ImFontAtlasRectId")]
+        public static extern int ImFontAtlas_AddCustomRectFontGlyphForSize([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("ImFont *")] ImFont_t* font, float font_size, [NativeTypeName("ImWchar")] ushort codepoint, int w, int h, float advance_x, [NativeTypeName("ImVec2")] ImVec2_t offset);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImFontBaked_ClearOutputData([NativeTypeName("ImFontBaked *")] ImFontBaked_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImFontGlyph *")]
-        public static extern ImFontGlyph_t* ImFont_FindGlyph([NativeTypeName("ImFont *")] ImFont_t* self, [NativeTypeName("ImWchar")] ushort c);
+        public static extern ImFontGlyph_t* ImFontBaked_FindGlyph([NativeTypeName("ImFontBaked *")] ImFontBaked_t* self, [NativeTypeName("ImWchar")] ushort c);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImFontGlyph *")]
-        public static extern ImFontGlyph_t* ImFont_FindGlyphNoFallback([NativeTypeName("ImFont *")] ImFont_t* self, [NativeTypeName("ImWchar")] ushort c);
+        public static extern ImFontGlyph_t* ImFontBaked_FindGlyphNoFallback([NativeTypeName("ImFontBaked *")] ImFontBaked_t* self, [NativeTypeName("ImWchar")] ushort c);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern float ImFont_GetCharAdvance([NativeTypeName("ImFont *")] ImFont_t* self, [NativeTypeName("ImWchar")] ushort c);
+        public static extern float ImFontBaked_GetCharAdvance([NativeTypeName("ImFontBaked *")] ImFontBaked_t* self, [NativeTypeName("ImWchar")] ushort c);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        public static extern byte ImFontBaked_IsGlyphLoaded([NativeTypeName("ImFontBaked *")] ImFontBaked_t* self, [NativeTypeName("ImWchar")] ushort c);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        public static extern byte ImFont_IsGlyphInFont([NativeTypeName("ImFont *")] ImFont_t* self, [NativeTypeName("ImWchar")] ushort c);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -5231,37 +5760,43 @@ namespace Zinc.Internal.Sokol
         public static extern sbyte* ImFont_GetDebugName([NativeTypeName("const ImFont *")] ImFont_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("ImFontBaked *")]
+        public static extern ImFontBaked_t* ImFont_GetFontBaked([NativeTypeName("ImFont *")] ImFont_t* self, float font_size);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("ImFontBaked *")]
+        public static extern ImFontBaked_t* ImFont_GetFontBakedEx([NativeTypeName("ImFont *")] ImFont_t* self, float font_size, float density);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImVec2")]
         public static extern ImVec2_t ImFont_CalcTextSizeA([NativeTypeName("ImFont *")] ImFont_t* self, float size, float max_width, float wrap_width, [NativeTypeName("const char *")] sbyte* text_begin);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImVec2")]
-        public static extern ImVec2_t ImFont_CalcTextSizeAEx([NativeTypeName("ImFont *")] ImFont_t* self, float size, float max_width, float wrap_width, [NativeTypeName("const char *")] sbyte* text_begin, [NativeTypeName("const char *")] sbyte* text_end, [NativeTypeName("const char **")] sbyte** remaining);
+        public static extern ImVec2_t ImFont_CalcTextSizeAEx([NativeTypeName("ImFont *")] ImFont_t* self, float size, float max_width, float wrap_width, [NativeTypeName("const char *")] sbyte* text_begin, [NativeTypeName("const char *")] sbyte* text_end, [NativeTypeName("const char **")] sbyte** out_remaining);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("const char *")]
+        public static extern sbyte* ImFont_CalcWordWrapPosition([NativeTypeName("ImFont *")] ImFont_t* self, float size, [NativeTypeName("const char *")] sbyte* text, [NativeTypeName("const char *")] sbyte* text_end, float wrap_width);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImFont_RenderChar([NativeTypeName("ImFont *")] ImFont_t* self, [NativeTypeName("ImDrawList *")] ImDrawList_t* draw_list, float size, [NativeTypeName("ImVec2")] ImVec2_t pos, [NativeTypeName("ImU32")] uint col, [NativeTypeName("ImWchar")] ushort c);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImFont_RenderCharEx([NativeTypeName("ImFont *")] ImFont_t* self, [NativeTypeName("ImDrawList *")] ImDrawList_t* draw_list, float size, [NativeTypeName("ImVec2")] ImVec2_t pos, [NativeTypeName("ImU32")] uint col, [NativeTypeName("ImWchar")] ushort c, [NativeTypeName("const ImVec4 *")] ImVec4_t* cpu_fine_clip);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImFont_RenderText([NativeTypeName("ImFont *")] ImFont_t* self, [NativeTypeName("ImDrawList *")] ImDrawList_t* draw_list, float size, [NativeTypeName("ImVec2")] ImVec2_t pos, [NativeTypeName("ImU32")] uint col, [NativeTypeName("ImVec4")] ImVec4_t clip_rect, [NativeTypeName("const char *")] sbyte* text_begin, [NativeTypeName("const char *")] sbyte* text_end, float wrap_width, [NativeTypeName("ImDrawTextFlags")] int flags);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("const char *")]
         public static extern sbyte* ImFont_CalcWordWrapPositionA([NativeTypeName("ImFont *")] ImFont_t* self, float scale, [NativeTypeName("const char *")] sbyte* text, [NativeTypeName("const char *")] sbyte* text_end, float wrap_width);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImFont_RenderChar([NativeTypeName("ImFont *")] ImFont_t* self, [NativeTypeName("ImDrawList *")] ImDrawList_t* draw_list, float size, [NativeTypeName("ImVec2")] ImVec2_t pos, [NativeTypeName("ImU32")] uint col, [NativeTypeName("ImWchar")] ushort c);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImFont_RenderText([NativeTypeName("ImFont *")] ImFont_t* self, [NativeTypeName("ImDrawList *")] ImDrawList_t* draw_list, float size, [NativeTypeName("ImVec2")] ImVec2_t pos, [NativeTypeName("ImU32")] uint col, [NativeTypeName("ImVec4")] ImVec4_t clip_rect, [NativeTypeName("const char *")] sbyte* text_begin, [NativeTypeName("const char *")] sbyte* text_end, float wrap_width, [NativeTypeName("bool")] byte cpu_fine_clip);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImFont_BuildLookupTable([NativeTypeName("ImFont *")] ImFont_t* self);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImFont_ClearOutputData([NativeTypeName("ImFont *")] ImFont_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImFont_GrowIndex([NativeTypeName("ImFont *")] ImFont_t* self, int new_size);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImFont_AddGlyph([NativeTypeName("ImFont *")] ImFont_t* self, [NativeTypeName("const ImFontConfig *")] ImFontConfig_t* src_cfg, [NativeTypeName("ImWchar")] ushort c, float x0, float y0, float x1, float y1, float u0, float v0, float u1, float v1, float advance_x);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImFont_AddRemapChar([NativeTypeName("ImFont *")] ImFont_t* self, [NativeTypeName("ImWchar")] ushort dst, [NativeTypeName("ImWchar")] ushort src, [NativeTypeName("bool")] byte overwrite_dst);
+        public static extern void ImFont_AddRemapChar([NativeTypeName("ImFont *")] ImFont_t* self, [NativeTypeName("ImWchar")] ushort from_codepoint, [NativeTypeName("ImWchar")] ushort to_codepoint);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -5276,7 +5811,23 @@ namespace Zinc.Internal.Sokol
         public static extern ImVec2_t ImGuiViewport_GetWorkCenter([NativeTypeName("const ImGuiViewport *")] ImGuiViewport_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igImageImVec4([NativeTypeName("ImTextureID")] ulong user_texture_id, [NativeTypeName("ImVec2")] ImVec2_t image_size, [NativeTypeName("ImVec2")] ImVec2_t uv0, [NativeTypeName("ImVec2")] ImVec2_t uv1, [NativeTypeName("ImVec4")] ImVec4_t tint_col, [NativeTypeName("ImVec4")] ImVec4_t border_col);
+        [return: NativeTypeName("const char *")]
+        public static extern sbyte* ImGuiViewport_GetDebugName([NativeTypeName("const ImGuiViewport *")] ImGuiViewport_t* self);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImGuiPlatformIO_ClearPlatformHandlers([NativeTypeName("ImGuiPlatformIO *")] ImGuiPlatformIO_t* self);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImGuiPlatformIO_ClearRendererHandlers([NativeTypeName("ImGuiPlatformIO *")] ImGuiPlatformIO_t* self);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void igPushFont([NativeTypeName("ImFont *")] ImFont_t* font);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void igSetWindowFontScale(float scale);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void igImageImVec4([NativeTypeName("ImTextureRef")] ImTextureRef_t tex_ref, [NativeTypeName("ImVec2")] ImVec2_t image_size, [NativeTypeName("ImVec2")] ImVec2_t uv0, [NativeTypeName("ImVec2")] ImVec2_t uv1, [NativeTypeName("ImVec4")] ImVec4_t tint_col, [NativeTypeName("ImVec4")] ImVec4_t border_col);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igPushButtonRepeat([NativeTypeName("bool")] byte repeat);
@@ -5302,45 +5853,6 @@ namespace Zinc.Internal.Sokol
         [return: NativeTypeName("ImVec2")]
         public static extern ImVec2_t igGetWindowContentRegionMax();
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("bool")]
-        public static extern byte igBeginChildFrame([NativeTypeName("ImGuiID")] uint id, [NativeTypeName("ImVec2")] ImVec2_t size);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("bool")]
-        public static extern byte igBeginChildFrameEx([NativeTypeName("ImGuiID")] uint id, [NativeTypeName("ImVec2")] ImVec2_t size, [NativeTypeName("ImGuiWindowFlags")] int window_flags);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igEndChildFrame();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igShowStackToolWindow(bool* p_open);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("bool")]
-        public static extern byte igComboObsolete([NativeTypeName("const char *")] sbyte* label, int* current_item, [NativeTypeName("bool (*)(void *, int, const char **)")] delegate* unmanaged[Cdecl]<void*, int, sbyte**, byte> old_callback, void* user_data, int items_count);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("bool")]
-        public static extern byte igComboObsoleteEx([NativeTypeName("const char *")] sbyte* label, int* current_item, [NativeTypeName("bool (*)(void *, int, const char **)")] delegate* unmanaged[Cdecl]<void*, int, sbyte**, byte> old_callback, void* user_data, int items_count, int popup_max_height_in_items);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("bool")]
-        public static extern byte igListBoxObsolete([NativeTypeName("const char *")] sbyte* label, int* current_item, [NativeTypeName("bool (*)(void *, int, const char **)")] delegate* unmanaged[Cdecl]<void*, int, sbyte**, byte> old_callback, void* user_data, int items_count);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("bool")]
-        public static extern byte igListBoxObsoleteEx([NativeTypeName("const char *")] sbyte* label, int* current_item, [NativeTypeName("bool (*)(void *, int, const char **)")] delegate* unmanaged[Cdecl]<void*, int, sbyte**, byte> old_callback, void* user_data, int items_count, int height_in_items);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igSetItemAllowOverlap();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igPushAllowKeyboardFocus([NativeTypeName("bool")] byte tab_stop);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igPopAllowKeyboardFocus();
-
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "simgui_setup", ExactSpelling = true)]
         public static extern void setup([NativeTypeName("const simgui_desc_t *")] simgui_desc_t* desc);
 
@@ -5352,14 +5864,14 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "simgui_imtextureid", ExactSpelling = true)]
         [return: NativeTypeName("uint64_t")]
-        public static extern ulong imtextureid(sg_image img);
+        public static extern ulong imtextureid(sg_view tex_view);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "simgui_imtextureid_with_sampler", ExactSpelling = true)]
         [return: NativeTypeName("uint64_t")]
-        public static extern ulong imtextureid_with_sampler(sg_image img, sg_sampler smp);
+        public static extern ulong imtextureid_with_sampler(sg_view tex_view, sg_sampler smp);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "simgui_image_from_imtextureid", ExactSpelling = true)]
-        public static extern sg_image image_from_imtextureid([NativeTypeName("uint64_t")] ulong imtex_id);
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "simgui_texture_view_from_imtextureid", ExactSpelling = true)]
+        public static extern sg_view texture_view_from_imtextureid([NativeTypeName("uint64_t")] ulong imtex_id);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "simgui_sampler_from_imtextureid", ExactSpelling = true)]
         public static extern sg_sampler sampler_from_imtextureid([NativeTypeName("uint64_t")] ulong imtex_id);
@@ -5400,11 +5912,5 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "simgui_shutdown", ExactSpelling = true)]
         public static extern void shutdown();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "simgui_create_fonts_texture", ExactSpelling = true)]
-        public static extern void create_fonts_texture([NativeTypeName("const simgui_font_tex_desc_t *")] simgui_font_tex_desc_t* desc);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "simgui_destroy_fonts_texture", ExactSpelling = true)]
-        public static extern void destroy_fonts_texture();
     }
 }

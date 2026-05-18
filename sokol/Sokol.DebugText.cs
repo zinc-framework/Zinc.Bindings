@@ -224,5 +224,8 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sdtx_vprintf", ExactSpelling = true)]
         public static extern int vprintf([NativeTypeName("const char *")] sbyte* fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sdtx_get_cleared_fmt_buffer", ExactSpelling = true)]
+        public static extern sdtx_range get_cleared_fmt_buffer();
     }
 }

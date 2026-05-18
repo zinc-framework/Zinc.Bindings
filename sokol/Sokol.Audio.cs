@@ -32,6 +32,9 @@ namespace Zinc.Internal.Sokol
         SAUDIO_LOGITEM_COREAUDIO_ALLOCATE_BUFFER_FAILED,
         SAUDIO_LOGITEM_COREAUDIO_START_FAILED,
         SAUDIO_LOGITEM_BACKEND_BUFFER_SIZE_ISNT_MULTIPLE_OF_PACKET_SIZE,
+        SAUDIO_LOGITEM_VITA_SCEAUDIO_OPEN_FAILED,
+        SAUDIO_LOGITEM_VITA_PTHREAD_CREATE_FAILED,
+        SAUDIO_LOGITEM_N3DS_NDSP_OPEN_FAILED,
     }
 
     public unsafe partial struct saudio_logger
@@ -53,6 +56,23 @@ namespace Zinc.Internal.Sokol
         public void* user_data;
     }
 
+    [NativeTypeName("unsigned int")]
+    public enum saudio_n3ds_ndspinterptype : uint
+    {
+        SAUDIO_N3DS_DSP_INTERP_POLYPHASE = 0,
+        SAUDIO_N3DS_DSP_INTERP_LINEAR = 1,
+        SAUDIO_N3DS_DSP_INTERP_NONE = 2,
+    }
+
+    public partial struct saudio_n3ds_desc
+    {
+        public int queue_count;
+
+        public saudio_n3ds_ndspinterptype interpolation_type;
+
+        public int channel_id;
+    }
+
     public unsafe partial struct saudio_desc
     {
         public int sample_rate;
@@ -72,6 +92,8 @@ namespace Zinc.Internal.Sokol
         public delegate* unmanaged[Cdecl]<float*, int, int, void*, void> stream_userdata_cb;
 
         public void* user_data;
+
+        public saudio_n3ds_desc n3ds;
 
         public saudio_allocator allocator;
 

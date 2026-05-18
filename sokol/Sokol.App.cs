@@ -260,6 +260,10 @@ namespace Zinc.Internal.Sokol
 
         public int height;
 
+        public int cursor_hotspot_x;
+
+        public int cursor_hotspot_y;
+
         public sapp_range pixels;
     }
 
@@ -318,6 +322,7 @@ namespace Zinc.Internal.Sokol
         SAPP_LOGITEM_WIN32_REGISTER_RAW_INPUT_DEVICES_FAILED_MOUSE_LOCK,
         SAPP_LOGITEM_WIN32_REGISTER_RAW_INPUT_DEVICES_FAILED_MOUSE_UNLOCK,
         SAPP_LOGITEM_WIN32_GET_RAW_INPUT_DATA_FAILED,
+        SAPP_LOGITEM_WIN32_DESTROYICON_FOR_CURSOR_FAILED,
         SAPP_LOGITEM_LINUX_GLX_LOAD_LIBGL_FAILED,
         SAPP_LOGITEM_LINUX_GLX_LOAD_ENTRY_POINTS_FAILED,
         SAPP_LOGITEM_LINUX_GLX_EXTENSION_NOT_FOUND,
@@ -376,21 +381,211 @@ namespace Zinc.Internal.Sokol
         SAPP_LOGITEM_ANDROID_NATIVE_ACTIVITY_ONCREATE,
         SAPP_LOGITEM_ANDROID_CREATE_THREAD_PIPE_FAILED,
         SAPP_LOGITEM_ANDROID_NATIVE_ACTIVITY_CREATE_SUCCESS,
+        SAPP_LOGITEM_WGPU_DEVICE_LOST,
+        SAPP_LOGITEM_WGPU_DEVICE_LOG,
+        SAPP_LOGITEM_WGPU_DEVICE_UNCAPTURED_ERROR,
         SAPP_LOGITEM_WGPU_SWAPCHAIN_CREATE_SURFACE_FAILED,
-        SAPP_LOGITEM_WGPU_SWAPCHAIN_CREATE_SWAPCHAIN_FAILED,
+        SAPP_LOGITEM_WGPU_SWAPCHAIN_SURFACE_GET_CAPABILITIES_FAILED,
         SAPP_LOGITEM_WGPU_SWAPCHAIN_CREATE_DEPTH_STENCIL_TEXTURE_FAILED,
         SAPP_LOGITEM_WGPU_SWAPCHAIN_CREATE_DEPTH_STENCIL_VIEW_FAILED,
         SAPP_LOGITEM_WGPU_SWAPCHAIN_CREATE_MSAA_TEXTURE_FAILED,
         SAPP_LOGITEM_WGPU_SWAPCHAIN_CREATE_MSAA_VIEW_FAILED,
+        SAPP_LOGITEM_WGPU_SWAPCHAIN_GETCURRENTTEXTURE_FAILED,
         SAPP_LOGITEM_WGPU_REQUEST_DEVICE_STATUS_ERROR,
         SAPP_LOGITEM_WGPU_REQUEST_DEVICE_STATUS_UNKNOWN,
         SAPP_LOGITEM_WGPU_REQUEST_ADAPTER_STATUS_UNAVAILABLE,
         SAPP_LOGITEM_WGPU_REQUEST_ADAPTER_STATUS_ERROR,
         SAPP_LOGITEM_WGPU_REQUEST_ADAPTER_STATUS_UNKNOWN,
         SAPP_LOGITEM_WGPU_CREATE_INSTANCE_FAILED,
+        SAPP_LOGITEM_VULKAN_REQUIRED_INSTANCE_EXTENSION_FUNCTION_MISSING,
+        SAPP_LOGITEM_VULKAN_ALLOC_DEVICE_MEMORY_NO_SUITABLE_MEMORY_TYPE,
+        SAPP_LOGITEM_VULKAN_ALLOCATE_MEMORY_FAILED,
+        SAPP_LOGITEM_VULKAN_CREATE_INSTANCE_FAILED,
+        SAPP_LOGITEM_VULKAN_ENUMERATE_PHYSICAL_DEVICES_FAILED,
+        SAPP_LOGITEM_VULKAN_NO_PHYSICAL_DEVICES_FOUND,
+        SAPP_LOGITEM_VULKAN_NO_SUITABLE_PHYSICAL_DEVICE_FOUND,
+        SAPP_LOGITEM_VULKAN_CREATE_DEVICE_FAILED_EXTENSION_NOT_PRESENT,
+        SAPP_LOGITEM_VULKAN_CREATE_DEVICE_FAILED_FEATURE_NOT_PRESENT,
+        SAPP_LOGITEM_VULKAN_CREATE_DEVICE_FAILED_INITIALIZATION_FAILED,
+        SAPP_LOGITEM_VULKAN_CREATE_DEVICE_FAILED_OTHER,
+        SAPP_LOGITEM_VULKAN_CREATE_SURFACE_FAILED,
+        SAPP_LOGITEM_VULKAN_CREATE_SWAPCHAIN_FAILED,
+        SAPP_LOGITEM_VULKAN_SWAPCHAIN_CREATE_IMAGE_VIEW_FAILED,
+        SAPP_LOGITEM_VULKAN_SWAPCHAIN_CREATE_IMAGE_FAILED,
+        SAPP_LOGITEM_VULKAN_SWAPCHAIN_ALLOC_IMAGE_DEVICE_MEMORY_FAILED,
+        SAPP_LOGITEM_VULKAN_SWAPCHAIN_BIND_IMAGE_MEMORY_FAILED,
+        SAPP_LOGITEM_VULKAN_ACQUIRE_NEXT_IMAGE_FAILED,
+        SAPP_LOGITEM_VULKAN_QUEUE_PRESENT_FAILED,
         SAPP_LOGITEM_IMAGE_DATA_SIZE_MISMATCH,
         SAPP_LOGITEM_DROPPED_FILE_PATH_TOO_LONG,
         SAPP_LOGITEM_CLIPBOARD_STRING_TOO_BIG,
+    }
+
+    [NativeTypeName("unsigned int")]
+    public enum sapp_pixel_format : uint
+    {
+        _SAPP_PIXELFORMAT_DEFAULT,
+        SAPP_PIXELFORMAT_NONE,
+        SAPP_PIXELFORMAT_RGBA8,
+        SAPP_PIXELFORMAT_SRGB8A8,
+        SAPP_PIXELFORMAT_BGRA8,
+        SAPP_PIXELFORMAT_SBGRA8,
+        SAPP_PIXELFORMAT_DEPTH,
+        SAPP_PIXELFORMAT_DEPTH_STENCIL,
+        _SA_PPPIXELFORMAT_FORCE_U32 = 0x7FFFFFFF,
+    }
+
+    public partial struct sapp_environment_defaults
+    {
+        public sapp_pixel_format color_format;
+
+        public sapp_pixel_format depth_format;
+
+        public int sample_count;
+    }
+
+    public unsafe partial struct sapp_metal_environment
+    {
+        [NativeTypeName("const void *")]
+        public void* device;
+    }
+
+    public unsafe partial struct sapp_d3d11_environment
+    {
+        [NativeTypeName("const void *")]
+        public void* device;
+
+        [NativeTypeName("const void *")]
+        public void* device_context;
+    }
+
+    public unsafe partial struct sapp_wgpu_environment
+    {
+        [NativeTypeName("const void *")]
+        public void* device;
+    }
+
+    public unsafe partial struct sapp_vulkan_environment
+    {
+        [NativeTypeName("const void *")]
+        public void* instance;
+
+        [NativeTypeName("const void *")]
+        public void* physical_device;
+
+        [NativeTypeName("const void *")]
+        public void* device;
+
+        [NativeTypeName("const void *")]
+        public void* queue;
+
+        [NativeTypeName("uint32_t")]
+        public uint queue_family_index;
+    }
+
+    public partial struct sapp_environment
+    {
+        public sapp_environment_defaults defaults;
+
+        public sapp_metal_environment metal;
+
+        public sapp_d3d11_environment d3d11;
+
+        public sapp_wgpu_environment wgpu;
+
+        public sapp_vulkan_environment vulkan;
+    }
+
+    public unsafe partial struct sapp_metal_swapchain
+    {
+        [NativeTypeName("const void *")]
+        public void* current_drawable;
+
+        [NativeTypeName("const void *")]
+        public void* depth_stencil_texture;
+
+        [NativeTypeName("const void *")]
+        public void* msaa_color_texture;
+    }
+
+    public unsafe partial struct sapp_d3d11_swapchain
+    {
+        [NativeTypeName("const void *")]
+        public void* render_view;
+
+        [NativeTypeName("const void *")]
+        public void* resolve_view;
+
+        [NativeTypeName("const void *")]
+        public void* depth_stencil_view;
+    }
+
+    public unsafe partial struct sapp_wgpu_swapchain
+    {
+        [NativeTypeName("const void *")]
+        public void* render_view;
+
+        [NativeTypeName("const void *")]
+        public void* resolve_view;
+
+        [NativeTypeName("const void *")]
+        public void* depth_stencil_view;
+    }
+
+    public unsafe partial struct sapp_vulkan_swapchain
+    {
+        [NativeTypeName("const void *")]
+        public void* render_image;
+
+        [NativeTypeName("const void *")]
+        public void* render_view;
+
+        [NativeTypeName("const void *")]
+        public void* resolve_image;
+
+        [NativeTypeName("const void *")]
+        public void* resolve_view;
+
+        [NativeTypeName("const void *")]
+        public void* depth_stencil_image;
+
+        [NativeTypeName("const void *")]
+        public void* depth_stencil_view;
+
+        [NativeTypeName("const void *")]
+        public void* render_finished_semaphore;
+
+        [NativeTypeName("const void *")]
+        public void* present_complete_semaphore;
+    }
+
+    public partial struct sapp_gl_swapchain
+    {
+        [NativeTypeName("uint32_t")]
+        public uint framebuffer;
+    }
+
+    public partial struct sapp_swapchain
+    {
+        public int width;
+
+        public int height;
+
+        public int sample_count;
+
+        public sapp_pixel_format color_format;
+
+        public sapp_pixel_format depth_format;
+
+        public sapp_metal_swapchain metal;
+
+        public sapp_d3d11_swapchain d3d11;
+
+        public sapp_wgpu_swapchain wgpu;
+
+        public sapp_vulkan_swapchain vulkan;
+
+        public sapp_gl_swapchain gl;
     }
 
     public unsafe partial struct sapp_logger
@@ -399,6 +594,73 @@ namespace Zinc.Internal.Sokol
         public delegate* unmanaged[Cdecl]<sbyte*, uint, uint, sbyte*, uint, sbyte*, void*, void> func;
 
         public void* user_data;
+    }
+
+    public partial struct sapp_gl_desc
+    {
+        public int major_version;
+
+        public int minor_version;
+    }
+
+    public partial struct sapp_win32_desc
+    {
+        [NativeTypeName("bool")]
+        public byte console_utf8;
+
+        [NativeTypeName("bool")]
+        public byte console_create;
+
+        [NativeTypeName("bool")]
+        public byte console_attach;
+    }
+
+    public unsafe partial struct sapp_html5_desc
+    {
+        [NativeTypeName("const char *")]
+        public sbyte* canvas_selector;
+
+        [NativeTypeName("bool")]
+        public byte canvas_resize;
+
+        [NativeTypeName("bool")]
+        public byte preserve_drawing_buffer;
+
+        [NativeTypeName("bool")]
+        public byte premultiplied_alpha;
+
+        [NativeTypeName("bool")]
+        public byte ask_leave_site;
+
+        [NativeTypeName("bool")]
+        public byte update_document_title;
+
+        [NativeTypeName("bool")]
+        public byte bubble_mouse_events;
+
+        [NativeTypeName("bool")]
+        public byte bubble_touch_events;
+
+        [NativeTypeName("bool")]
+        public byte bubble_wheel_events;
+
+        [NativeTypeName("bool")]
+        public byte bubble_key_events;
+
+        [NativeTypeName("bool")]
+        public byte bubble_char_events;
+
+        [NativeTypeName("bool")]
+        public byte use_emsc_set_main_loop;
+
+        [NativeTypeName("bool")]
+        public byte emsc_set_main_loop_simulate_infinite_loop;
+    }
+
+    public partial struct sapp_ios_desc
+    {
+        [NativeTypeName("bool")]
+        public byte keyboard_resizes_canvas;
     }
 
     public unsafe partial struct sapp_desc
@@ -467,60 +729,13 @@ namespace Zinc.Internal.Sokol
 
         public sapp_logger logger;
 
-        public int gl_major_version;
+        public sapp_gl_desc gl;
 
-        public int gl_minor_version;
+        public sapp_win32_desc win32;
 
-        [NativeTypeName("bool")]
-        public byte win32_console_utf8;
+        public sapp_html5_desc html5;
 
-        [NativeTypeName("bool")]
-        public byte win32_console_create;
-
-        [NativeTypeName("bool")]
-        public byte win32_console_attach;
-
-        [NativeTypeName("const char *")]
-        public sbyte* html5_canvas_selector;
-
-        [NativeTypeName("bool")]
-        public byte html5_canvas_resize;
-
-        [NativeTypeName("bool")]
-        public byte html5_preserve_drawing_buffer;
-
-        [NativeTypeName("bool")]
-        public byte html5_premultiplied_alpha;
-
-        [NativeTypeName("bool")]
-        public byte html5_ask_leave_site;
-
-        [NativeTypeName("bool")]
-        public byte html5_update_document_title;
-
-        [NativeTypeName("bool")]
-        public byte html5_bubble_mouse_events;
-
-        [NativeTypeName("bool")]
-        public byte html5_bubble_touch_events;
-
-        [NativeTypeName("bool")]
-        public byte html5_bubble_wheel_events;
-
-        [NativeTypeName("bool")]
-        public byte html5_bubble_key_events;
-
-        [NativeTypeName("bool")]
-        public byte html5_bubble_char_events;
-
-        [NativeTypeName("bool")]
-        public byte html5_use_emsc_set_main_loop;
-
-        [NativeTypeName("bool")]
-        public byte html5_emsc_set_main_loop_simulate_infinite_loop;
-
-        [NativeTypeName("bool")]
-        public byte ios_keyboard_resizes_canvas;
+        public sapp_ios_desc ios;
     }
 
     [NativeTypeName("unsigned int")]
@@ -573,6 +788,22 @@ namespace Zinc.Internal.Sokol
         SAPP_MOUSECURSOR_RESIZE_NESW,
         SAPP_MOUSECURSOR_RESIZE_ALL,
         SAPP_MOUSECURSOR_NOT_ALLOWED,
+        SAPP_MOUSECURSOR_CUSTOM_0,
+        SAPP_MOUSECURSOR_CUSTOM_1,
+        SAPP_MOUSECURSOR_CUSTOM_2,
+        SAPP_MOUSECURSOR_CUSTOM_3,
+        SAPP_MOUSECURSOR_CUSTOM_4,
+        SAPP_MOUSECURSOR_CUSTOM_5,
+        SAPP_MOUSECURSOR_CUSTOM_6,
+        SAPP_MOUSECURSOR_CUSTOM_7,
+        SAPP_MOUSECURSOR_CUSTOM_8,
+        SAPP_MOUSECURSOR_CUSTOM_9,
+        SAPP_MOUSECURSOR_CUSTOM_10,
+        SAPP_MOUSECURSOR_CUSTOM_11,
+        SAPP_MOUSECURSOR_CUSTOM_12,
+        SAPP_MOUSECURSOR_CUSTOM_13,
+        SAPP_MOUSECURSOR_CUSTOM_14,
+        SAPP_MOUSECURSOR_CUSTOM_15,
         _SAPP_MOUSECURSOR_NUM,
     }
 
@@ -611,10 +842,10 @@ namespace Zinc.Internal.Sokol
         public static extern float heightf();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_color_format", ExactSpelling = true)]
-        public static extern int color_format();
+        public static extern sapp_pixel_format color_format();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_depth_format", ExactSpelling = true)]
-        public static extern int depth_format();
+        public static extern sapp_pixel_format depth_format();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_sample_count", ExactSpelling = true)]
         public static extern int sample_count();
@@ -659,6 +890,12 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_get_mouse_cursor", ExactSpelling = true)]
         public static extern sapp_mouse_cursor get_mouse_cursor();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_bind_mouse_cursor_image", ExactSpelling = true)]
+        public static extern sapp_mouse_cursor bind_mouse_cursor_image(sapp_mouse_cursor cursor, [NativeTypeName("const sapp_image_desc *")] sapp_image_desc* desc);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_unbind_mouse_cursor_image", ExactSpelling = true)]
+        public static extern void unbind_mouse_cursor_image(sapp_mouse_cursor cursor);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_userdata", ExactSpelling = true)]
         public static extern void* userdata();
@@ -708,6 +945,12 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_run", ExactSpelling = true)]
         public static extern void run([NativeTypeName("const sapp_desc *")] sapp_desc* desc);
 
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_get_environment", ExactSpelling = true)]
+        public static extern sapp_environment get_environment();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_get_swapchain", ExactSpelling = true)]
+        public static extern sapp_swapchain get_swapchain();
+
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_egl_get_display", ExactSpelling = true)]
         [return: NativeTypeName("const void *")]
         public static extern void* egl_get_display();
@@ -726,22 +969,6 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_html5_fetch_dropped_file", ExactSpelling = true)]
         public static extern void html5_fetch_dropped_file([NativeTypeName("const sapp_html5_fetch_request *")] sapp_html5_fetch_request* request);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_metal_get_device", ExactSpelling = true)]
-        [return: NativeTypeName("const void *")]
-        public static extern void* metal_get_device();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_metal_get_current_drawable", ExactSpelling = true)]
-        [return: NativeTypeName("const void *")]
-        public static extern void* metal_get_current_drawable();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_metal_get_depth_stencil_texture", ExactSpelling = true)]
-        [return: NativeTypeName("const void *")]
-        public static extern void* metal_get_depth_stencil_texture();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_metal_get_msaa_color_texture", ExactSpelling = true)]
-        [return: NativeTypeName("const void *")]
-        public static extern void* metal_get_msaa_color_texture();
-
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_macos_get_window", ExactSpelling = true)]
         [return: NativeTypeName("const void *")]
         public static extern void* macos_get_window();
@@ -750,53 +977,13 @@ namespace Zinc.Internal.Sokol
         [return: NativeTypeName("const void *")]
         public static extern void* ios_get_window();
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_d3d11_get_device", ExactSpelling = true)]
-        [return: NativeTypeName("const void *")]
-        public static extern void* d3d11_get_device();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_d3d11_get_device_context", ExactSpelling = true)]
-        [return: NativeTypeName("const void *")]
-        public static extern void* d3d11_get_device_context();
-
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_d3d11_get_swap_chain", ExactSpelling = true)]
         [return: NativeTypeName("const void *")]
         public static extern void* d3d11_get_swap_chain();
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_d3d11_get_render_view", ExactSpelling = true)]
-        [return: NativeTypeName("const void *")]
-        public static extern void* d3d11_get_render_view();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_d3d11_get_resolve_view", ExactSpelling = true)]
-        [return: NativeTypeName("const void *")]
-        public static extern void* d3d11_get_resolve_view();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_d3d11_get_depth_stencil_view", ExactSpelling = true)]
-        [return: NativeTypeName("const void *")]
-        public static extern void* d3d11_get_depth_stencil_view();
-
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_win32_get_hwnd", ExactSpelling = true)]
         [return: NativeTypeName("const void *")]
         public static extern void* win32_get_hwnd();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_wgpu_get_device", ExactSpelling = true)]
-        [return: NativeTypeName("const void *")]
-        public static extern void* wgpu_get_device();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_wgpu_get_render_view", ExactSpelling = true)]
-        [return: NativeTypeName("const void *")]
-        public static extern void* wgpu_get_render_view();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_wgpu_get_resolve_view", ExactSpelling = true)]
-        [return: NativeTypeName("const void *")]
-        public static extern void* wgpu_get_resolve_view();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_wgpu_get_depth_stencil_view", ExactSpelling = true)]
-        [return: NativeTypeName("const void *")]
-        public static extern void* wgpu_get_depth_stencil_view();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_gl_get_framebuffer", ExactSpelling = true)]
-        [return: NativeTypeName("uint32_t")]
-        public static extern uint gl_get_framebuffer();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_gl_get_major_version", ExactSpelling = true)]
         public static extern int gl_get_major_version();
