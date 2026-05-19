@@ -299,6 +299,8 @@ namespace Zinc.Internal.Sokol
         SAPP_LOGITEM_OK,
         SAPP_LOGITEM_MALLOC_FAILED,
         SAPP_LOGITEM_MACOS_INVALID_NSOPENGL_PROFILE,
+        SAPP_LOGITEM_METAL_CREATE_SWAPCHAIN_DEPTH_TEXTURE_FAILED,
+        SAPP_LOGITEM_METAL_CREATE_SWAPCHAIN_MSAA_TEXTURE_FAILED,
         SAPP_LOGITEM_WIN32_LOAD_OPENGL32_DLL_FAILED,
         SAPP_LOGITEM_WIN32_CREATE_HELPER_WINDOW_FAILED,
         SAPP_LOGITEM_WIN32_HELPER_WINDOW_GETDC_FAILED,
@@ -381,6 +383,8 @@ namespace Zinc.Internal.Sokol
         SAPP_LOGITEM_ANDROID_NATIVE_ACTIVITY_ONCREATE,
         SAPP_LOGITEM_ANDROID_CREATE_THREAD_PIPE_FAILED,
         SAPP_LOGITEM_ANDROID_NATIVE_ACTIVITY_CREATE_SUCCESS,
+        SAPP_LOGITEM_ANDROID_CHOREOGRAPHER_ENABLED,
+        SAPP_LOGITEM_ANDROID_CHOREOGRAPHER_UNAVAILABLE,
         SAPP_LOGITEM_WGPU_DEVICE_LOST,
         SAPP_LOGITEM_WGPU_DEVICE_LOG,
         SAPP_LOGITEM_WGPU_DEVICE_UNCAPTURED_ERROR,
@@ -432,7 +436,7 @@ namespace Zinc.Internal.Sokol
         SAPP_PIXELFORMAT_SBGRA8,
         SAPP_PIXELFORMAT_DEPTH,
         SAPP_PIXELFORMAT_DEPTH_STENCIL,
-        _SA_PPPIXELFORMAT_FORCE_U32 = 0x7FFFFFFF,
+        _SAPP_PIXELFORMAT_FORCE_U32 = 0x7FFFFFFF,
     }
 
     public partial struct sapp_environment_defaults
@@ -921,6 +925,9 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_frame_duration", ExactSpelling = true)]
         public static extern double frame_duration();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_frame_duration_unfiltered", ExactSpelling = true)]
+        public static extern double frame_duration_unfiltered();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_set_clipboard_string", ExactSpelling = true)]
         public static extern void set_clipboard_string([NativeTypeName("const char *")] sbyte* str);

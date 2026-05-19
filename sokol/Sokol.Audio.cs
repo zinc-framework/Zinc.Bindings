@@ -73,6 +73,12 @@ namespace Zinc.Internal.Sokol
         public int channel_id;
     }
 
+    public partial struct saudio_win32_desc
+    {
+        [NativeTypeName("bool")]
+        public byte skip_coinitialize;
+    }
+
     public unsafe partial struct saudio_desc
     {
         public int sample_rate;
@@ -92,6 +98,8 @@ namespace Zinc.Internal.Sokol
         public delegate* unmanaged[Cdecl]<float*, int, int, void*, void> stream_userdata_cb;
 
         public void* user_data;
+
+        public saudio_win32_desc win32;
 
         public saudio_n3ds_desc n3ds;
 
