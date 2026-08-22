@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Zinc.Internal.Sokol
 {
-    [NativeTypeName("unsigned int")]
-    public enum sgp_error : uint
+    public enum sgp_error
     {
         SGP_NO_ERROR = 0,
         SGP_ERROR_SOKOL_INVALID,
@@ -24,8 +23,7 @@ namespace Zinc.Internal.Sokol
         SGP_ERROR_MAKE_COMMON_PIPELINE_FAILED,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum sgp_blend_mode : uint
+    public enum sgp_blend_mode
     {
         SGP_BLENDMODE_NONE = 0,
         SGP_BLENDMODE_BLEND,
@@ -37,15 +35,13 @@ namespace Zinc.Internal.Sokol
         _SGP_BLENDMODE_NUM,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum sgp_vs_attr_location : uint
+    public enum sgp_vs_attr_location
     {
         SGP_VS_ATTR_COORD = 0,
         SGP_VS_ATTR_COLOR = 1,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum sgp_uniform_slot : uint
+    public enum sgp_uniform_slot
     {
         SGP_UNIFORM_SLOT_VERTEX = 0,
         SGP_UNIFORM_SLOT_FRAGMENT = 1,

@@ -2,8 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Zinc.Internal.Sokol
 {
-    [NativeTypeName("unsigned int")]
-    public enum sgl_log_item_t : uint
+    public enum sgl_log_item_t
     {
         SGL_LOGITEM_OK,
         SGL_LOGITEM_MALLOC_FAILED,

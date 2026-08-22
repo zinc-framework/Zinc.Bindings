@@ -13,8 +13,7 @@ namespace Zinc.Internal.Sokol
         public int bottom;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum slbx_anchor : uint
+    public enum slbx_anchor
     {
         SLBX_ANCHOR_CENTER = 0,
         SLBX_ANCHOR_TOP,

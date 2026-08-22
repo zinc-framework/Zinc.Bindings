@@ -48,8 +48,7 @@ namespace Zinc.Internal.Sokol
         public ulong _TexID;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiWindowFlags_ : uint
+    public enum ImGuiWindowFlags_
     {
         ImGuiWindowFlags_None = 0,
         ImGuiWindowFlags_NoTitleBar = 1 << 0,
@@ -83,8 +82,7 @@ namespace Zinc.Internal.Sokol
         ImGuiWindowFlags_ChildMenu = 1 << 28,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiChildFlags_ : uint
+    public enum ImGuiChildFlags_
     {
         ImGuiChildFlags_None = 0,
         ImGuiChildFlags_Borders = 1 << 0,
@@ -98,8 +96,7 @@ namespace Zinc.Internal.Sokol
         ImGuiChildFlags_NavFlattened = 1 << 8,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiItemFlags_ : uint
+    public enum ImGuiItemFlags_
     {
         ImGuiItemFlags_None = 0,
         ImGuiItemFlags_NoTabStop = 1 << 0,
@@ -109,10 +106,12 @@ namespace Zinc.Internal.Sokol
         ImGuiItemFlags_AutoClosePopups = 1 << 4,
         ImGuiItemFlags_AllowDuplicateId = 1 << 5,
         ImGuiItemFlags_Disabled = 1 << 6,
+        ImGuiItemFlags_LiveEditOnInputText = 1 << 7,
+        ImGuiItemFlags_LiveEditOnInputScalar = 1 << 8,
+        ImGuiItemFlags_LiveEditOnInput = ImGuiItemFlags_LiveEditOnInputText | ImGuiItemFlags_LiveEditOnInputScalar,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiInputTextFlags_ : uint
+    public enum ImGuiInputTextFlags_
     {
         ImGuiInputTextFlags_None = 0,
         ImGuiInputTextFlags_CharsDecimal = 1 << 0,
@@ -142,8 +141,7 @@ namespace Zinc.Internal.Sokol
         ImGuiInputTextFlags_WordWrap = 1 << 24,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiTreeNodeFlags_ : uint
+    public enum ImGuiTreeNodeFlags_
     {
         ImGuiTreeNodeFlags_None = 0,
         ImGuiTreeNodeFlags_Selected = 1 << 0,
@@ -168,11 +166,9 @@ namespace Zinc.Internal.Sokol
         ImGuiTreeNodeFlags_DrawLinesFull = 1 << 19,
         ImGuiTreeNodeFlags_DrawLinesToNodes = 1 << 20,
         ImGuiTreeNodeFlags_NavLeftJumpsBackHere = ImGuiTreeNodeFlags_NavLeftJumpsToParent,
-        ImGuiTreeNodeFlags_SpanTextWidth = ImGuiTreeNodeFlags_SpanLabelWidth,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiPopupFlags_ : uint
+    public enum ImGuiPopupFlags_
     {
         ImGuiPopupFlags_None = 0,
         ImGuiPopupFlags_MouseButtonLeft = 1 << 2,
@@ -189,8 +185,7 @@ namespace Zinc.Internal.Sokol
         ImGuiPopupFlags_InvalidMask_ = 0x03,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiSelectableFlags_ : uint
+    public enum ImGuiSelectableFlags_
     {
         ImGuiSelectableFlags_None = 0,
         ImGuiSelectableFlags_NoAutoClosePopups = 1 << 0,
@@ -203,8 +198,7 @@ namespace Zinc.Internal.Sokol
         ImGuiSelectableFlags_DontClosePopups = ImGuiSelectableFlags_NoAutoClosePopups,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiComboFlags_ : uint
+    public enum ImGuiComboFlags_
     {
         ImGuiComboFlags_None = 0,
         ImGuiComboFlags_PopupAlignLeft = 1 << 0,
@@ -218,8 +212,7 @@ namespace Zinc.Internal.Sokol
         ImGuiComboFlags_HeightMask_ = ImGuiComboFlags_HeightSmall | ImGuiComboFlags_HeightRegular | ImGuiComboFlags_HeightLarge | ImGuiComboFlags_HeightLargest,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiTabBarFlags_ : uint
+    public enum ImGuiTabBarFlags_
     {
         ImGuiTabBarFlags_None = 0,
         ImGuiTabBarFlags_Reorderable = 1 << 0,
@@ -237,8 +230,7 @@ namespace Zinc.Internal.Sokol
         ImGuiTabBarFlags_FittingPolicyResizeDown = ImGuiTabBarFlags_FittingPolicyShrink,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiTabItemFlags_ : uint
+    public enum ImGuiTabItemFlags_
     {
         ImGuiTabItemFlags_None = 0,
         ImGuiTabItemFlags_UnsavedDocument = 1 << 0,
@@ -252,8 +244,7 @@ namespace Zinc.Internal.Sokol
         ImGuiTabItemFlags_NoAssumedClosure = 1 << 8,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiFocusedFlags_ : uint
+    public enum ImGuiFocusedFlags_
     {
         ImGuiFocusedFlags_None = 0,
         ImGuiFocusedFlags_ChildWindows = 1 << 0,
@@ -264,8 +255,7 @@ namespace Zinc.Internal.Sokol
         ImGuiFocusedFlags_RootAndChildWindows = ImGuiFocusedFlags_RootWindow | ImGuiFocusedFlags_ChildWindows,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiHoveredFlags_ : uint
+    public enum ImGuiHoveredFlags_
     {
         ImGuiHoveredFlags_None = 0,
         ImGuiHoveredFlags_ChildWindows = 1 << 0,
@@ -290,8 +280,7 @@ namespace Zinc.Internal.Sokol
         ImGuiHoveredFlags_NoSharedDelay = 1 << 17,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiDockNodeFlags_ : uint
+    public enum ImGuiDockNodeFlags_
     {
         ImGuiDockNodeFlags_None = 0,
         ImGuiDockNodeFlags_KeepAliveOnly = 1 << 0,
@@ -305,8 +294,7 @@ namespace Zinc.Internal.Sokol
         ImGuiDockNodeFlags_NoDockingInCentralNode = ImGuiDockNodeFlags_NoDockingOverCentralNode,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiDragDropFlags_ : uint
+    public enum ImGuiDragDropFlags_
     {
         ImGuiDragDropFlags_None = 0,
         ImGuiDragDropFlags_SourceNoPreviewTooltip = 1 << 0,
@@ -322,11 +310,9 @@ namespace Zinc.Internal.Sokol
         ImGuiDragDropFlags_AcceptNoPreviewTooltip = 1 << 12,
         ImGuiDragDropFlags_AcceptDrawAsHovered = 1 << 13,
         ImGuiDragDropFlags_AcceptPeekOnly = ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect,
-        ImGuiDragDropFlags_SourceAutoExpirePayload = ImGuiDragDropFlags_PayloadAutoExpire,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiDataType_ : uint
+    public enum ImGuiDataType_
     {
         ImGuiDataType_S8,
         ImGuiDataType_U8,
@@ -343,8 +329,7 @@ namespace Zinc.Internal.Sokol
         ImGuiDataType_COUNT,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiInputFlags_ : uint
+    public enum ImGuiInputFlags_
     {
         ImGuiInputFlags_None = 0,
         ImGuiInputFlags_Repeat = 1 << 0,
@@ -359,8 +344,7 @@ namespace Zinc.Internal.Sokol
         ImGuiInputFlags_Tooltip = 1 << 18,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiConfigFlags_ : uint
+    public enum ImGuiConfigFlags_
     {
         ImGuiConfigFlags_None = 0,
         ImGuiConfigFlags_NavEnableKeyboard = 1 << 0,
@@ -378,8 +362,7 @@ namespace Zinc.Internal.Sokol
         ImGuiConfigFlags_DpiEnableScaleViewports = 1 << 15,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiBackendFlags_ : uint
+    public enum ImGuiBackendFlags_
     {
         ImGuiBackendFlags_None = 0,
         ImGuiBackendFlags_HasGamepad = 1 << 0,
@@ -393,8 +376,7 @@ namespace Zinc.Internal.Sokol
         ImGuiBackendFlags_HasParentViewport = 1 << 13,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiCol_ : uint
+    public enum ImGuiCol_
     {
         ImGuiCol_Text,
         ImGuiCol_TextDisabled,
@@ -466,8 +448,7 @@ namespace Zinc.Internal.Sokol
         ImGuiCol_NavHighlight = ImGuiCol_NavCursor,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiStyleVar_ : uint
+    public enum ImGuiStyleVar_
     {
         ImGuiStyleVar_Alpha,
         ImGuiStyleVar_DisabledAlpha,
@@ -504,6 +485,8 @@ namespace Zinc.Internal.Sokol
         ImGuiStyleVar_TableAngledHeadersTextAlign,
         ImGuiStyleVar_TreeLinesSize,
         ImGuiStyleVar_TreeLinesRounding,
+        ImGuiStyleVar_MenuItemRounding,
+        ImGuiStyleVar_SelectableRounding,
         ImGuiStyleVar_DragDropTargetRounding,
         ImGuiStyleVar_ButtonTextAlign,
         ImGuiStyleVar_SelectableTextAlign,
@@ -515,8 +498,7 @@ namespace Zinc.Internal.Sokol
         ImGuiStyleVar_COUNT,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiButtonFlags_ : uint
+    public enum ImGuiButtonFlags_
     {
         ImGuiButtonFlags_None = 0,
         ImGuiButtonFlags_MouseButtonLeft = 1 << 0,
@@ -527,8 +509,7 @@ namespace Zinc.Internal.Sokol
         ImGuiButtonFlags_AllowOverlap = 1 << 12,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiColorEditFlags_ : uint
+    public enum ImGuiColorEditFlags_
     {
         ImGuiColorEditFlags_None = 0,
         ImGuiColorEditFlags_NoAlpha = 1 << 1,
@@ -554,8 +535,9 @@ namespace Zinc.Internal.Sokol
         ImGuiColorEditFlags_Float = 1 << 24,
         ImGuiColorEditFlags_PickerHueBar = 1 << 25,
         ImGuiColorEditFlags_PickerHueWheel = 1 << 26,
-        ImGuiColorEditFlags_InputRGB = 1 << 27,
-        ImGuiColorEditFlags_InputHSV = 1 << 28,
+        ImGuiColorEditFlags_PickerNoRotate = 1 << 27,
+        ImGuiColorEditFlags_InputRGB = 1 << 28,
+        ImGuiColorEditFlags_InputHSV = 1 << 29,
         ImGuiColorEditFlags_DefaultOptions_ = ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_PickerHueBar,
         ImGuiColorEditFlags_AlphaMask_ = ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_AlphaOpaque | ImGuiColorEditFlags_AlphaNoBg | ImGuiColorEditFlags_AlphaPreviewHalf,
         ImGuiColorEditFlags_DisplayMask_ = ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_DisplayHSV | ImGuiColorEditFlags_DisplayHex,
@@ -565,8 +547,7 @@ namespace Zinc.Internal.Sokol
         ImGuiColorEditFlags_AlphaPreview = 0,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiSliderFlags_ : uint
+    public enum ImGuiSliderFlags_
     {
         ImGuiSliderFlags_None = 0,
         ImGuiSliderFlags_Logarithmic = 1 << 5,
@@ -581,8 +562,7 @@ namespace Zinc.Internal.Sokol
         ImGuiSliderFlags_InvalidMask_ = 0x7000000F,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiMouseButton_ : uint
+    public enum ImGuiMouseButton_
     {
         ImGuiMouseButton_Left = 0,
         ImGuiMouseButton_Right = 1,
@@ -607,8 +587,7 @@ namespace Zinc.Internal.Sokol
         ImGuiMouseCursor_COUNT,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiCond_ : uint
+    public enum ImGuiCond_
     {
         ImGuiCond_None = 0,
         ImGuiCond_Always = 1 << 0,
@@ -617,8 +596,7 @@ namespace Zinc.Internal.Sokol
         ImGuiCond_Appearing = 1 << 3,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiTableFlags_ : uint
+    public enum ImGuiTableFlags_
     {
         ImGuiTableFlags_None = 0,
         ImGuiTableFlags_Resizable = 1 << 0,
@@ -659,8 +637,7 @@ namespace Zinc.Internal.Sokol
         ImGuiTableFlags_SizingMask_ = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_SizingFixedSame | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_SizingStretchSame,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiTableColumnFlags_ : uint
+    public enum ImGuiTableColumnFlags_
     {
         ImGuiTableColumnFlags_None = 0,
         ImGuiTableColumnFlags_Disabled = 1 << 0,
@@ -692,15 +669,13 @@ namespace Zinc.Internal.Sokol
         ImGuiTableColumnFlags_NoDirectResize_ = 1 << 30,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiTableRowFlags_ : uint
+    public enum ImGuiTableRowFlags_
     {
         ImGuiTableRowFlags_None = 0,
         ImGuiTableRowFlags_Headers = 1 << 0,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiTableBgTarget_ : uint
+    public enum ImGuiTableBgTarget_
     {
         ImGuiTableBgTarget_None = 0,
         ImGuiTableBgTarget_RowBg0 = 1,
@@ -1098,6 +1073,10 @@ namespace Zinc.Internal.Sokol
 
         public float TreeLinesRounding;
 
+        public float MenuItemRounding;
+
+        public float SelectableRounding;
+
         public float DragDropTargetRounding;
 
         public float DragDropTargetBorderSize;
@@ -1114,6 +1093,8 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("ImVec2")]
         public ImVec2_t SelectableTextAlign;
+
+        public float InputTextCursorSize;
 
         public float SeparatorSize;
 
@@ -1282,9 +1263,6 @@ namespace Zinc.Internal.Sokol
         public byte ConfigDpiScaleViewports;
 
         [NativeTypeName("bool")]
-        public byte MouseDrawCursor;
-
-        [NativeTypeName("bool")]
         public byte ConfigMacOSXBehaviors;
 
         [NativeTypeName("bool")]
@@ -1295,6 +1273,9 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("bool")]
         public byte ConfigInputTextEnterKeepActive;
+
+        [NativeTypeName("ImGuiColorEditFlags")]
+        public int ConfigColorEditFlags;
 
         [NativeTypeName("bool")]
         public byte ConfigDragClickToInputText;
@@ -1311,11 +1292,24 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("bool")]
         public byte ConfigScrollbarScrollByPage;
 
+        [NativeTypeName("bool")]
+        public byte ConfigIniSettingsSaveLastUsedDate;
+
+        public int ConfigIniSettingsAutoDiscardMonths;
+
+        [NativeTypeName("bool")]
+        public byte ConfigDebugIniSettings;
+
+        [NativeTypeName("bool")]
+        public byte MouseDrawCursor;
+
         public float ConfigMemoryCompactTimer;
 
         public float MouseDoubleClickTime;
 
         public float MouseDoubleClickMaxDist;
+
+        public float MouseSingleClickDelay;
 
         public float MouseDragThreshold;
 
@@ -1352,9 +1346,6 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("bool")]
         public byte ConfigDebugIgnoreFocusLoss;
-
-        [NativeTypeName("bool")]
-        public byte ConfigDebugIniSettings;
 
         [NativeTypeName("const char *")]
         public sbyte* BackendPlatformName;
@@ -1769,7 +1760,7 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("ImGuiID")]
         public uint key;
 
-        [NativeTypeName("__AnonymousRecord_cimgui_L3016_C5")]
+        [NativeTypeName("__AnonymousRecord_cimgui_L3048_C5")]
         public _Anonymous_e__Union Anonymous;
 
         [UnscopedRef]
@@ -1822,8 +1813,7 @@ namespace Zinc.Internal.Sokol
         public ImVector_ImGuiStoragePair_t Data;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiListClipperFlags_ : uint
+    public enum ImGuiListClipperFlags_
     {
         ImGuiListClipperFlags_None = 0,
         ImGuiListClipperFlags_NoSetTableRowCounters = 1 << 0,
@@ -1860,8 +1850,7 @@ namespace Zinc.Internal.Sokol
         public ImVec4_t Value;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiMultiSelectFlags_ : uint
+    public enum ImGuiMultiSelectFlags_
     {
         ImGuiMultiSelectFlags_None = 0,
         ImGuiMultiSelectFlags_SingleSelect = 1 << 0,
@@ -1883,6 +1872,7 @@ namespace Zinc.Internal.Sokol
         ImGuiMultiSelectFlags_NavWrapX = 1 << 16,
         ImGuiMultiSelectFlags_NoSelectOnRightClick = 1 << 17,
         ImGuiMultiSelectFlags_SelectOnMask_ = ImGuiMultiSelectFlags_SelectOnAuto | ImGuiMultiSelectFlags_SelectOnClickAlways | ImGuiMultiSelectFlags_SelectOnClickRelease,
+        ImGuiMultiSelectFlags_CheckboxMode_ = 1 << 20,
         ImGuiMultiSelectFlags_SelectOnClick = ImGuiMultiSelectFlags_SelectOnAuto,
     }
 
@@ -1906,8 +1896,7 @@ namespace Zinc.Internal.Sokol
         public int ItemsCount;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiSelectionRequestType : uint
+    public enum ImGuiSelectionRequestType
     {
         ImGuiSelectionRequestType_None = 0,
         ImGuiSelectionRequestType_SetAll,
@@ -2035,25 +2024,25 @@ namespace Zinc.Internal.Sokol
         ImDrawFlags_RoundCornersBottomLeft = 1 << 6,
         ImDrawFlags_RoundCornersBottomRight = 1 << 7,
         ImDrawFlags_RoundCornersNone = 1 << 8,
-        ImDrawFlags_Closed = 1 << 9,
+        ImDrawFlags_RoundCornersAll = ImDrawFlags_RoundCornersTopLeft | ImDrawFlags_RoundCornersTopRight | ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersBottomRight,
+        ImDrawFlags_RoundCornersDefault_ = ImDrawFlags_RoundCornersAll,
         ImDrawFlags_RoundCornersTop = ImDrawFlags_RoundCornersTopLeft | ImDrawFlags_RoundCornersTopRight,
         ImDrawFlags_RoundCornersBottom = ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersBottomRight,
         ImDrawFlags_RoundCornersLeft = ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersTopLeft,
         ImDrawFlags_RoundCornersRight = ImDrawFlags_RoundCornersBottomRight | ImDrawFlags_RoundCornersTopRight,
-        ImDrawFlags_RoundCornersAll = ImDrawFlags_RoundCornersTopLeft | ImDrawFlags_RoundCornersTopRight | ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersBottomRight,
-        ImDrawFlags_RoundCornersDefault_ = ImDrawFlags_RoundCornersAll,
         ImDrawFlags_RoundCornersMask_ = ImDrawFlags_RoundCornersAll | ImDrawFlags_RoundCornersNone,
-        ImDrawFlags_InvalidMask_ = unchecked((int)(0x8000000F)),
+        ImDrawFlags_Closed = 1 << 9,
+        ImDrawFlags_InvalidMask_ = ~0x7FFFFFF0,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImDrawListFlags_ : uint
+    public enum ImDrawListFlags_
     {
         ImDrawListFlags_None = 0,
         ImDrawListFlags_AntiAliasedLines = 1 << 0,
         ImDrawListFlags_AntiAliasedLinesUseTex = 1 << 1,
         ImDrawListFlags_AntiAliasedFill = 1 << 2,
         ImDrawListFlags_AllowVtxOffset = 1 << 3,
+        ImDrawListFlags_TextNoPixelSnap = 1 << 4,
     }
 
     public unsafe partial struct ImDrawList_t
@@ -2111,7 +2100,7 @@ namespace Zinc.Internal.Sokol
         [NativeTypeName("bool")]
         public byte Valid;
 
-        public int CmdListsCount;
+        public int FrameCount;
 
         public int TotalIdxCount;
 
@@ -2134,17 +2123,17 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("ImVector_ImTextureDataPtr *")]
         public ImVector_ImTextureDataPtr_t* Textures;
+
+        public int CmdListsCount;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImTextureFormat : uint
+    public enum ImTextureFormat
     {
         ImTextureFormat_RGBA32,
         ImTextureFormat_Alpha8,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImTextureStatus : uint
+    public enum ImTextureStatus
     {
         ImTextureStatus_OK,
         ImTextureStatus_Destroyed,
@@ -2175,6 +2164,8 @@ namespace Zinc.Internal.Sokol
         public ImTextureStatus Status;
 
         public void* BackendUserData;
+
+        public void* QueueUserData;
 
         [NativeTypeName("ImTextureID")]
         public ulong TexID;
@@ -2404,8 +2395,7 @@ namespace Zinc.Internal.Sokol
         public ImVec2_t uv1;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImFontAtlasFlags_ : uint
+    public enum ImFontAtlasFlags_
     {
         ImFontAtlasFlags_None = 0,
         ImFontAtlasFlags_NoPowerOfTwoHeight = 1 << 0,
@@ -2432,7 +2422,7 @@ namespace Zinc.Internal.Sokol
 
         public void* UserData;
 
-        [NativeTypeName("__AnonymousRecord_cimgui_L3838_C5")]
+        [NativeTypeName("__AnonymousRecord_cimgui_L3884_C5")]
         public _Anonymous_e__Union Anonymous;
 
         [NativeTypeName("ImTextureData *")]
@@ -2636,8 +2626,7 @@ namespace Zinc.Internal.Sokol
         public void* FontLoaderDatas;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImFontFlags_ : uint
+    public enum ImFontFlags_
     {
         ImFontFlags_None = 0,
         ImFontFlags_NoLoadError = 1 << 1,
@@ -2704,8 +2693,7 @@ namespace Zinc.Internal.Sokol
         }
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum ImGuiViewportFlags_ : uint
+    public enum ImGuiViewportFlags_
     {
         ImGuiViewportFlags_None = 0,
         ImGuiViewportFlags_IsPlatformWindow = 1 << 0,
@@ -2803,6 +2791,8 @@ namespace Zinc.Internal.Sokol
 
         [NativeTypeName("ImWchar")]
         public ushort Platform_LocaleDecimalPoint;
+
+        public int Platform_SessionDate;
 
         public int Renderer_TextureMaxWidth;
 
@@ -2940,8 +2930,7 @@ namespace Zinc.Internal.Sokol
         public uint ViewportId;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum simgui_log_item_t : uint
+    public enum simgui_log_item_t
     {
         SIMGUI_LOGITEM_OK,
         SIMGUI_LOGITEM_MALLOC_FAILED,
@@ -3952,9 +3941,6 @@ namespace Zinc.Internal.Sokol
         public static extern byte igColorButtonEx([NativeTypeName("const char *")] sbyte* desc_id, [NativeTypeName("ImVec4")] ImVec4_t col, [NativeTypeName("ImGuiColorEditFlags")] int flags, [NativeTypeName("ImVec2")] ImVec2_t size);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igSetColorEditOptions([NativeTypeName("ImGuiColorEditFlags")] int flags);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
         public static extern byte igTreeNode([NativeTypeName("const char *")] sbyte* label);
 
@@ -4174,13 +4160,16 @@ namespace Zinc.Internal.Sokol
         public static extern void igEndPopup();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igOpenPopup([NativeTypeName("const char *")] sbyte* str_id, [NativeTypeName("ImGuiPopupFlags")] int popup_flags);
+        [return: NativeTypeName("bool")]
+        public static extern byte igOpenPopup([NativeTypeName("const char *")] sbyte* str_id, [NativeTypeName("ImGuiPopupFlags")] int popup_flags);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igOpenPopupID([NativeTypeName("ImGuiID")] uint id, [NativeTypeName("ImGuiPopupFlags")] int popup_flags);
+        [return: NativeTypeName("bool")]
+        public static extern byte igOpenPopupID([NativeTypeName("ImGuiID")] uint id, [NativeTypeName("ImGuiPopupFlags")] int popup_flags);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igOpenPopupOnItemClick([NativeTypeName("const char *")] sbyte* str_id, [NativeTypeName("ImGuiPopupFlags")] int popup_flags);
+        [return: NativeTypeName("bool")]
+        public static extern byte igOpenPopupOnItemClick([NativeTypeName("const char *")] sbyte* str_id, [NativeTypeName("ImGuiPopupFlags")] int popup_flags);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igCloseCurrentPopup();
@@ -4242,7 +4231,7 @@ namespace Zinc.Internal.Sokol
         public static extern void igTableSetupColumn([NativeTypeName("const char *")] sbyte* label, [NativeTypeName("ImGuiTableColumnFlags")] int flags);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void igTableSetupColumnEx([NativeTypeName("const char *")] sbyte* label, [NativeTypeName("ImGuiTableColumnFlags")] int flags, float init_width_or_weight, [NativeTypeName("ImGuiID")] uint user_id);
+        public static extern void igTableSetupColumnEx([NativeTypeName("const char *")] sbyte* label, [NativeTypeName("ImGuiTableColumnFlags")] int flags, float init_width_or_weight, [NativeTypeName("ImGuiID")] uint user_data);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igTableSetupScrollFreeze(int cols, int rows);
@@ -4515,6 +4504,12 @@ namespace Zinc.Internal.Sokol
         public static extern int igGetItemFlags();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern int igGetItemClickedCountWithSingleClickDelay();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern int igGetItemClickedCountWithSingleClickDelayEx([NativeTypeName("ImGuiMouseButton")] int mouse_button, float delay);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("ImGuiViewport *")]
         public static extern ImGuiViewport_t* igGetMainViewport();
 
@@ -4648,7 +4643,11 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte igIsMouseReleasedWithDelay([NativeTypeName("ImGuiMouseButton")] int button, float delay);
+        public static extern byte igIsMouseReleasedWithDelay([NativeTypeName("ImGuiMouseButton")] int button);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        public static extern byte igIsMouseReleasedWithDelayEx([NativeTypeName("ImGuiMouseButton")] int button, float delay);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern int igGetMouseClickedCount([NativeTypeName("ImGuiMouseButton")] int button);
@@ -4779,182 +4778,182 @@ namespace Zinc.Internal.Sokol
         public const int ImGuiDir_Down = 3;
         public const int ImGuiDir_COUNT = 4;
 
-        public const uint ImGuiSortDirection_None = 0;
-        public const uint ImGuiSortDirection_Ascending = 1;
-        public const uint ImGuiSortDirection_Descending = 2;
+        public const int ImGuiSortDirection_None = 0;
+        public const int ImGuiSortDirection_Ascending = 1;
+        public const int ImGuiSortDirection_Descending = 2;
 
-        public const uint ImGuiKey_None = 0;
-        public const uint ImGuiKey_NamedKey_BEGIN = 512;
-        public const uint ImGuiKey_Tab = 512;
-        public const uint ImGuiKey_LeftArrow = 513;
-        public const uint ImGuiKey_RightArrow = 514;
-        public const uint ImGuiKey_UpArrow = 515;
-        public const uint ImGuiKey_DownArrow = 516;
-        public const uint ImGuiKey_PageUp = 517;
-        public const uint ImGuiKey_PageDown = 518;
-        public const uint ImGuiKey_Home = 519;
-        public const uint ImGuiKey_End = 520;
-        public const uint ImGuiKey_Insert = 521;
-        public const uint ImGuiKey_Delete = 522;
-        public const uint ImGuiKey_Backspace = 523;
-        public const uint ImGuiKey_Space = 524;
-        public const uint ImGuiKey_Enter = 525;
-        public const uint ImGuiKey_Escape = 526;
-        public const uint ImGuiKey_LeftCtrl = 527;
-        public const uint ImGuiKey_LeftShift = 528;
-        public const uint ImGuiKey_LeftAlt = 529;
-        public const uint ImGuiKey_LeftSuper = 530;
-        public const uint ImGuiKey_RightCtrl = 531;
-        public const uint ImGuiKey_RightShift = 532;
-        public const uint ImGuiKey_RightAlt = 533;
-        public const uint ImGuiKey_RightSuper = 534;
-        public const uint ImGuiKey_Menu = 535;
-        public const uint ImGuiKey_0 = 536;
-        public const uint ImGuiKey_1 = 537;
-        public const uint ImGuiKey_2 = 538;
-        public const uint ImGuiKey_3 = 539;
-        public const uint ImGuiKey_4 = 540;
-        public const uint ImGuiKey_5 = 541;
-        public const uint ImGuiKey_6 = 542;
-        public const uint ImGuiKey_7 = 543;
-        public const uint ImGuiKey_8 = 544;
-        public const uint ImGuiKey_9 = 545;
-        public const uint ImGuiKey_A = 546;
-        public const uint ImGuiKey_B = 547;
-        public const uint ImGuiKey_C = 548;
-        public const uint ImGuiKey_D = 549;
-        public const uint ImGuiKey_E = 550;
-        public const uint ImGuiKey_F = 551;
-        public const uint ImGuiKey_G = 552;
-        public const uint ImGuiKey_H = 553;
-        public const uint ImGuiKey_I = 554;
-        public const uint ImGuiKey_J = 555;
-        public const uint ImGuiKey_K = 556;
-        public const uint ImGuiKey_L = 557;
-        public const uint ImGuiKey_M = 558;
-        public const uint ImGuiKey_N = 559;
-        public const uint ImGuiKey_O = 560;
-        public const uint ImGuiKey_P = 561;
-        public const uint ImGuiKey_Q = 562;
-        public const uint ImGuiKey_R = 563;
-        public const uint ImGuiKey_S = 564;
-        public const uint ImGuiKey_T = 565;
-        public const uint ImGuiKey_U = 566;
-        public const uint ImGuiKey_V = 567;
-        public const uint ImGuiKey_W = 568;
-        public const uint ImGuiKey_X = 569;
-        public const uint ImGuiKey_Y = 570;
-        public const uint ImGuiKey_Z = 571;
-        public const uint ImGuiKey_F1 = 572;
-        public const uint ImGuiKey_F2 = 573;
-        public const uint ImGuiKey_F3 = 574;
-        public const uint ImGuiKey_F4 = 575;
-        public const uint ImGuiKey_F5 = 576;
-        public const uint ImGuiKey_F6 = 577;
-        public const uint ImGuiKey_F7 = 578;
-        public const uint ImGuiKey_F8 = 579;
-        public const uint ImGuiKey_F9 = 580;
-        public const uint ImGuiKey_F10 = 581;
-        public const uint ImGuiKey_F11 = 582;
-        public const uint ImGuiKey_F12 = 583;
-        public const uint ImGuiKey_F13 = 584;
-        public const uint ImGuiKey_F14 = 585;
-        public const uint ImGuiKey_F15 = 586;
-        public const uint ImGuiKey_F16 = 587;
-        public const uint ImGuiKey_F17 = 588;
-        public const uint ImGuiKey_F18 = 589;
-        public const uint ImGuiKey_F19 = 590;
-        public const uint ImGuiKey_F20 = 591;
-        public const uint ImGuiKey_F21 = 592;
-        public const uint ImGuiKey_F22 = 593;
-        public const uint ImGuiKey_F23 = 594;
-        public const uint ImGuiKey_F24 = 595;
-        public const uint ImGuiKey_Apostrophe = 596;
-        public const uint ImGuiKey_Comma = 597;
-        public const uint ImGuiKey_Minus = 598;
-        public const uint ImGuiKey_Period = 599;
-        public const uint ImGuiKey_Slash = 600;
-        public const uint ImGuiKey_Semicolon = 601;
-        public const uint ImGuiKey_Equal = 602;
-        public const uint ImGuiKey_LeftBracket = 603;
-        public const uint ImGuiKey_Backslash = 604;
-        public const uint ImGuiKey_RightBracket = 605;
-        public const uint ImGuiKey_GraveAccent = 606;
-        public const uint ImGuiKey_CapsLock = 607;
-        public const uint ImGuiKey_ScrollLock = 608;
-        public const uint ImGuiKey_NumLock = 609;
-        public const uint ImGuiKey_PrintScreen = 610;
-        public const uint ImGuiKey_Pause = 611;
-        public const uint ImGuiKey_Keypad0 = 612;
-        public const uint ImGuiKey_Keypad1 = 613;
-        public const uint ImGuiKey_Keypad2 = 614;
-        public const uint ImGuiKey_Keypad3 = 615;
-        public const uint ImGuiKey_Keypad4 = 616;
-        public const uint ImGuiKey_Keypad5 = 617;
-        public const uint ImGuiKey_Keypad6 = 618;
-        public const uint ImGuiKey_Keypad7 = 619;
-        public const uint ImGuiKey_Keypad8 = 620;
-        public const uint ImGuiKey_Keypad9 = 621;
-        public const uint ImGuiKey_KeypadDecimal = 622;
-        public const uint ImGuiKey_KeypadDivide = 623;
-        public const uint ImGuiKey_KeypadMultiply = 624;
-        public const uint ImGuiKey_KeypadSubtract = 625;
-        public const uint ImGuiKey_KeypadAdd = 626;
-        public const uint ImGuiKey_KeypadEnter = 627;
-        public const uint ImGuiKey_KeypadEqual = 628;
-        public const uint ImGuiKey_AppBack = 629;
-        public const uint ImGuiKey_AppForward = 630;
-        public const uint ImGuiKey_Oem102 = 631;
-        public const uint ImGuiKey_GamepadStart = 632;
-        public const uint ImGuiKey_GamepadBack = 633;
-        public const uint ImGuiKey_GamepadFaceLeft = 634;
-        public const uint ImGuiKey_GamepadFaceRight = 635;
-        public const uint ImGuiKey_GamepadFaceUp = 636;
-        public const uint ImGuiKey_GamepadFaceDown = 637;
-        public const uint ImGuiKey_GamepadDpadLeft = 638;
-        public const uint ImGuiKey_GamepadDpadRight = 639;
-        public const uint ImGuiKey_GamepadDpadUp = 640;
-        public const uint ImGuiKey_GamepadDpadDown = 641;
-        public const uint ImGuiKey_GamepadL1 = 642;
-        public const uint ImGuiKey_GamepadR1 = 643;
-        public const uint ImGuiKey_GamepadL2 = 644;
-        public const uint ImGuiKey_GamepadR2 = 645;
-        public const uint ImGuiKey_GamepadL3 = 646;
-        public const uint ImGuiKey_GamepadR3 = 647;
-        public const uint ImGuiKey_GamepadLStickLeft = 648;
-        public const uint ImGuiKey_GamepadLStickRight = 649;
-        public const uint ImGuiKey_GamepadLStickUp = 650;
-        public const uint ImGuiKey_GamepadLStickDown = 651;
-        public const uint ImGuiKey_GamepadRStickLeft = 652;
-        public const uint ImGuiKey_GamepadRStickRight = 653;
-        public const uint ImGuiKey_GamepadRStickUp = 654;
-        public const uint ImGuiKey_GamepadRStickDown = 655;
-        public const uint ImGuiKey_MouseLeft = 656;
-        public const uint ImGuiKey_MouseRight = 657;
-        public const uint ImGuiKey_MouseMiddle = 658;
-        public const uint ImGuiKey_MouseX1 = 659;
-        public const uint ImGuiKey_MouseX2 = 660;
-        public const uint ImGuiKey_MouseWheelX = 661;
-        public const uint ImGuiKey_MouseWheelY = 662;
-        public const uint ImGuiKey_ReservedForModCtrl = 663;
-        public const uint ImGuiKey_ReservedForModShift = 664;
-        public const uint ImGuiKey_ReservedForModAlt = 665;
-        public const uint ImGuiKey_ReservedForModSuper = 666;
-        public const uint ImGuiKey_NamedKey_END = 667;
-        public const uint ImGuiKey_NamedKey_COUNT = ImGuiKey_NamedKey_END - ImGuiKey_NamedKey_BEGIN;
-        public const uint ImGuiMod_None = 0;
-        public const uint ImGuiMod_Ctrl = 1 << 12;
-        public const uint ImGuiMod_Shift = 1 << 13;
-        public const uint ImGuiMod_Alt = 1 << 14;
-        public const uint ImGuiMod_Super = 1 << 15;
-        public const uint ImGuiMod_Mask_ = 0xF000;
-        public const uint ImGuiKey_COUNT = ImGuiKey_NamedKey_END;
-        public const uint ImGuiMod_Shortcut = ImGuiMod_Ctrl;
+        public const int ImGuiKey_None = 0;
+        public const int ImGuiKey_NamedKey_BEGIN = 512;
+        public const int ImGuiKey_Tab = 512;
+        public const int ImGuiKey_LeftArrow = 513;
+        public const int ImGuiKey_RightArrow = 514;
+        public const int ImGuiKey_UpArrow = 515;
+        public const int ImGuiKey_DownArrow = 516;
+        public const int ImGuiKey_PageUp = 517;
+        public const int ImGuiKey_PageDown = 518;
+        public const int ImGuiKey_Home = 519;
+        public const int ImGuiKey_End = 520;
+        public const int ImGuiKey_Insert = 521;
+        public const int ImGuiKey_Delete = 522;
+        public const int ImGuiKey_Backspace = 523;
+        public const int ImGuiKey_Space = 524;
+        public const int ImGuiKey_Enter = 525;
+        public const int ImGuiKey_Escape = 526;
+        public const int ImGuiKey_LeftCtrl = 527;
+        public const int ImGuiKey_LeftShift = 528;
+        public const int ImGuiKey_LeftAlt = 529;
+        public const int ImGuiKey_LeftSuper = 530;
+        public const int ImGuiKey_RightCtrl = 531;
+        public const int ImGuiKey_RightShift = 532;
+        public const int ImGuiKey_RightAlt = 533;
+        public const int ImGuiKey_RightSuper = 534;
+        public const int ImGuiKey_Menu = 535;
+        public const int ImGuiKey_0 = 536;
+        public const int ImGuiKey_1 = 537;
+        public const int ImGuiKey_2 = 538;
+        public const int ImGuiKey_3 = 539;
+        public const int ImGuiKey_4 = 540;
+        public const int ImGuiKey_5 = 541;
+        public const int ImGuiKey_6 = 542;
+        public const int ImGuiKey_7 = 543;
+        public const int ImGuiKey_8 = 544;
+        public const int ImGuiKey_9 = 545;
+        public const int ImGuiKey_A = 546;
+        public const int ImGuiKey_B = 547;
+        public const int ImGuiKey_C = 548;
+        public const int ImGuiKey_D = 549;
+        public const int ImGuiKey_E = 550;
+        public const int ImGuiKey_F = 551;
+        public const int ImGuiKey_G = 552;
+        public const int ImGuiKey_H = 553;
+        public const int ImGuiKey_I = 554;
+        public const int ImGuiKey_J = 555;
+        public const int ImGuiKey_K = 556;
+        public const int ImGuiKey_L = 557;
+        public const int ImGuiKey_M = 558;
+        public const int ImGuiKey_N = 559;
+        public const int ImGuiKey_O = 560;
+        public const int ImGuiKey_P = 561;
+        public const int ImGuiKey_Q = 562;
+        public const int ImGuiKey_R = 563;
+        public const int ImGuiKey_S = 564;
+        public const int ImGuiKey_T = 565;
+        public const int ImGuiKey_U = 566;
+        public const int ImGuiKey_V = 567;
+        public const int ImGuiKey_W = 568;
+        public const int ImGuiKey_X = 569;
+        public const int ImGuiKey_Y = 570;
+        public const int ImGuiKey_Z = 571;
+        public const int ImGuiKey_F1 = 572;
+        public const int ImGuiKey_F2 = 573;
+        public const int ImGuiKey_F3 = 574;
+        public const int ImGuiKey_F4 = 575;
+        public const int ImGuiKey_F5 = 576;
+        public const int ImGuiKey_F6 = 577;
+        public const int ImGuiKey_F7 = 578;
+        public const int ImGuiKey_F8 = 579;
+        public const int ImGuiKey_F9 = 580;
+        public const int ImGuiKey_F10 = 581;
+        public const int ImGuiKey_F11 = 582;
+        public const int ImGuiKey_F12 = 583;
+        public const int ImGuiKey_F13 = 584;
+        public const int ImGuiKey_F14 = 585;
+        public const int ImGuiKey_F15 = 586;
+        public const int ImGuiKey_F16 = 587;
+        public const int ImGuiKey_F17 = 588;
+        public const int ImGuiKey_F18 = 589;
+        public const int ImGuiKey_F19 = 590;
+        public const int ImGuiKey_F20 = 591;
+        public const int ImGuiKey_F21 = 592;
+        public const int ImGuiKey_F22 = 593;
+        public const int ImGuiKey_F23 = 594;
+        public const int ImGuiKey_F24 = 595;
+        public const int ImGuiKey_Apostrophe = 596;
+        public const int ImGuiKey_Comma = 597;
+        public const int ImGuiKey_Minus = 598;
+        public const int ImGuiKey_Period = 599;
+        public const int ImGuiKey_Slash = 600;
+        public const int ImGuiKey_Semicolon = 601;
+        public const int ImGuiKey_Equal = 602;
+        public const int ImGuiKey_LeftBracket = 603;
+        public const int ImGuiKey_Backslash = 604;
+        public const int ImGuiKey_RightBracket = 605;
+        public const int ImGuiKey_GraveAccent = 606;
+        public const int ImGuiKey_CapsLock = 607;
+        public const int ImGuiKey_ScrollLock = 608;
+        public const int ImGuiKey_NumLock = 609;
+        public const int ImGuiKey_PrintScreen = 610;
+        public const int ImGuiKey_Pause = 611;
+        public const int ImGuiKey_Keypad0 = 612;
+        public const int ImGuiKey_Keypad1 = 613;
+        public const int ImGuiKey_Keypad2 = 614;
+        public const int ImGuiKey_Keypad3 = 615;
+        public const int ImGuiKey_Keypad4 = 616;
+        public const int ImGuiKey_Keypad5 = 617;
+        public const int ImGuiKey_Keypad6 = 618;
+        public const int ImGuiKey_Keypad7 = 619;
+        public const int ImGuiKey_Keypad8 = 620;
+        public const int ImGuiKey_Keypad9 = 621;
+        public const int ImGuiKey_KeypadDecimal = 622;
+        public const int ImGuiKey_KeypadDivide = 623;
+        public const int ImGuiKey_KeypadMultiply = 624;
+        public const int ImGuiKey_KeypadSubtract = 625;
+        public const int ImGuiKey_KeypadAdd = 626;
+        public const int ImGuiKey_KeypadEnter = 627;
+        public const int ImGuiKey_KeypadEqual = 628;
+        public const int ImGuiKey_AppBack = 629;
+        public const int ImGuiKey_AppForward = 630;
+        public const int ImGuiKey_Oem102 = 631;
+        public const int ImGuiKey_GamepadStart = 632;
+        public const int ImGuiKey_GamepadBack = 633;
+        public const int ImGuiKey_GamepadFaceLeft = 634;
+        public const int ImGuiKey_GamepadFaceRight = 635;
+        public const int ImGuiKey_GamepadFaceUp = 636;
+        public const int ImGuiKey_GamepadFaceDown = 637;
+        public const int ImGuiKey_GamepadDpadLeft = 638;
+        public const int ImGuiKey_GamepadDpadRight = 639;
+        public const int ImGuiKey_GamepadDpadUp = 640;
+        public const int ImGuiKey_GamepadDpadDown = 641;
+        public const int ImGuiKey_GamepadL1 = 642;
+        public const int ImGuiKey_GamepadR1 = 643;
+        public const int ImGuiKey_GamepadL2 = 644;
+        public const int ImGuiKey_GamepadR2 = 645;
+        public const int ImGuiKey_GamepadL3 = 646;
+        public const int ImGuiKey_GamepadR3 = 647;
+        public const int ImGuiKey_GamepadLStickLeft = 648;
+        public const int ImGuiKey_GamepadLStickRight = 649;
+        public const int ImGuiKey_GamepadLStickUp = 650;
+        public const int ImGuiKey_GamepadLStickDown = 651;
+        public const int ImGuiKey_GamepadRStickLeft = 652;
+        public const int ImGuiKey_GamepadRStickRight = 653;
+        public const int ImGuiKey_GamepadRStickUp = 654;
+        public const int ImGuiKey_GamepadRStickDown = 655;
+        public const int ImGuiKey_MouseLeft = 656;
+        public const int ImGuiKey_MouseRight = 657;
+        public const int ImGuiKey_MouseMiddle = 658;
+        public const int ImGuiKey_MouseX1 = 659;
+        public const int ImGuiKey_MouseX2 = 660;
+        public const int ImGuiKey_MouseWheelX = 661;
+        public const int ImGuiKey_MouseWheelY = 662;
+        public const int ImGuiKey_ReservedForModCtrl = 663;
+        public const int ImGuiKey_ReservedForModShift = 664;
+        public const int ImGuiKey_ReservedForModAlt = 665;
+        public const int ImGuiKey_ReservedForModSuper = 666;
+        public const int ImGuiKey_NamedKey_END = 667;
+        public const int ImGuiKey_NamedKey_COUNT = ImGuiKey_NamedKey_END - ImGuiKey_NamedKey_BEGIN;
+        public const int ImGuiMod_None = 0;
+        public const int ImGuiMod_Ctrl = 1 << 12;
+        public const int ImGuiMod_Shift = 1 << 13;
+        public const int ImGuiMod_Alt = 1 << 14;
+        public const int ImGuiMod_Super = 1 << 15;
+        public const int ImGuiMod_Mask_ = 0xF000;
+        public const int ImGuiKey_COUNT = ImGuiKey_NamedKey_END;
+        public const int ImGuiMod_Shortcut = ImGuiMod_Ctrl;
 
-        public const uint ImGuiMouseSource_Mouse = 0;
-        public const uint ImGuiMouseSource_TouchScreen = 1;
-        public const uint ImGuiMouseSource_Pen = 2;
-        public const uint ImGuiMouseSource_COUNT = 3;
+        public const int ImGuiMouseSource_Mouse = 0;
+        public const int ImGuiMouseSource_TouchScreen = 1;
+        public const int ImGuiMouseSource_Pen = 2;
+        public const int ImGuiMouseSource_COUNT = 3;
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImVector_Construct(void* vector);
@@ -5626,16 +5625,16 @@ namespace Zinc.Internal.Sokol
         public static extern void ImFontAtlas_RemoveFont([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("ImFont *")] ImFont_t* font);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImFontAtlas_Clear([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ImFontAtlas_ClearFonts([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImFontAtlas_CompactCache([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImFontAtlas_SetFontLoader([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self, [NativeTypeName("const ImFontLoader *")] ImFontLoader_t* font_loader);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImFontAtlas_Clear([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ImFontAtlas_ClearFonts([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImFontAtlas_ClearInputData([NativeTypeName("ImFontAtlas *")] ImFontAtlas_t* self);
@@ -5819,6 +5818,9 @@ namespace Zinc.Internal.Sokol
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ImGuiPlatformIO_ClearRendererHandlers([NativeTypeName("ImGuiPlatformIO *")] ImGuiPlatformIO_t* self);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void igSetColorEditOptions([NativeTypeName("ImGuiColorEditFlags")] int flags);
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void igPushFont([NativeTypeName("ImFont *")] ImFont_t* font);

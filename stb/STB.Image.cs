@@ -16,11 +16,11 @@ namespace Zinc.Internal.STB
 
     public static unsafe partial class STB
     {
-        public const uint STBI_default = 0;
-        public const uint STBI_grey = 1;
-        public const uint STBI_grey_alpha = 2;
-        public const uint STBI_rgb = 3;
-        public const uint STBI_rgb_alpha = 4;
+        public const int STBI_default = 0;
+        public const int STBI_grey = 1;
+        public const int STBI_grey_alpha = 2;
+        public const int STBI_rgb = 3;
+        public const int STBI_rgb_alpha = 4;
 
         [DllImport("stb", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("stbi_uc *")]

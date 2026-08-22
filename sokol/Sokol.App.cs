@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Zinc.Internal.Sokol
 {
-    [NativeTypeName("unsigned int")]
-    public enum sapp_event_type : uint
+    public enum sapp_event_type
     {
         SAPP_EVENTTYPE_INVALID,
         SAPP_EVENTTYPE_KEY_DOWN,
@@ -34,8 +33,7 @@ namespace Zinc.Internal.Sokol
         _SAPP_EVENTTYPE_FORCE_U32 = 0x7FFFFFFF,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum sapp_keycode : uint
+    public enum sapp_keycode
     {
         SAPP_KEYCODE_INVALID = 0,
         SAPP_KEYCODE_SPACE = 32,
@@ -158,15 +156,16 @@ namespace Zinc.Internal.Sokol
         SAPP_KEYCODE_RIGHT_ALT = 346,
         SAPP_KEYCODE_RIGHT_SUPER = 347,
         SAPP_KEYCODE_MENU = 348,
+        _SAPP_KEYCODE_FORCE_U32 = 0x7FFFFFFF,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum sapp_android_tooltype : uint
+    public enum sapp_android_tooltype
     {
         SAPP_ANDROIDTOOLTYPE_UNKNOWN = 0,
         SAPP_ANDROIDTOOLTYPE_FINGER = 1,
         SAPP_ANDROIDTOOLTYPE_STYLUS = 2,
         SAPP_ANDROIDTOOLTYPE_MOUSE = 3,
+        _SAPP_ANDROIDTOOLTYPE_FORCE_U32 = 0x7FFFFFFF,
     }
 
     public partial struct sapp_touchpoint
@@ -184,13 +183,13 @@ namespace Zinc.Internal.Sokol
         public byte changed;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum sapp_mousebutton : uint
+    public enum sapp_mousebutton
     {
         SAPP_MOUSEBUTTON_LEFT = 0x0,
         SAPP_MOUSEBUTTON_RIGHT = 0x1,
         SAPP_MOUSEBUTTON_MIDDLE = 0x2,
         SAPP_MOUSEBUTTON_INVALID = 0x100,
+        _SAPP_MOUSEBUTTON_FORCE_U32 = 0x7FFFFFFF,
     }
 
     public partial struct sapp_event
@@ -293,11 +292,11 @@ namespace Zinc.Internal.Sokol
         public void* user_data;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum sapp_log_item : uint
+    public enum sapp_log_item
     {
         SAPP_LOGITEM_OK,
         SAPP_LOGITEM_MALLOC_FAILED,
+        SAPP_LOGITEM_SWAPCHAIN_DEPTHFORMAT_INVALID,
         SAPP_LOGITEM_MACOS_INVALID_NSOPENGL_PROFILE,
         SAPP_LOGITEM_METAL_CREATE_SWAPCHAIN_DEPTH_TEXTURE_FAILED,
         SAPP_LOGITEM_METAL_CREATE_SWAPCHAIN_MSAA_TEXTURE_FAILED,
@@ -401,6 +400,9 @@ namespace Zinc.Internal.Sokol
         SAPP_LOGITEM_WGPU_REQUEST_ADAPTER_STATUS_ERROR,
         SAPP_LOGITEM_WGPU_REQUEST_ADAPTER_STATUS_UNKNOWN,
         SAPP_LOGITEM_WGPU_CREATE_INSTANCE_FAILED,
+        SAPP_LOGITEM_VULKAN_DEBUG_GENERAL,
+        SAPP_LOGITEM_VULKAN_DEBUG_VALIDATION,
+        SAPP_LOGITEM_VULKAN_DEBUG_PERFORMANCE,
         SAPP_LOGITEM_VULKAN_REQUIRED_INSTANCE_EXTENSION_FUNCTION_MISSING,
         SAPP_LOGITEM_VULKAN_ALLOC_DEVICE_MEMORY_NO_SUITABLE_MEMORY_TYPE,
         SAPP_LOGITEM_VULKAN_ALLOCATE_MEMORY_FAILED,
@@ -423,17 +425,18 @@ namespace Zinc.Internal.Sokol
         SAPP_LOGITEM_IMAGE_DATA_SIZE_MISMATCH,
         SAPP_LOGITEM_DROPPED_FILE_PATH_TOO_LONG,
         SAPP_LOGITEM_CLIPBOARD_STRING_TOO_BIG,
+        _SAPP_LOGITEM_FORCE_U32 = 0x7FFFFFFF,
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum sapp_pixel_format : uint
+    public enum sapp_pixel_format
     {
         _SAPP_PIXELFORMAT_DEFAULT,
         SAPP_PIXELFORMAT_NONE,
         SAPP_PIXELFORMAT_RGBA8,
         SAPP_PIXELFORMAT_SRGB8A8,
         SAPP_PIXELFORMAT_BGRA8,
-        SAPP_PIXELFORMAT_SBGRA8,
+        SAPP_PIXELFORMAT_SBGR8A8,
+        SAPP_PIXELFORMAT_RGBA16F,
         SAPP_PIXELFORMAT_DEPTH,
         SAPP_PIXELFORMAT_DEPTH_STENCIL,
         _SAPP_PIXELFORMAT_FORCE_U32 = 0x7FFFFFFF,
@@ -571,6 +574,9 @@ namespace Zinc.Internal.Sokol
 
     public partial struct sapp_swapchain
     {
+        [NativeTypeName("bool")]
+        public byte invalid;
+
         public int width;
 
         public int height;
@@ -590,6 +596,14 @@ namespace Zinc.Internal.Sokol
         public sapp_vulkan_swapchain vulkan;
 
         public sapp_gl_swapchain gl;
+    }
+
+    public enum sapp_composite_mode
+    {
+        _SAPP_COMPOSITEMODE_DEFAULT,
+        SAPP_COMPOSITEMODE_OPAQUE,
+        SAPP_COMPOSITEMODE_PREMULTIPLIED,
+        _SAPP_COMPOSITEMODE_FORCE_U32 = 0x7FFFFFFF,
     }
 
     public unsafe partial struct sapp_logger
@@ -631,9 +645,6 @@ namespace Zinc.Internal.Sokol
         public byte preserve_drawing_buffer;
 
         [NativeTypeName("bool")]
-        public byte premultiplied_alpha;
-
-        [NativeTypeName("bool")]
         public byte ask_leave_site;
 
         [NativeTypeName("bool")]
@@ -665,6 +676,18 @@ namespace Zinc.Internal.Sokol
     {
         [NativeTypeName("bool")]
         public byte keyboard_resizes_canvas;
+    }
+
+    public partial struct sapp_metal_desc
+    {
+        [NativeTypeName("bool")]
+        public byte disable_display_sync;
+    }
+
+    public unsafe partial struct sapp_android_desc
+    {
+        [NativeTypeName("bool (*)(const void *)")]
+        public delegate* unmanaged[Cdecl]<void*, byte> native_event_cb;
     }
 
     public unsafe partial struct sapp_desc
@@ -699,18 +722,28 @@ namespace Zinc.Internal.Sokol
 
         public int height;
 
+        public sapp_pixel_format depth_format;
+
+        public sapp_composite_mode composite_mode;
+
         public int sample_count;
 
         public int swap_interval;
+
+        [NativeTypeName("bool")]
+        public byte srgb;
+
+        [NativeTypeName("bool")]
+        public byte hdr;
+
+        [NativeTypeName("bool")]
+        public byte disable_vsync;
 
         [NativeTypeName("bool")]
         public byte high_dpi;
 
         [NativeTypeName("bool")]
         public byte fullscreen;
-
-        [NativeTypeName("bool")]
-        public byte alpha;
 
         [NativeTypeName("const char *")]
         public sbyte* window_title;
@@ -735,19 +768,23 @@ namespace Zinc.Internal.Sokol
 
         public sapp_gl_desc gl;
 
+        public sapp_metal_desc metal;
+
         public sapp_win32_desc win32;
 
         public sapp_html5_desc html5;
 
         public sapp_ios_desc ios;
+
+        public sapp_android_desc android;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum sapp_html5_fetch_error : uint
+    public enum sapp_html5_fetch_error
     {
         SAPP_HTML5_FETCH_ERROR_NO_ERROR,
         SAPP_HTML5_FETCH_ERROR_BUFFER_TOO_SMALL,
         SAPP_HTML5_FETCH_ERROR_OTHER,
+        _SAPP_HTML5_FORCE_U32 = 0x7FFFFFFF,
     }
 
     public unsafe partial struct sapp_html5_fetch_response
@@ -778,8 +815,7 @@ namespace Zinc.Internal.Sokol
         public void* user_data;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum sapp_mouse_cursor : uint
+    public enum sapp_mouse_cursor
     {
         SAPP_MOUSECURSOR_DEFAULT = 0,
         SAPP_MOUSECURSOR_ARROW,
@@ -809,25 +845,32 @@ namespace Zinc.Internal.Sokol
         SAPP_MOUSECURSOR_CUSTOM_14,
         SAPP_MOUSECURSOR_CUSTOM_15,
         _SAPP_MOUSECURSOR_NUM,
+        _SAPP_MOUSECURSOR_FORCE_U32 = 0x7FFFFFFF,
     }
 
     public static unsafe partial class App
     {
-        public const uint SAPP_MAX_TOUCHPOINTS = 8;
-        public const uint SAPP_MAX_MOUSEBUTTONS = 3;
-        public const uint SAPP_MAX_KEYCODES = 512;
-        public const uint SAPP_MAX_ICONIMAGES = 8;
+        public const int SAPP_MAX_TOUCHPOINTS = 8;
+        public const int SAPP_MAX_MOUSEBUTTONS = 3;
+        public const int SAPP_MAX_KEYCODES = 512;
+        public const int SAPP_MAX_ICONIMAGES = 8;
 
-        public const uint SAPP_MODIFIER_SHIFT = 0x1;
-        public const uint SAPP_MODIFIER_CTRL = 0x2;
-        public const uint SAPP_MODIFIER_ALT = 0x4;
-        public const uint SAPP_MODIFIER_SUPER = 0x8;
-        public const uint SAPP_MODIFIER_LMB = 0x100;
-        public const uint SAPP_MODIFIER_RMB = 0x200;
-        public const uint SAPP_MODIFIER_MMB = 0x400;
+        public const int SAPP_MODIFIER_SHIFT = 0x1;
+        public const int SAPP_MODIFIER_CTRL = 0x2;
+        public const int SAPP_MODIFIER_ALT = 0x4;
+        public const int SAPP_MODIFIER_SUPER = 0x8;
+        public const int SAPP_MODIFIER_LMB = 0x100;
+        public const int SAPP_MODIFIER_RMB = 0x200;
+        public const int SAPP_MODIFIER_MMB = 0x400;
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern sapp_desc sokol_main(int argc, [NativeTypeName("char *[]")] sbyte** argv);
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_get_environment", ExactSpelling = true)]
+        public static extern sapp_environment get_environment();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_acquire_swapchain", ExactSpelling = true)]
+        public static extern sapp_swapchain acquire_swapchain();
 
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_isvalid", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -952,12 +995,6 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_run", ExactSpelling = true)]
         public static extern void run([NativeTypeName("const sapp_desc *")] sapp_desc* desc);
 
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_get_environment", ExactSpelling = true)]
-        public static extern sapp_environment get_environment();
-
-        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_get_swapchain", ExactSpelling = true)]
-        public static extern sapp_swapchain get_swapchain();
-
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_egl_get_display", ExactSpelling = true)]
         [return: NativeTypeName("const void *")]
         public static extern void* egl_get_display();
@@ -1013,5 +1050,9 @@ namespace Zinc.Internal.Sokol
         [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_android_get_native_activity", ExactSpelling = true)]
         [return: NativeTypeName("const void *")]
         public static extern void* android_get_native_activity();
+
+        [DllImport("sokol", CallingConvention = CallingConvention.Cdecl, EntryPoint = "sapp_android_get_native_window", ExactSpelling = true)]
+        [return: NativeTypeName("const void *")]
+        public static extern void* android_get_native_window();
     }
 }

@@ -2,8 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Zinc.Internal.Sokol
 {
-    [NativeTypeName("unsigned int")]
-    public enum saudio_log_item : uint
+    public enum saudio_log_item
     {
         SAUDIO_LOGITEM_OK,
         SAUDIO_LOGITEM_MALLOC_FAILED,
@@ -56,8 +55,7 @@ namespace Zinc.Internal.Sokol
         public void* user_data;
     }
 
-    [NativeTypeName("unsigned int")]
-    public enum saudio_n3ds_ndspinterptype : uint
+    public enum saudio_n3ds_ndspinterptype
     {
         SAUDIO_N3DS_DSP_INTERP_POLYPHASE = 0,
         SAUDIO_N3DS_DSP_INTERP_LINEAR = 1,

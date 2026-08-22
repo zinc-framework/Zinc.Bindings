@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Zinc.Internal.Sokol
 {
-    [NativeTypeName("unsigned int")]
-    public enum sdtx_log_item_t : uint
+    public enum sdtx_log_item_t
     {
         SDTX_LOGITEM_OK,
         SDTX_LOGITEM_MALLOC_FAILED,
